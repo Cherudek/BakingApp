@@ -26,7 +26,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class RecipeFragment extends Fragment implements View.OnClickListener {
+public class RecipeFragment extends Fragment implements RecipeAdapter.RecipeAdapterOnClickHandler {
 
   private String API_BASE_URL = "https://d17h27t6h515a5.cloudfront.net/topher/2017/May/59121517_baking/";
   private RecipesCall recipesCall;
@@ -53,7 +53,7 @@ public class RecipeFragment extends Fragment implements View.OnClickListener {
     recyclerView = rootView.findViewById(R.id.rv_fragment_list);
     layoutManager = new LinearLayoutManager(getContext());
     recyclerView.setLayoutManager(layoutManager);
-    recipeAdapter = new RecipeAdapter((RecipeAdapterOnClickHandler) this,numberOFRecipes);
+    recipeAdapter = new RecipeAdapter( this,numberOFRecipes);
     recyclerView.setAdapter(recipeAdapter);
 
     //Retrofit OkHttp connection builder
@@ -101,7 +101,7 @@ public class RecipeFragment extends Fragment implements View.OnClickListener {
   }
 
   @Override
-  public void onClick(View v) {
+  public void onClick(int recipeIndex) {
 
   }
 }

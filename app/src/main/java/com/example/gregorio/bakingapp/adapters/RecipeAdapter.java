@@ -55,8 +55,9 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
     RecipeModel currentRecipe = mRecipeData.get(position);
     String recipeName = currentRecipe.getName();
     int servingsNumber = currentRecipe.getServings();
+    String servingsText = String.valueOf(servingsNumber);
     recipe.setText(recipeName);
-    servings.setText(servingsNumber);
+    servings.setText(servingsText);
   }
 
   @Override
