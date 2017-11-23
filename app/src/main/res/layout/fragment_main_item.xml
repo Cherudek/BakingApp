@@ -5,6 +5,7 @@
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
   android:orientation="vertical"
+  android:padding="16dp"
   tools:context="com.example.gregorio.bakingapp.MainActivity">
 
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
@@ -16,12 +17,31 @@
   android:textSize="22sp"
   android:gravity="center"/>
 
-  <TextView
-    android:id="@+id/servings"
+  <LinearLayout
+    android:gravity="center"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:text="Servings: 8"
-    android:gravity="center"/>
+    android:orientation="horizontal">
+
+    <TextView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="Servings: "
+      />
+
+    <TextView
+      android:id="@+id/servings"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      tools:text="8"
+      />
+
+
+
+
+
+  </LinearLayout>
+
 
   </LinearLayout>
 
