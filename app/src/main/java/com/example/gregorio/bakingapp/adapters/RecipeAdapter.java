@@ -1,12 +1,16 @@
 package com.example.gregorio.bakingapp.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.ViewHolder;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import com.example.gregorio.bakingapp.DetailActivity;
+import com.example.gregorio.bakingapp.MainActivity;
 import com.example.gregorio.bakingapp.R;
 import com.example.gregorio.bakingapp.retrofit.RecipeModel;
 import java.util.ArrayList;
@@ -19,18 +23,15 @@ import java.util.List;
 public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeViewHolder> {
 
   public static final String LOG_TAG = RecipeAdapter.class.getSimpleName();
-
-  //finding and setting the TextViews for Recipe Name and Recipe Servings
-  private TextView recipe;
-  private TextView servings;
-
-  private Context mContext;
   /*
     * An on-click handler that we've defined to make it easy for an Activity to interface with
     * our RecyclerView
    */
   private final RecipeAdapterOnClickHandler mClickHandler;
-
+  //finding and setting the TextViews for Recipe Name and Recipe Servings
+  private TextView recipe;
+  private TextView servings;
+  private Context mContext;
   // A copy of the original mObjects array, initialized from and then used instead as soon as
   private List<RecipeModel> mRecipeData = new ArrayList<>();
 
@@ -66,17 +67,18 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
     return recipeCount;
   }
 
-  /**
-   * The interface that receives onClick messages.
-   */
-  public interface RecipeAdapterOnClickHandler {
-    void onClick(int recipeIndex);
-  }
-
   public void setRecipeData(ArrayList<RecipeModel> recipesIn, Context context) {
     mRecipeData = recipesIn;
     mContext = context;
     notifyDataSetChanged();
+  }
+
+  /**
+   * The interface that receives onClick messages.
+   */
+  public interface RecipeAdapterOnClickHandler {
+
+    void onClick(int recipeIndex);
   }
 
   public class RecipeViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -95,7 +97,10 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
       String recipeName = recipe.getName();
       int recipeServings = recipe.getServings();
       int recipeIndex = recipe.getId();
-      mClickHandler.onClick(adapterPosition);
+      mClickHandler.onClick(recipeIndex);
+
+      Log.d(LOG_TAG, "Click position: " + recipeName + " Servings: " + recipeServings);
+
 
     }
   }

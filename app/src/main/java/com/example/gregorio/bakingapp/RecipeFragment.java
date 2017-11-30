@@ -8,13 +8,9 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 import com.example.gregorio.bakingapp.adapters.RecipeAdapter;
-import com.example.gregorio.bakingapp.adapters.RecipeAdapter.RecipeAdapterOnClickHandler;
 import com.example.gregorio.bakingapp.retrofit.RecipeModel;
 import com.example.gregorio.bakingapp.retrofit.RecipesCall;
 import java.util.ArrayList;
@@ -27,6 +23,8 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RecipeFragment extends Fragment implements RecipeAdapter.RecipeAdapterOnClickHandler {
+
+  private static final String LOG_TAG = RecipeFragment.class.getSimpleName();
 
   private String API_BASE_URL = "https://d17h27t6h515a5.cloudfront.net/topher/2017/May/59121517_baking/";
   private RecipesCall recipesCall;
@@ -47,7 +45,7 @@ public class RecipeFragment extends Fragment implements RecipeAdapter.RecipeAdap
     mContext = getActivity().getApplicationContext();
 
     //inflating the main fragment layout within its container
-    View rootView = inflater.inflate(R.layout.fragment_list, container, false);
+    View rootView = inflater.inflate(R.layout.fragment_main_list, container, false);
 
     //finding the recyclerView and setting the Adapter
     recyclerView = rootView.findViewById(R.id.rv_fragment_list);
@@ -65,7 +63,7 @@ public class RecipeFragment extends Fragment implements RecipeAdapter.RecipeAdap
 
     Retrofit retrofit = builder.client(httpClient.build()).build();
 
-    // Create a very simple REST adapter which points the GitHub API endpoint.
+    // Create a very simple REST adapter which points the Recipe API endpoint.
     recipesCall = retrofit.create(RecipesCall.class);
 
     // Fetch a list of the Github repositories.
@@ -82,8 +80,6 @@ public class RecipeFragment extends Fragment implements RecipeAdapter.RecipeAdap
           List<RecipeModel> repos = response.body();
           numberOFRecipes = repos.size();
           recipeAdapter.setRecipeData((ArrayList<RecipeModel>) repos, mContext);
-
-
         }
       }
 
@@ -92,10 +88,9 @@ public class RecipeFragment extends Fragment implements RecipeAdapter.RecipeAdap
         // the network call was a failure
         // TODO: handle error
         t.getStackTrace();
-        Toast.makeText(getContext(), "Error Connecting", Toast.LENGTH_LONG).show();
+        Toast.makeText(getContext(), "Error Fetching JSON", Toast.LENGTH_LONG).show();
       }
     });
-
     return rootView;
 
   }
