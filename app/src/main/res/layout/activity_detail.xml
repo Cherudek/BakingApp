@@ -7,10 +7,31 @@
   android:orientation="vertical"
   tools:context="com.example.gregorio.bakingapp.MainActivity">
 
-  <FrameLayout
-    android:id="@+id/recipe_detail_container"
+  <TextView
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content"
+    android:padding="16dp"
+    android:gravity="center"
+    android:text="INGREDIENTS"/>
+
+  <FrameLayout
+    android:id="@+id/ingredients_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+  </FrameLayout>
+
+  <TextView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="16dp"
+    android:gravity="center"
+    android:text="STEPS"/>
+
+  <FrameLayout
+    android:id="@+id/steps_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
   </FrameLayout>
 
 </LinearLayout>

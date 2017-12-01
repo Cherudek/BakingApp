@@ -18,10 +18,8 @@ public class Ingredients {
     return measure;
   }
 
-
   public String getIngredient() {
     return ingredient;
   }
-
 
 }

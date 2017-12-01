@@ -66,7 +66,7 @@ public class RecipeFragment extends Fragment implements RecipeAdapter.RecipeAdap
     // Create a very simple REST adapter which points the Recipe API endpoint.
     recipesCall = retrofit.create(RecipesCall.class);
 
-    // Fetch a list of the Github repositories.
+    // Fetch a list of the recipes
     Call<List<RecipeModel>> call = recipesCall.recipesForChef();
 
     // Execute the call asynchronously. Get a positive or negative callback.

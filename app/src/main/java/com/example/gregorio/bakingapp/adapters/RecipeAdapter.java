@@ -1,16 +1,12 @@
 package com.example.gregorio.bakingapp.adapters;
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import com.example.gregorio.bakingapp.DetailActivity;
-import com.example.gregorio.bakingapp.MainActivity;
 import com.example.gregorio.bakingapp.R;
 import com.example.gregorio.bakingapp.retrofit.RecipeModel;
 import java.util.ArrayList;
