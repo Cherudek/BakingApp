@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import com.example.gregorio.bakingapp.R;
+import com.example.gregorio.bakingapp.retrofit.Ingredients;
 import com.example.gregorio.bakingapp.retrofit.RecipeModel;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +31,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
   private Context mContext;
   // A copy of the original mObjects array, initialized from and then used instead as soon as
   private List<RecipeModel> mRecipeData = new ArrayList<>();
+  private List<Ingredients> mIngredientsData = new ArrayList<>();
 
   public RecipeAdapter(RecipeAdapterOnClickHandler clickHandler, int numberOfItems) {
     this.mClickHandler = clickHandler;
@@ -53,6 +55,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
     String recipeName = currentRecipe.getName();
     int servingsNumber = currentRecipe.getServings();
     String servingsText = String.valueOf(servingsNumber);
+    ArrayList<Ingredients> ingredient = currentRecipe.getIngredients();
     recipe.setText(recipeName);
     servings.setText(servingsText);
   }
@@ -68,6 +71,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
     mContext = context;
     notifyDataSetChanged();
   }
+
 
   /**
    * The interface that receives onClick messages.
@@ -90,12 +94,16 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
     public void onClick(View v) {
       int adapterPosition = getAdapterPosition();
       RecipeModel recipe = mRecipeData.get(adapterPosition);
+      ArrayList<Ingredients> ingredients = recipe.getIngredients();
+      Ingredients ingredientObject = ingredients.get(1);
+      String ingredientString = ingredientObject.getIngredient();
       String recipeName = recipe.getName();
       int recipeServings = recipe.getServings();
       int recipeIndex = recipe.getId();
       mClickHandler.onClick(recipeIndex);
 
-      Log.d(LOG_TAG, "Click position: " + recipeName + " Servings: " + recipeServings);
+      Log.d(LOG_TAG, "Click position: " + recipeName + " Servings: " + recipeServings
+          + " Ingredients: " + ingredientString);
 
 
     }

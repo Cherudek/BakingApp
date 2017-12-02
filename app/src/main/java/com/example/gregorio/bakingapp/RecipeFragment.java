@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Toast;
 import com.example.gregorio.bakingapp.adapters.RecipeAdapter;
 import com.example.gregorio.bakingapp.retrofit.RecipeModel;
@@ -25,7 +26,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class RecipeFragment extends Fragment implements RecipeAdapter.RecipeAdapterOnClickHandler {
 
   private static final String LOG_TAG = RecipeFragment.class.getSimpleName();
-
+  // Define a new interface OnImageClickListener that triggers a callback in the host activity
+  OnImageClickListener mCallback;
   private String API_BASE_URL = "https://d17h27t6h515a5.cloudfront.net/topher/2017/May/59121517_baking/";
   private RecipesCall recipesCall;
   private RecyclerView recyclerView;
@@ -35,6 +37,20 @@ public class RecipeFragment extends Fragment implements RecipeAdapter.RecipeAdap
   private Context mContext;
 
   public RecipeFragment() {
+  }
+
+  @Override
+  public void onAttach(Context context) {
+    super.onAttach(context);
+
+    // This makes sure that the host activity has implemented the callback interface
+    // If not, it throws an exception
+    try {
+      mCallback = (OnImageClickListener) context;
+    } catch (ClassCastException e) {
+      throw new ClassCastException(context.toString()
+          + " must implement OnImageClickListener");
+    }
   }
 
   @Nullable
@@ -97,6 +113,13 @@ public class RecipeFragment extends Fragment implements RecipeAdapter.RecipeAdap
 
   @Override
   public void onClick(int recipeIndex) {
+    mCallback.onImageSelected(recipeIndex);
 
+  }
+
+  // OnImageClickListener interface, calls a method in the host activity named onImageSelected
+  public interface OnImageClickListener {
+
+    void onImageSelected(int position);
   }
 }
