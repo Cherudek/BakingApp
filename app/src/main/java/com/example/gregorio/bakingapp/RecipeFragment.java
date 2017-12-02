@@ -9,7 +9,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.Toast;
 import com.example.gregorio.bakingapp.adapters.RecipeAdapter;
 import com.example.gregorio.bakingapp.retrofit.RecipeModel;
@@ -26,8 +25,9 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class RecipeFragment extends Fragment implements RecipeAdapter.RecipeAdapterOnClickHandler {
 
   private static final String LOG_TAG = RecipeFragment.class.getSimpleName();
-  // Define a new interface OnImageClickListener that triggers a callback in the host activity
-  OnImageClickListener mCallback;
+  // Define a new interface OnRecipeClickListener that triggers a callback in the host activity
+  OnRecipeClickListener mCallback;
+
   private String API_BASE_URL = "https://d17h27t6h515a5.cloudfront.net/topher/2017/May/59121517_baking/";
   private RecipesCall recipesCall;
   private RecyclerView recyclerView;
@@ -35,6 +35,7 @@ public class RecipeFragment extends Fragment implements RecipeAdapter.RecipeAdap
   private LinearLayoutManager layoutManager;
   private int numberOFRecipes;
   private Context mContext;
+  private ArrayList<RecipeModel> repos;
 
   public RecipeFragment() {
   }
@@ -46,10 +47,10 @@ public class RecipeFragment extends Fragment implements RecipeAdapter.RecipeAdap
     // This makes sure that the host activity has implemented the callback interface
     // If not, it throws an exception
     try {
-      mCallback = (OnImageClickListener) context;
+      mCallback = (OnRecipeClickListener) context;
     } catch (ClassCastException e) {
       throw new ClassCastException(context.toString()
-          + " must implement OnImageClickListener");
+          + " must implement OnRecipeClickListener");
     }
   }
 
@@ -83,24 +84,27 @@ public class RecipeFragment extends Fragment implements RecipeAdapter.RecipeAdap
     recipesCall = retrofit.create(RecipesCall.class);
 
     // Fetch a list of the recipes
-    Call<List<RecipeModel>> call = recipesCall.recipesForChef();
+    Call<ArrayList<RecipeModel>> call = recipesCall.recipesForChef();
 
     // Execute the call asynchronously. Get a positive or negative callback.
-    call.enqueue(new Callback<List<RecipeModel>>() {
+    call.enqueue(new Callback<ArrayList<RecipeModel>>() {
 
       @Override
-      public void onResponse(Call<List<RecipeModel>> call, Response<List<RecipeModel>> response) {
+      public void onResponse(Call<ArrayList<RecipeModel>> call,
+          Response<ArrayList<RecipeModel>> response) {
         // The network call was a success and we got a response
         // TODO: use the repository list and display it
         if (response !=null){
-          List<RecipeModel> repos = response.body();
+
+          repos = response.body();
           numberOFRecipes = repos.size();
-          recipeAdapter.setRecipeData((ArrayList<RecipeModel>) repos, mContext);
+          recipeAdapter.setRecipeData(repos, mContext);
+
         }
       }
 
       @Override
-      public void onFailure(Call<List<RecipeModel>> call, Throwable t) {
+      public void onFailure(Call<ArrayList<RecipeModel>> call, Throwable t) {
         // the network call was a failure
         // TODO: handle error
         t.getStackTrace();
@@ -113,13 +117,13 @@ public class RecipeFragment extends Fragment implements RecipeAdapter.RecipeAdap
 
   @Override
   public void onClick(int recipeIndex) {
-    mCallback.onImageSelected(recipeIndex);
+    mCallback.onRecipeSelected(recipeIndex, repos);
 
   }
 
-  // OnImageClickListener interface, calls a method in the host activity named onImageSelected
-  public interface OnImageClickListener {
+  // OnRecipeClickListener interface, calls a method in the host activity named onRecipeSelected
+  public interface OnRecipeClickListener {
 
-    void onImageSelected(int position);
+    void onRecipeSelected(int position, ArrayList<RecipeModel> recipes);
   }
 }

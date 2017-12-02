@@ -1,19 +1,18 @@
 package com.example.gregorio.bakingapp;
 
 import android.content.Intent;
-import android.os.Parcelable;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Toast;
+import com.example.gregorio.bakingapp.RecipeFragment.OnRecipeClickListener;
 import com.example.gregorio.bakingapp.adapters.RecipeAdapter;
 import com.example.gregorio.bakingapp.retrofit.Ingredients;
 import com.example.gregorio.bakingapp.retrofit.RecipeModel;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements RecipeFragment.OnImageClickListener {
+public class MainActivity extends AppCompatActivity implements OnRecipeClickListener {
 
   public static final String LOG_TAG = MainActivity.class.getSimpleName();
 
@@ -22,8 +21,6 @@ public class MainActivity extends AppCompatActivity implements RecipeFragment.On
   public static final String INGREDIENT_KEY = "Ingredients";
   public static final String INTENT_KEY = "Bundle";
   public static final String PARCEL_KEY = "Parcel";
-
-  RecipeAdapter recipeAdapter;
 
   // A copy of the original mObjects array, initialized from and then used instead as soon as
   private List<Ingredients> mIngredientsData = new ArrayList<>();
@@ -42,17 +39,18 @@ public class MainActivity extends AppCompatActivity implements RecipeFragment.On
   }
 
   @Override
-  public void onImageSelected(int position) {
+  public void onRecipeSelected(int position, ArrayList<RecipeModel> mRecipes) {
 
-    Ingredients ingredients = new Ingredients();
+    int size = mRecipes.size();
 
     Intent intent = new Intent(this, DetailActivity.class);
     Bundle bundle = new Bundle();
-    bundle.putParcelable(PARCEL_KEY, ingredients);
+    bundle.putParcelableArrayList(PARCEL_KEY, new ArrayList<>(mRecipes));
 
     intent.putExtra(INTENT_KEY, bundle);
     startActivity(intent);
 
-    Toast.makeText(getApplicationContext(), "Recipe Index: " + position, Toast.LENGTH_LONG).show();
+    Toast.makeText(getApplicationContext(), "Recipe Index: " + position + " Size  " + size,
+        Toast.LENGTH_LONG).show();
   }
 }

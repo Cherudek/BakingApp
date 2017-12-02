@@ -1,22 +1,14 @@
 package com.example.gregorio.bakingapp.adapters;
 
-import static com.example.gregorio.bakingapp.MainActivity.INGREDIENT_KEY;
-import static com.example.gregorio.bakingapp.MainActivity.INTENT_KEY;
-import static com.example.gregorio.bakingapp.MainActivity.MEASURE_KEY;
-import static com.example.gregorio.bakingapp.MainActivity.QUANTITY_KEY;
-
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.RecyclerView.Adapter;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import com.example.gregorio.bakingapp.R;
-import com.example.gregorio.bakingapp.adapters.IngredientsAdapter.IngredientsViewHolder;
 import com.example.gregorio.bakingapp.retrofit.Ingredients;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,8 +34,6 @@ public class IngredientsAdapter extends
   private Context mContext;
   // A copy of the original mObjects array, initialized from and then used instead as soon as
   private List<Ingredients> mIngredientsData = new ArrayList<>();
-  private Bundle ingredientIntent;
-  private float mQuantity;
   private String mQuantityString;
   private String mMeasure;
   private String mIngredient;
@@ -64,6 +54,7 @@ public class IngredientsAdapter extends
     boolean shouldAttachToParentImmediately = false;
     View view = inflater.inflate(layoutIdForListItem, parent, shouldAttachToParentImmediately);
     return new IngredientsViewHolder(view);
+
   }
 
   @Override
@@ -71,13 +62,13 @@ public class IngredientsAdapter extends
     Ingredients currentIngredient = mIngredientsData.get(position);
 
     float quantity = currentIngredient.getQuantity();
-    String measure = currentIngredient.getMeasure();
-    String ingredient = currentIngredient.getIngredient();
-    String quantityString = String.valueOf(mQuantity);
+    mMeasure = currentIngredient.getMeasure();
+    mIngredient = currentIngredient.getIngredient();
+    mQuantityString = String.valueOf(quantity);
 
-    tvQuantity.setText(quantityString);
-    tvMeasure.setText(measure);
-    tvIngredient.setText(ingredient);
+    tvQuantity.setText(mQuantityString);
+    tvMeasure.setText(mMeasure);
+    tvIngredient.setText(mIngredient);
 
   }
 

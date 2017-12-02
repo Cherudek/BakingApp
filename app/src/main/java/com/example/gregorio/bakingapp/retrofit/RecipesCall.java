@@ -13,6 +13,6 @@ import retrofit2.http.Path;
 public interface RecipesCall {
 
   @GET("baking.json")
-  Call<List<RecipeModel>> recipesForChef();
+  Call<ArrayList<RecipeModel>> recipesForChef();
 
 }

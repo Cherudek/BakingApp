@@ -21,7 +21,9 @@ import android.view.ViewGroup;
 import com.example.gregorio.bakingapp.adapters.IngredientsAdapter;
 import com.example.gregorio.bakingapp.adapters.RecipeAdapter;
 import com.example.gregorio.bakingapp.retrofit.Ingredients;
+import com.example.gregorio.bakingapp.retrofit.RecipeModel;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Gregorio on 29/11/2017.
@@ -33,6 +35,7 @@ public class IngredientsFragment extends Fragment implements
 
   private static final String LOG_TAG = IngredientsFragment.class.getSimpleName();
   ArrayList<Ingredients> ingredientsArrayList;
+  ArrayList<RecipeModel> recipeModels;
   private IngredientsAdapter ingredientsAdapter;
   private RecyclerView rvIngredients;
   private LinearLayoutManager layoutManager;
@@ -52,18 +55,27 @@ public class IngredientsFragment extends Fragment implements
   public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
       @Nullable Bundle savedInstanceState) {
 
-    if (getArguments() != null) {
+    Bundle bundle = this.getArguments();
 
-      ingredientIntent = getArguments().getBundle(INTENT_KEY);
+    if (bundle != null) {
 
-      ingredientsArrayList = ingredientIntent.getParcelableArrayList(PARCEL_KEY);
+      recipeModels = bundle.getParcelableArrayList(PARCEL_KEY);
+
+      int length = recipeModels.size();
+
 
       //For Testing Only
-      Ingredients a = ingredientsArrayList.get(0);
-      String ingredient = a.getIngredient();
+      RecipeModel a = recipeModels.get(1);
 
-      Log.d(LOG_TAG, "Ingredients: " + ingredient + " Measure: " + mMeasure
-          + " Quantity: " + mQuantity);
+      ingredientsArrayList = a.getIngredients();
+
+      Ingredients foods = ingredientsArrayList.get(1);
+
+      String food = foods.getIngredient();
+      String measure = foods.getMeasure();
+
+      Log.d(LOG_TAG, "Ingredients: " + food + " Length: " + length
+          + " Measure: " + measure);
 
     }
 
