@@ -19,11 +19,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.example.gregorio.bakingapp.adapters.IngredientsAdapter;
-import com.example.gregorio.bakingapp.adapters.RecipeAdapter;
 import com.example.gregorio.bakingapp.retrofit.Ingredients;
 import com.example.gregorio.bakingapp.retrofit.RecipeModel;
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Gregorio on 29/11/2017.
@@ -60,22 +58,17 @@ public class IngredientsFragment extends Fragment implements
     if (bundle != null) {
 
       recipeModels = bundle.getParcelableArrayList(PARCEL_KEY);
-
       int length = recipeModels.size();
-
 
       //For Testing Only
       RecipeModel a = recipeModels.get(1);
-
       ingredientsArrayList = a.getIngredients();
-
       Ingredients foods = ingredientsArrayList.get(1);
-
+      int size = ingredientsArrayList.size();
       String food = foods.getIngredient();
       String measure = foods.getMeasure();
-
       Log.d(LOG_TAG, "Ingredients: " + food + " Length: " + length
-          + " Measure: " + measure);
+          + " Measure: " + measure + " SIZE:  " + size);
 
     }
 
@@ -88,12 +81,11 @@ public class IngredientsFragment extends Fragment implements
     layoutManager = new LinearLayoutManager(getContext());
     rvIngredients.setLayoutManager(layoutManager);
     ingredientsAdapter = new IngredientsAdapter(this, numberOfIngredients);
+    rvIngredients.setAdapter(ingredientsAdapter);
 
     ingredientsAdapter.setIngredientsData(ingredientsArrayList, mContext);
 
-    rvIngredients.setAdapter(ingredientsAdapter);
-
-    return super.onCreateView(inflater, container, savedInstanceState);
+    return rootView;
   }
 
   @Override

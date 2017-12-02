@@ -11,7 +11,6 @@ import android.widget.TextView;
 import com.example.gregorio.bakingapp.R;
 import com.example.gregorio.bakingapp.retrofit.Ingredients;
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Gregorio on 01/12/2017.
@@ -32,8 +31,9 @@ public class IngredientsAdapter extends
   private TextView tvMeasure;
   private TextView tvIngredient;
   private Context mContext;
+
   // A copy of the original mObjects array, initialized from and then used instead as soon as
-  private List<Ingredients> mIngredientsData = new ArrayList<>();
+  private ArrayList<Ingredients> mIngredientsData;
   private String mQuantityString;
   private String mMeasure;
   private String mIngredient;
@@ -60,7 +60,6 @@ public class IngredientsAdapter extends
   @Override
   public void onBindViewHolder(IngredientsViewHolder holder, int position) {
     Ingredients currentIngredient = mIngredientsData.get(position);
-
     float quantity = currentIngredient.getQuantity();
     mMeasure = currentIngredient.getMeasure();
     mIngredient = currentIngredient.getIngredient();
