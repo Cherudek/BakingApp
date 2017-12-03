@@ -25,6 +25,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class RecipeFragment extends Fragment implements RecipeAdapter.RecipeAdapterOnClickHandler {
 
   private static final String LOG_TAG = RecipeFragment.class.getSimpleName();
+
   // Define a new interface OnRecipeClickListener that triggers a callback in the host activity
   OnRecipeClickListener mCallback;
 
@@ -95,7 +96,6 @@ public class RecipeFragment extends Fragment implements RecipeAdapter.RecipeAdap
         // The network call was a success and we got a response
         // TODO: use the repository list and display it
         if (response !=null){
-
           repos = response.body();
           numberOFRecipes = repos.size();
           recipeAdapter.setRecipeData(repos, mContext);

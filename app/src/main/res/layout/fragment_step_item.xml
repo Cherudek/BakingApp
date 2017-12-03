@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content"
+  android:padding="8dp"
+  android:gravity="center"
+  android:orientation="horizontal">
+
+  <TextView
+    android:id="@+id/step_id"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginRight="8dp"
+    tools:text="1."/>
+
+  <TextView
+    android:id="@+id/short_description"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginRight="8dp"
+    android:textSize="12dp"
+    tools:text="Mix cream cheese and dry ingredients."
+    />
+
+  <Button
+    android:id="@+id/step_detail"
+    android:layout_width="50dp"
+    android:layout_height="30dp"
+    android:textSize="8dp"
+    tools:text="Video"/>
+
+</LinearLayout>

@@ -22,10 +22,6 @@ public class MainActivity extends AppCompatActivity implements OnRecipeClickList
   public static final String INTENT_KEY = "Bundle";
   public static final String PARCEL_KEY = "Parcel";
 
-  // A copy of the original mObjects array, initialized from and then used instead as soon as
-  private List<Ingredients> mIngredientsData = new ArrayList<>();
-  private List<RecipeModel> mRecipes = new ArrayList<>();
-
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -47,13 +43,12 @@ public class MainActivity extends AppCompatActivity implements OnRecipeClickList
 
     Intent intent = new Intent(this, DetailActivity.class);
     Bundle bundle = new Bundle();
-    // bundle.putParcelableArrayList(PARCEL_KEY, new ArrayList<>(mRecipes));
     bundle.putParcelable(PARCEL_KEY, recipeModels);
 
     intent.putExtra(INTENT_KEY, bundle);
     startActivity(intent);
 
-    Toast.makeText(getApplicationContext(), "Recipe Index: " + position + " Size  " + size,
+    Toast.makeText(getApplicationContext(), "Recipe Position: " + position + " Size  " + size,
         Toast.LENGTH_LONG).show();
   }
 }
