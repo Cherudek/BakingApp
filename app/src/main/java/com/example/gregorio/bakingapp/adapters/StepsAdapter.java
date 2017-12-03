@@ -3,11 +3,13 @@ package com.example.gregorio.bakingapp.adapters;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import com.example.gregorio.bakingapp.R;
 import com.example.gregorio.bakingapp.adapters.IngredientsAdapter.IngredientsAdapterOnClickHandler;
+import com.example.gregorio.bakingapp.adapters.IngredientsAdapter.IngredientsViewHolder;
 import com.example.gregorio.bakingapp.adapters.StepsAdapter.StepsViewHolder;
 import com.example.gregorio.bakingapp.retrofit.Ingredients;
 import com.example.gregorio.bakingapp.retrofit.Steps;
@@ -44,19 +46,37 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsViewHolder> {
 
   @Override
   public StepsViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-    return null;
+
+    Context context = parent.getContext();
+    int layoutIdForListItem = R.layout.fragment_step_item;
+    LayoutInflater inflater = LayoutInflater.from(context);
+    boolean shouldAttachToParentImmediately = false;
+    View view = inflater.inflate(layoutIdForListItem, parent, shouldAttachToParentImmediately);
+    return new StepsViewHolder(view);
   }
 
   @Override
   public void onBindViewHolder(StepsViewHolder holder, int position) {
 
+    Steps currentSteps = mStepsData.get(position);
+    int id = currentSteps.getId();
+    mShortDescription = currentSteps.getShortDescription();
+    mId = String.valueOf(id);
+    tvId.setText(mId);
+    tvShortDescription.setText(mShortDescription);
   }
 
   @Override
   public int getItemCount() {
-    return 0;
+
+    return mStepsData.size();
   }
 
+  public void setStepsData(ArrayList<Steps> stepsIn, Context context) {
+    mStepsData = stepsIn;
+    mContext = context;
+    notifyDataSetChanged();
+  }
 
   /**
    * The interface that receives onClick messages.

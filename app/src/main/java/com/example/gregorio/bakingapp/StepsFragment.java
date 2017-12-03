@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.example.gregorio.bakingapp.adapters.IngredientsAdapter;
+import com.example.gregorio.bakingapp.adapters.StepsAdapter;
 import com.example.gregorio.bakingapp.retrofit.Ingredients;
 import com.example.gregorio.bakingapp.retrofit.RecipeModel;
 import com.example.gregorio.bakingapp.retrofit.Steps;
@@ -21,7 +22,7 @@ import java.util.ArrayList;
  * Created by Gregorio on 03/12/2017.
  */
 
-public class StepsFragment extends Fragment {
+public class StepsFragment extends Fragment implements StepsAdapter.StepsAdapterOnClickHandler {
 
   private static final String LOG_TAG = StepsFragment.class.getSimpleName();
 
@@ -55,11 +56,16 @@ public class StepsFragment extends Fragment {
     rvSteps = rootView.findViewById(R.id.rv_fragment_step_list);
     layoutManager = new LinearLayoutManager(getContext());
     rvSteps.setLayoutManager(layoutManager);
-    stepsAdapter = new IngredientsAdapter(this, numberOfSteps);
+    stepsAdapter = new StepsAdapter(this, numberOfSteps);
     rvSteps.setAdapter(stepsAdapter);
     //Passing the Context and the Ingredients Array to our IngredientsAdapter to populate the RecycleView.
-    stepsAdapter.setIngredientsData(stepsArrayList, mContext);
+    stepsAdapter.setStepsData(stepsArrayList, mContext);
 
     return rootView;
+  }
+
+  @Override
+  public void onClick(int recipeIndex) {
+
   }
 }
