@@ -57,18 +57,20 @@ public class IngredientsFragment extends Fragment implements
 
     if (bundle != null) {
 
-      recipeModels = bundle.getParcelableArrayList(PARCEL_KEY);
-      int length = recipeModels.size();
+      RecipeModel recipeModel = bundle.getParcelable(PARCEL_KEY);
+      //int length = recipeModels.size();
+      //ingredientsArrayList = recipeModels.get(1)
+      recipeModel.getIngredients();
 
       //For Testing Only
-      RecipeModel a = recipeModels.get(1);
-      ingredientsArrayList = a.getIngredients();
-      Ingredients foods = ingredientsArrayList.get(1);
-      int size = ingredientsArrayList.size();
-      String food = foods.getIngredient();
-      String measure = foods.getMeasure();
-      Log.d(LOG_TAG, "Ingredients: " + food + " Length: " + length
-          + " Measure: " + measure + " SIZE:  " + size);
+      // RecipeModel a = recipeModels.get(0);
+      ingredientsArrayList = recipeModel.getIngredients();
+//      Ingredients foods = ingredientsArrayList.get(1);
+//      int size = ingredientsArrayList.size();
+//      String food = foods.getIngredient();
+//      String measure = foods.getMeasure();
+//      Log.d(LOG_TAG, "Ingredients: " + food + " Length: " +
+//            measure + " SIZE:  " + size);
 
     }
 

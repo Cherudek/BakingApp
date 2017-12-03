@@ -111,19 +111,17 @@ public class RecipeFragment extends Fragment implements RecipeAdapter.RecipeAdap
         Toast.makeText(getContext(), "Error Fetching JSON", Toast.LENGTH_LONG).show();
       }
     });
-    return rootView;
 
+    return rootView;
   }
 
   @Override
   public void onClick(int recipeIndex) {
     mCallback.onRecipeSelected(recipeIndex, repos);
-
   }
 
   // OnRecipeClickListener interface, calls a method in the host activity named onRecipeSelected
   public interface OnRecipeClickListener {
-
     void onRecipeSelected(int position, ArrayList<RecipeModel> recipes);
   }
 }

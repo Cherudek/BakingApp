@@ -42,10 +42,13 @@ public class MainActivity extends AppCompatActivity implements OnRecipeClickList
   public void onRecipeSelected(int position, ArrayList<RecipeModel> mRecipes) {
 
     int size = mRecipes.size();
+    //Select the correct recipe model to pass to the Detail Intent
+    RecipeModel recipeModels = mRecipes.get(position - 1);
 
     Intent intent = new Intent(this, DetailActivity.class);
     Bundle bundle = new Bundle();
-    bundle.putParcelableArrayList(PARCEL_KEY, new ArrayList<>(mRecipes));
+    // bundle.putParcelableArrayList(PARCEL_KEY, new ArrayList<>(mRecipes));
+    bundle.putParcelable(PARCEL_KEY, recipeModels);
 
     intent.putExtra(INTENT_KEY, bundle);
     startActivity(intent);
