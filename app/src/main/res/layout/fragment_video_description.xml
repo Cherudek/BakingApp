@@ -6,32 +6,16 @@
   android:layout_width="match_parent"
   android:layout_height="match_parent">
 
-  <com.google.android.exoplayer2.ui.SimpleExoPlayerView
-    android:id="@+id/exo_player"
-    android:layout_width="match_parent"
-    android:layout_height="200dp"
-    android:layout_marginTop="8dp"
-    android:layout_marginBottom="8dp"
-    app:layout_constraintBottom_toTopOf="@+id/long_description"
-    app:layout_constraintHorizontal_bias="0.0"
-    app:layout_constraintLeft_toLeftOf="parent"
-    app:layout_constraintRight_toRightOf="parent"
-    app:layout_constraintTop_toTopOf="parent"
-    app:layout_constraintVertical_bias="0.0"/>
-
-
   <TextView
     android:id="@+id/long_description"
     android:layout_width="match_parent"
-    android:layout_height="229dp"
-    android:layout_marginEnd="8dp"
-    android:layout_marginRight="16dp"
+    android:layout_height="101dp"
+    android:layout_marginTop="16dp"
+    android:padding="8dp"
     android:text="Description"
-    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintLeft_toLeftOf="parent"
     app:layout_constraintRight_toRightOf="parent"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toBottomOf="@+id/exo_player"
-    />
+    app:layout_constraintTop_toTopOf="parent"/>
   <TextView
     android:id="@+id/previous_step"
     android:layout_width="wrap_content"
@@ -42,7 +26,7 @@
     android:text="Previous Step"
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toBottomOf="@+id/long_description"/>
+    app:layout_constraintTop_toBottomOf="@+id/exo_player"/>
   <TextView
     android:id="@+id/next_step"
     android:layout_width="wrap_content"
@@ -55,5 +39,18 @@
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintHorizontal_bias="0.85"
     app:layout_constraintStart_toEndOf="@+id/previous_step"
+    app:layout_constraintTop_toBottomOf="@+id/exo_player"/>
+  <com.google.android.exoplayer2.ui.SimpleExoPlayerView
+    android:id="@+id/exo_player"
+    android:layout_width="382dp"
+    android:layout_height="252dp"
+    android:layout_marginTop="72dp"
+    android:paddingTop="8dp"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintHorizontal_bias="1.0"
+    app:layout_constraintLeft_toLeftOf="parent"
+    app:layout_constraintRight_toRightOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toBottomOf="@+id/long_description"/>
+
 </android.support.constraint.ConstraintLayout>
