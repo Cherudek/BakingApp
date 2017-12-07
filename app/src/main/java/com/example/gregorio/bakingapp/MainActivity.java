@@ -16,9 +16,6 @@ public class MainActivity extends AppCompatActivity implements OnRecipeClickList
 
   public static final String LOG_TAG = MainActivity.class.getSimpleName();
 
-  public static final String QUANTITY_KEY = "Quantity";
-  public static final String MEASURE_KEY = "Measure";
-  public static final String INGREDIENT_KEY = "Ingredients";
   public static final String INTENT_KEY = "Bundle";
   public static final String PARCEL_KEY = "Parcel";
 

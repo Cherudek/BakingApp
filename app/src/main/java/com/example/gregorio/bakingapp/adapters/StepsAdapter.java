@@ -8,10 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import com.example.gregorio.bakingapp.R;
-import com.example.gregorio.bakingapp.adapters.IngredientsAdapter.IngredientsAdapterOnClickHandler;
-import com.example.gregorio.bakingapp.adapters.IngredientsAdapter.IngredientsViewHolder;
 import com.example.gregorio.bakingapp.adapters.StepsAdapter.StepsViewHolder;
-import com.example.gregorio.bakingapp.retrofit.Ingredients;
 import com.example.gregorio.bakingapp.retrofit.Steps;
 import java.util.ArrayList;
 
@@ -24,9 +21,9 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsViewHolder> {
   public static final String LOG_TAG = StepsAdapter.class.getSimpleName();
 
   /*
-* An on-click handler that we've defined to make it easy for an Activity to interface with
-* our RecyclerView
-*/
+   * An on-click handler that we've defined to make it easy for an Activity to interface with
+   * our RecyclerView
+   */
   private final StepsAdapterOnClickHandler mClickHandler;
   //finding and setting the TextViews for Recipe Name and Recipe Servings
   private TextView tvId;
@@ -37,6 +34,7 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsViewHolder> {
   private ArrayList<Steps> mStepsData;
   private String mId;
   private String mShortDescription;
+  private String mVideoUrl;
 
 
   public StepsAdapter(StepsAdapterOnClickHandler clickHandler, int numberOfItems) {
@@ -68,7 +66,6 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsViewHolder> {
 
   @Override
   public int getItemCount() {
-
     return mStepsData.size();
   }
 
@@ -82,7 +79,6 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsViewHolder> {
    * The interface that receives onClick messages.
    */
   public interface StepsAdapterOnClickHandler {
-
     void onClick(int recipeIndex);
   }
 
@@ -93,10 +89,6 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsViewHolder> {
       super(itemView);
       tvId = itemView.findViewById(R.id.step_id);
       tvShortDescription = itemView.findViewById(R.id.short_description);
-
-      tvId.setText(mId);
-      tvShortDescription.setText(mShortDescription);
-
       itemView.setOnClickListener(this);
     }
 
@@ -107,8 +99,9 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsViewHolder> {
       int id = steps.getId();
       mId = String.valueOf(id);
       mShortDescription = steps.getShortDescription();
-      mClickHandler.onClick(adapterPosition);
+      mVideoUrl = steps.getVideoURL();
 
+      mClickHandler.onClick(adapterPosition);
       Log.d(LOG_TAG, "onClick Steps: " + mId + " " + mShortDescription);
     }
   }

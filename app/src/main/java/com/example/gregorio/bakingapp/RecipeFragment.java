@@ -26,7 +26,7 @@ public class RecipeFragment extends Fragment implements RecipeAdapter.RecipeAdap
 
   private static final String LOG_TAG = RecipeFragment.class.getSimpleName();
 
-  // Define a new interface OnRecipeClickListener that triggers a callback in the host activity
+  // Define a new interface OnStepsClickListener that triggers a callback in the host activity
   OnRecipeClickListener mCallback;
 
   private String API_BASE_URL = "https://d17h27t6h515a5.cloudfront.net/topher/2017/May/59121517_baking/";
@@ -51,7 +51,7 @@ public class RecipeFragment extends Fragment implements RecipeAdapter.RecipeAdap
       mCallback = (OnRecipeClickListener) context;
     } catch (ClassCastException e) {
       throw new ClassCastException(context.toString()
-          + " must implement OnRecipeClickListener");
+          + " must implement OnStepsClickListener");
     }
   }
 
@@ -120,7 +120,7 @@ public class RecipeFragment extends Fragment implements RecipeAdapter.RecipeAdap
     mCallback.onRecipeSelected(recipeIndex, repos);
   }
 
-  // OnRecipeClickListener interface, calls a method in the host activity named onRecipeSelected
+  // OnStepsClickListener interface, calls a method in the host activity named onRecipeSelected
   public interface OnRecipeClickListener {
     void onRecipeSelected(int position, ArrayList<RecipeModel> recipes);
   }

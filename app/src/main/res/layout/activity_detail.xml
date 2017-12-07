@@ -3,11 +3,12 @@
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
-  android:layout_height="wrap_content"
+  android:layout_height="match_parent"
   android:orientation="vertical"
   tools:context="com.example.gregorio.bakingapp.MainActivity">
 
   <TextView
+    android:id="@+id/ingredient_label"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="16dp"
@@ -21,6 +22,7 @@
   </FrameLayout>
 
   <TextView
+    android:id="@+id/steps_label"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="16dp"

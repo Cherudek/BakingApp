@@ -28,7 +28,7 @@
     android:id="@+id/step_detail"
     android:layout_width="50dp"
     android:layout_height="30dp"
-    android:textSize="8dp"
-    tools:text="Video"/>
+    android:text="Video"
+    android:textSize="8dp"/>
 
 </LinearLayout>

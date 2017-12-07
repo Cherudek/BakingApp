@@ -26,7 +26,7 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
-    // Retrofit & OkHttp
+    // Retrofit & OkHttp + Gjson data parsing
     compile 'com.squareup.retrofit2:retrofit:2.3.0'
     compile 'com.squareup.retrofit2:converter-gson:2.3.0'
     //Recycler View
@@ -35,5 +35,7 @@ dependencies {
     annotationProcessor 'com.google.auto.value:auto-value:1.4'
     annotationProcessor 'com.ryanharter.auto.value:auto-value-parcel:0.2.5'
     provided 'com.jakewharton.auto.value:auto-value-annotations:1.4'
+    //ExoPlayer Dependency
+    compile 'com.google.android.exoplayer:exoplayer:r2.5.4'
 
 }
