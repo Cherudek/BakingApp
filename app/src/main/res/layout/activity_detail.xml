@@ -7,13 +7,17 @@
   android:orientation="vertical"
   tools:context="com.example.gregorio.bakingapp.MainActivity">
 
+
   <TextView
     android:id="@+id/ingredient_label"
+    android:textStyle="bold"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="16dp"
+    android:fontFamily="@font/montserrat"
     android:gravity="center"
-    android:text="INGREDIENTS"/>
+    android:text="INGREDIENTS"
+    android:textAlignment="center"/>
 
   <FrameLayout
     android:id="@+id/ingredients_container"
@@ -23,17 +27,22 @@
 
   <TextView
     android:id="@+id/steps_label"
+    android:textStyle="bold"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="16dp"
+    android:fontFamily="@font/montserrat"
     android:gravity="center"
-    android:text="STEPS"/>
+    android:text="STEPS"
+    android:textAlignment="center"/>
 
   <FrameLayout
     android:id="@+id/steps_container"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="8dp">
 
   </FrameLayout>
 
 </LinearLayout>
+

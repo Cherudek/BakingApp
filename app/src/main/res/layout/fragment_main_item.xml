@@ -4,7 +4,9 @@
   xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
-  android:padding="16dp"
+  android:layout_marginTop="16dp"
+  android:layout_marginLeft="16dp"
+  android:layout_marginRight="16dp"
   android:orientation="vertical"
   tools:context="com.example.gregorio.bakingapp.MainActivity">
 
@@ -12,6 +14,7 @@
     android:id="@+id/recipe_name"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:fontFamily="@font/montserrat"
     android:gravity="center"
     android:textSize="22sp"
     tools:text="Nutella Pie"/>
@@ -25,20 +28,21 @@
     <TextView
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:text="Servings: "
-      />
+      android:fontFamily="@font/merriweather_sans_light"
+      android:text="Servings: "/>
 
     <TextView
       android:id="@+id/servings"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
+      android:fontFamily="@font/merriweather_sans_light"
       tools:text="8"/>
   </LinearLayout>
 
   <View
     android:layout_width="match_parent"
     android:layout_height="1dp"
-    android:layout_marginTop="4dp"
+    android:layout_marginTop="8dp"
     android:background="@color/colorPrimaryDark"/>
 
 </LinearLayout>

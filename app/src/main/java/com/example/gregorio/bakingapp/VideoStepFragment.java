@@ -8,6 +8,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.ColorInt;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.media.session.MediaSessionCompat;
@@ -37,6 +38,7 @@ import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
 import com.google.android.exoplayer2.trackselection.TrackSelection;
 import com.google.android.exoplayer2.trackselection.TrackSelectionArray;
 import com.google.android.exoplayer2.trackselection.TrackSelector;
+import com.google.android.exoplayer2.ui.PlaybackControlView;
 import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
 import com.google.android.exoplayer2.upstream.BandwidthMeter;
 import com.google.android.exoplayer2.upstream.DataSource;
@@ -53,6 +55,9 @@ import java.util.ArrayList;
 public class VideoStepFragment extends Fragment implements ExoPlayer.EventListener {
 
   private static final String LOG_TAG = VideoStepFragment.class.getSimpleName();
+  private static final String VIDEO_URL_KEY = "Video Url Key";
+  private static final String DESCRIPTION_KEY = "Description Key";
+
   private static MediaSessionCompat mMediaSession;
   private Context mContext;
   private SimpleExoPlayer mExoPlayer;
@@ -74,6 +79,20 @@ public class VideoStepFragment extends Fragment implements ExoPlayer.EventListen
   public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
       @Nullable Bundle savedInstanceState) {
 
+    if (savedInstanceState == null) {
+      Bundle bundle = this.getArguments();
+      if (bundle != null) {
+        //Retrieving the RecipeModel sent from the MainActivity Intent Bundle
+        videoUrl = bundle.getString(VIDEO_KEY_BUNDLE);
+        longDescription = bundle.getString(DESCRIPTION_KEY_BUNDLE);
+        Log.d(LOG_TAG, "The Video Url is: " + videoUrl);
+        Log.d(LOG_TAG, "The Long Description is: " + longDescription);
+      }
+    } else {
+      videoUrl = savedInstanceState.getString(VIDEO_URL_KEY);
+      longDescription = savedInstanceState.getString(DESCRIPTION_KEY);
+    }
+
     //inflating the ingredient fragment layout within its container in the activity_detail
     View rootView = inflater.inflate(R.layout.fragment_video_description, container, false);
 
@@ -84,21 +103,14 @@ public class VideoStepFragment extends Fragment implements ExoPlayer.EventListen
 
     tvLongDescription = rootView.findViewById(R.id.long_description);
 
-    Bundle bundle = this.getArguments();
-    if (bundle != null) {
-      //Retrieving the RecipeModel sent from the MainActivity Intent Bundle
-      videoUrl = bundle.getString(VIDEO_KEY_BUNDLE);
-      longDescription = bundle.getString(DESCRIPTION_KEY_BUNDLE);
-      Log.d(LOG_TAG, "The Video Url is: " + videoUrl);
-      Log.d(LOG_TAG, "The Long Description is: " + longDescription);
+    //Setting the TextView with the Long Description
+    tvLongDescription.setText(longDescription);
+    videoUrlUri = Uri.parse(videoUrl);
+    initializePlayer(videoUrlUri);
 
-      //Setting the TextView with the Long Description
-      tvLongDescription.setText(longDescription);
-      videoUrlUri = Uri.parse(videoUrl);
-      initializePlayer(videoUrlUri);
-    }
     return rootView;
   }
+
 
   /**
    * Initialize ExoPlayer.
@@ -112,7 +124,7 @@ public class VideoStepFragment extends Fragment implements ExoPlayer.EventListen
       Handler mainHandler = new Handler();
 
       mPlayerView
-          .setDefaultArtwork(BitmapFactory.decodeResource(getResources(), R.drawable.mediaoffline));
+          .setDefaultArtwork(BitmapFactory.decodeResource(getResources(), R.drawable.biscuit_4));
 
       BandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
 
@@ -146,11 +158,8 @@ public class VideoStepFragment extends Fragment implements ExoPlayer.EventListen
       // Prepare the player with the source.
       mExoPlayer.prepare(videoSource);
       mExoPlayer.setPlayWhenReady(true);
-
-
     }
   }
-
 
   /**
    * Initializes the Media Session to be enabled with media buttons, transport controls, callbacks
@@ -227,6 +236,27 @@ public class VideoStepFragment extends Fragment implements ExoPlayer.EventListen
 
   }
 
+  /**
+   * Release ExoPlayer.
+   */
+  private void releasePlayer() {
+    mExoPlayer.stop();
+    mExoPlayer.release();
+    mExoPlayer = null;
+  }
+
+  @Override
+  public void onDestroyView() {
+    super.onDestroyView();
+    releasePlayer();
+  }
+
+  @Override
+  public void onSaveInstanceState(Bundle outState) {
+    super.onSaveInstanceState(outState);
+    outState.putString(VIDEO_URL_KEY, videoUrl);
+    outState.putString(DESCRIPTION_KEY, longDescription);
+  }
 
   /**
    * Media Session Callbacks, where all external clients control the player.
@@ -251,3 +281,4 @@ public class VideoStepFragment extends Fragment implements ExoPlayer.EventListen
 
 
 }
+

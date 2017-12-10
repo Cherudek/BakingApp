@@ -23,6 +23,9 @@ public class IngredientsFragment extends Fragment implements
     IngredientsAdapter.IngredientsAdapterOnClickHandler {
 
   private static final String LOG_TAG = IngredientsFragment.class.getSimpleName();
+  private static final String SAVED_INSTANCE_KEY = "Saved Instance Key";
+
+
   ArrayList<Ingredients> ingredientsArrayList;
   private IngredientsAdapter ingredientsAdapter;
   private RecyclerView rvIngredients;
@@ -39,12 +42,16 @@ public class IngredientsFragment extends Fragment implements
   public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
       @Nullable Bundle savedInstanceState) {
 
-    Bundle bundle = this.getArguments();
-    if (bundle != null) {
-      //Retrieving the RecipeModel sent from the MainActivity Intent Bundle
-      RecipeModel recipeModel = bundle.getParcelable(PARCEL_KEY);
-      //Getting the corresponding recipe ingredients Array List
-      ingredientsArrayList = recipeModel.getIngredients();
+    if (savedInstanceState != null) {
+      ingredientsArrayList = savedInstanceState.getParcelableArrayList(SAVED_INSTANCE_KEY);
+    } else {
+      Bundle bundle = this.getArguments();
+      if (bundle != null) {
+        //Retrieving the RecipeModel sent from the MainActivity Intent Bundle
+        RecipeModel recipeModel = bundle.getParcelable(PARCEL_KEY);
+        //Getting the corresponding recipe ingredients Array List
+        ingredientsArrayList = recipeModel.getIngredients();
+      }
     }
 
     mContext = getActivity().getApplicationContext();
@@ -60,10 +67,21 @@ public class IngredientsFragment extends Fragment implements
     ingredientsAdapter.setIngredientsData(ingredientsArrayList, mContext);
 
     return rootView;
+
   }
 
   @Override
   public void onClick(int recipeIndex) {
 
   }
+
+  /**
+   * Save the current state of this fragment
+   */
+  @Override
+  public void onSaveInstanceState(Bundle currentState) {
+    currentState.putParcelableArrayList(SAVED_INSTANCE_KEY, ingredientsArrayList);
+  }
+
+
 }

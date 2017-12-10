@@ -8,4 +8,26 @@
     <item name="colorAccent">@color/colorAccent</item>
   </style>
 
+  <!-- Main Recipe activity action bar styles -->
+  <style name="ActionBar.Solid.Sunshine.NoTitle" parent="@style/Widget.AppCompat.Light.ActionBar.Solid.Inverse">
+    <item name="displayOptions">useLogo|showHome</item>
+    <item name="logo">@drawable/baking_app_logo</item>
+  </style>
+
+  <style name="AppTheme.Forecast" parent="@style/AppTheme">
+    <item name="actionBarStyle">@style/ActionBar.Solid.Sunshine.NoTitle</item>
+  </style>
+
+  <!-- Detail Recipe activity action bar styles -->
+  <style name="ActionBar.Solid.BakingApp.NoTitle" parent="@style/Widget.AppCompat.Light.ActionBar.Solid.Inverse">
+    <item name="displayOptions">showHome|showTitle</item>
+    <item name="android:title">@string/app_name</item>
+    <item name="android:font">@font/pacifico</item>
+    <item name="android:fontFamily">@font/pacifico</item>
+  </style>
+
+  <style name="AppTheme.Detail" parent="@style/AppTheme">
+    <item name="actionBarStyle">@style/ActionBar.Solid.BakingApp.NoTitle</item>
+  </style>
+
 </resources>

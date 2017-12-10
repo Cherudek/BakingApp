@@ -2,10 +2,12 @@ package com.example.gregorio.bakingapp;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +27,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class RecipeFragment extends Fragment implements RecipeAdapter.RecipeAdapterOnClickHandler {
 
   private static final String LOG_TAG = RecipeFragment.class.getSimpleName();
+  private static final String BUNDLE_KEY = "OnSavedInstance Bundle";
+
 
   // Define a new interface OnStepsClickListener that triggers a callback in the host activity
   OnRecipeClickListener mCallback;
@@ -60,6 +64,13 @@ public class RecipeFragment extends Fragment implements RecipeAdapter.RecipeAdap
   public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
       @Nullable Bundle savedInstanceState) {
 
+    // Load the saved state (the list of images and list index) if there is one
+    if (savedInstanceState != null) {
+      repos = savedInstanceState.getParcelableArrayList(BUNDLE_KEY);
+      int size = repos.size();
+      Log.d(LOG_TAG, "SavedInstance state returned size is:  " + size);
+    }
+
     mContext = getActivity().getApplicationContext();
 
     //inflating the main fragment layout within its container
@@ -69,8 +80,9 @@ public class RecipeFragment extends Fragment implements RecipeAdapter.RecipeAdap
     recyclerView = rootView.findViewById(R.id.rv_fragment_list);
     layoutManager = new LinearLayoutManager(getContext());
     recyclerView.setLayoutManager(layoutManager);
-    recipeAdapter = new RecipeAdapter( this,numberOFRecipes);
+    recipeAdapter = new RecipeAdapter(this, numberOFRecipes);
     recyclerView.setAdapter(recipeAdapter);
+
 
     //Retrofit OkHttp connection builder
     OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
@@ -115,9 +127,18 @@ public class RecipeFragment extends Fragment implements RecipeAdapter.RecipeAdap
     return rootView;
   }
 
+
   @Override
   public void onClick(int recipeIndex) {
     mCallback.onRecipeSelected(recipeIndex, repos);
+  }
+
+  /**
+   * Save the current state of this fragment
+   */
+  @Override
+  public void onSaveInstanceState(Bundle currentState) {
+    currentState.putParcelableArrayList(BUNDLE_KEY, repos);
   }
 
   // OnStepsClickListener interface, calls a method in the host activity named onRecipeSelected

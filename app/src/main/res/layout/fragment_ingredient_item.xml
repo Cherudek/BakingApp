@@ -13,6 +13,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_marginRight="8dp"
+    android:fontFamily="@font/merriweather_sans_light"
     android:textSize="12dp"
     tools:text="4"/>
 
@@ -21,6 +22,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_marginRight="8dp"
+    android:fontFamily="@font/merriweather_sans_light"
     android:textSize="12dp"
     tools:text="Spoons"/>
 
@@ -29,6 +31,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_marginRight="8dp"
+    android:fontFamily="@font/merriweather_sans_light"
     android:textSize="12dp"
     tools:text="Sugar"/>
 

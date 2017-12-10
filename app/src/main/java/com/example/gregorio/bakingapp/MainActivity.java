@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
+import android.widget.TextView;
 import android.widget.Toast;
 import com.example.gregorio.bakingapp.RecipeFragment.OnRecipeClickListener;
 import com.example.gregorio.bakingapp.adapters.RecipeAdapter;
@@ -24,11 +26,17 @@ public class MainActivity extends AppCompatActivity implements OnRecipeClickList
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
 
-    RecipeFragment recipeFragment = new RecipeFragment();
-    FragmentManager fragmentManager = getSupportFragmentManager();
-    fragmentManager.beginTransaction()
-        .add(R.id.recipe_container, recipeFragment)
-        .commit();
+    getSupportActionBar().setTitle("Recipes");
+
+    // Only create new fragments when there is no previously saved state
+    if (savedInstanceState == null) {
+
+      RecipeFragment recipeFragment = new RecipeFragment();
+      FragmentManager fragmentManager = getSupportFragmentManager();
+      fragmentManager.beginTransaction()
+          .add(R.id.recipe_container, recipeFragment)
+          .commit();
+    }
   }
 
   @Override
@@ -44,8 +52,5 @@ public class MainActivity extends AppCompatActivity implements OnRecipeClickList
 
     intent.putExtra(INTENT_KEY, bundle);
     startActivity(intent);
-
-    Toast.makeText(getApplicationContext(), "Recipe Position: " + position + " Size  " + size,
-        Toast.LENGTH_LONG).show();
   }
 }
