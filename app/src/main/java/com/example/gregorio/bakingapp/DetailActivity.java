@@ -125,5 +125,21 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
 
   }
 
+  @Override
+  public void onBackPressed() {
 
+    if (fragmentManager.getPrimaryNavigationFragment() == videoStepFragment) {
+
+      fragmentManager.beginTransaction()
+          .replace(R.id.steps_container, stepsFragment)
+          .commit();
+      fragmentManager.beginTransaction()
+          .add(R.id.ingredients_container, ingredientsFragment)
+          .commit();
+
+
+    }
+    super.onBackPressed();
+
+  }
 }
