@@ -52,21 +52,25 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
   private IngredientsFragment ingredientsFragment;
 
   private Steps steps;
-
+  private Intent intent;
+  private Bundle parcelable;
   @Override
   protected void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_detail);
 
-    if (savedInstanceState == null) {
+    if (savedInstanceState != null) {
+      mRecipeName = savedInstanceState.getString(RECIPE_NAME_KEY);
+      steps = savedInstanceState.getParcelable(STEP_PARCEL_KEY);
+    }
 
       //Instantiate the IngredientsFragment
       ingredientsFragment = new IngredientsFragment();
       fragmentManager = getSupportFragmentManager();
 
       //Receiving the Intent form the MainActivity to pass data to Ingredient & Steps Fragment
-      Intent intent = getIntent();
-      Bundle parcelable = intent.getBundleExtra(INTENT_KEY);
+    intent = getIntent();
+    parcelable = intent.getBundleExtra(INTENT_KEY);
 
       RecipeModel recipeModel = parcelable.getParcelable(PARCEL_KEY);
       mStepsArrayList = recipeModel.getSteps();
@@ -94,9 +98,6 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
       //Setting an Intent Bundle to the Steps Fragment
       stepsFragment.setArguments(parcelable);
 
-    }
-
-    //mRecipeName = savedInstanceState.getString(RECIPE_NAME_KEY);
 
     ingredientsLabel = findViewById(R.id.ingredient_label);
     ingredientsFrame = findViewById(R.id.ingredients_container);
@@ -129,14 +130,15 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
     FragmentManager fm = getSupportFragmentManager();
     fm.beginTransaction()
         .replace(R.id.ingredients_container, videoStepFragment)
-        .remove(stepsFragment)
+        //.remove(stepsFragment)
         .addToBackStack(null)
         .commit();
 
     stepsFrame = findViewById(R.id.steps_container);
 
-    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT,
-        LayoutParams.MATCH_PARENT);
+    //Setting the Ingredients frame  as the only one visible and Hiding the Steps Frame
+    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+        LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
     LinearLayout.LayoutParams paramsStepContainer = new LinearLayout.LayoutParams(
         LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT, 0f);
     ingredientsFrame.setLayoutParams(params);
@@ -153,27 +155,34 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
   @Override
   protected void onResume() {
     super.onResume();
-    //Receiving the Intent form the MainActivity to pass data to Ingredient & Steps Fragment
-    Intent intent = getIntent();
-    Bundle parcelable = intent.getBundleExtra(INTENT_KEY);
-    RecipeModel recipeModel = parcelable.getParcelable(PARCEL_KEY);
-    mStepsArrayList = recipeModel.getSteps();
+
+    //Set the Bundle to the IngredientsFragment
+    ingredientsFragment.setArguments(parcelable);
+    //Setting an Intent Bundle to the Steps Fragment
+    stepsFragment.setArguments(parcelable);
+
+    Log.i(LOG_TAG, "OnResume bundle Recipe Name: " + mRecipeName);
     getSupportActionBar().setTitle(mRecipeName);
 
+    //Check Phone Orientation
     if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-      LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(0, LayoutParams.MATCH_PARENT,
-          1);
-      LinearLayout.LayoutParams paramsStepContainer = new LinearLayout.LayoutParams(0,
-          LayoutParams.MATCH_PARENT, 1);
+
+      //Setting the horizontal View of 2 Fragments with weight 1
+      LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+          0, LayoutParams.MATCH_PARENT, 1);
+      LinearLayout.LayoutParams paramsStepContainer = new LinearLayout.LayoutParams(
+          0, LayoutParams.MATCH_PARENT, 1);
       ingredientsFrame.setLayoutParams(params);
       stepsFrame.setLayoutParams(paramsStepContainer);
+
     } else {
+
+      //If the Phone is in Portrait Mode
+      //Set the 2 fragments with equal weight 1
       LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-          ViewGroup.LayoutParams.MATCH_PARENT, 0,
-          1);
+          LayoutParams.MATCH_PARENT, 0, 1);
       LinearLayout.LayoutParams paramsStepContainer = new LinearLayout.LayoutParams(
-          ViewGroup.LayoutParams.MATCH_PARENT,
-          0, 1);
+          LayoutParams.MATCH_PARENT, 0, 1);
       ingredientsFrame.setLayoutParams(params);
       stepsFrame.setLayoutParams(paramsStepContainer);
     }
@@ -185,5 +194,7 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
     super.onSaveInstanceState(outState);
     outState.putParcelable(STEP_PARCEL_KEY, steps);
     outState.putString(RECIPE_NAME_KEY, mRecipeName);
+
+    Log.i(LOG_TAG, "Recipe Key Saved:  " + mRecipeName);
   }
 }
