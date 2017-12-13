@@ -7,42 +7,19 @@
   android:orientation="vertical"
   tools:context="com.example.gregorio.bakingapp.MainActivity">
 
+    <FrameLayout
+      android:id="@+id/ingredients_container"
+      android:layout_width="match_parent"
+      android:layout_height="0dp"
+      android:layout_weight="1">
+    </FrameLayout>
 
-  <TextView
-    android:id="@+id/ingredient_label"
-    android:textStyle="bold"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:padding="16dp"
-    android:fontFamily="@font/montserrat"
-    android:gravity="center"
-    android:text="INGREDIENTS"
-    android:textAlignment="center"/>
-
-  <FrameLayout
-    android:id="@+id/ingredients_container"
-    android:layout_width="match_parent"
-    android:layout_height="150dp">
-  </FrameLayout>
-
-  <TextView
-    android:id="@+id/steps_label"
-    android:textStyle="bold"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:padding="16dp"
-    android:fontFamily="@font/montserrat"
-    android:gravity="center"
-    android:text="STEPS"
-    android:textAlignment="center"/>
-
-  <FrameLayout
-    android:id="@+id/steps_container"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginBottom="8dp">
-
-  </FrameLayout>
-
+    <FrameLayout
+      android:id="@+id/steps_container"
+      android:layout_width="match_parent"
+      android:layout_height="0dp"
+      android:layout_weight="1"
+      android:layout_marginBottom="8dp">
+    </FrameLayout>
 </LinearLayout>
 

@@ -11,6 +11,10 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.FrameLayout;
+import android.widget.FrameLayout.LayoutParams;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import com.example.gregorio.bakingapp.StepsFragment.OnStepsClickListener;
 import com.example.gregorio.bakingapp.retrofit.RecipeModel;
 import com.example.gregorio.bakingapp.retrofit.Steps;
@@ -34,9 +38,11 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
   private FragmentManager fragmentManager;
   private ArrayList<Steps> mStepsArrayList;
 
-  private View ingredientsLabel;
-  private View ingredientsFrame;
-  private View stepsLabel;
+  private TextView ingredientsLabel;
+  private FrameLayout ingredientsFrame;
+  private FrameLayout stepsFrame;
+  private LinearLayout detailContainer;
+  private TextView stepsLabel;
   private StepsFragment stepsFragment;
   private IngredientsFragment ingredientsFragment;
 
@@ -75,6 +81,7 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
 
       //Instantiating the Steps Fragment
       stepsFragment = new StepsFragment();
+
       fragmentManager.beginTransaction()
           .add(R.id.steps_container, stepsFragment)
           .commit();
@@ -86,6 +93,7 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
 
     ingredientsLabel = findViewById(R.id.ingredient_label);
     ingredientsFrame = findViewById(R.id.ingredients_container);
+    stepsFrame = findViewById(R.id.steps_container);
     stepsLabel = findViewById(R.id.steps_label);
 
   }
@@ -112,34 +120,15 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
     }
 
     fragmentManager.beginTransaction()
-        .replace(R.id.steps_container, videoStepFragment)
+        .replace(R.id.ingredients_container, videoStepFragment)
+        .remove(stepsFragment)
+        .addToBackStack(null)
         .commit();
 
-    fragmentManager.beginTransaction()
-        .remove(ingredientsFragment)
-        .commit();
-
-    ingredientsLabel.setVisibility(View.GONE);
-    ingredientsFrame.setVisibility(View.GONE);
-    stepsLabel.setVisibility(View.GONE);
+//    detailContainer = findViewById(R.id.detail_container);
+//    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+//    ingredientsFrame.setLayoutParams(params);
 
   }
 
-  @Override
-  public void onBackPressed() {
-
-    if (fragmentManager.getPrimaryNavigationFragment() == videoStepFragment) {
-
-      fragmentManager.beginTransaction()
-          .replace(R.id.steps_container, stepsFragment)
-          .commit();
-      fragmentManager.beginTransaction()
-          .add(R.id.ingredients_container, ingredientsFragment)
-          .commit();
-
-
-    }
-    super.onBackPressed();
-
-  }
 }

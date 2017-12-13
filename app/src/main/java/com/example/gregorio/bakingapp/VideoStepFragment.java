@@ -17,7 +17,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.example.gregorio.bakingapp.retrofit.Steps;
 import com.google.android.exoplayer2.DefaultLoadControl;
@@ -95,6 +97,10 @@ public class VideoStepFragment extends Fragment implements ExoPlayer.EventListen
 
     //inflating the ingredient fragment layout within its container in the activity_detail
     View rootView = inflater.inflate(R.layout.fragment_video_description, container, false);
+
+    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT,
+        LayoutParams.MATCH_PARENT);
+    rootView.setLayoutParams(params);
 
     // Initialize the player view.
     mPlayerView = rootView.findViewById(R.id.exo_player);
