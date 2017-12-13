@@ -4,6 +4,7 @@ import static com.example.gregorio.bakingapp.MainActivity.INTENT_KEY;
 import static com.example.gregorio.bakingapp.MainActivity.PARCEL_KEY;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
@@ -11,6 +12,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.FrameLayout.LayoutParams;
 import android.widget.LinearLayout;
@@ -29,6 +31,9 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
   public static final String LOG_TAG = DetailActivity.class.getSimpleName();
   public static final String VIDEO_KEY_BUNDLE = "Video URL bundle";
   public static final String DESCRIPTION_KEY_BUNDLE = "Description bundle";
+  public static final String STEP_PARCEL_KEY = "Step Parcel Key";
+  public static final String RECIPE_NAME_KEY = "Recipe Name";
+
 
   private String mVideoUrl;
   private String mLongDescription;
@@ -46,7 +51,7 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
   private StepsFragment stepsFragment;
   private IngredientsFragment ingredientsFragment;
 
-
+  private Steps steps;
 
   @Override
   protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -91,6 +96,8 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
 
     }
 
+    //mRecipeName = savedInstanceState.getString(RECIPE_NAME_KEY);
+
     ingredientsLabel = findViewById(R.id.ingredient_label);
     ingredientsFrame = findViewById(R.id.ingredients_container);
     stepsFrame = findViewById(R.id.steps_container);
@@ -101,7 +108,7 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
   @Override
   public void onRecipeSelected(int position) {
 
-    Steps steps = mStepsArrayList.get(position);
+    steps = mStepsArrayList.get(position);
 
     mVideoUrl = steps.getVideoURL();
     mLongDescription = steps.getDescription();
@@ -119,16 +126,64 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
       videoStepFragment.setArguments(videoUrlBundle);
     }
 
-    fragmentManager.beginTransaction()
+    FragmentManager fm = getSupportFragmentManager();
+    fm.beginTransaction()
         .replace(R.id.ingredients_container, videoStepFragment)
         .remove(stepsFragment)
         .addToBackStack(null)
         .commit();
 
-//    detailContainer = findViewById(R.id.detail_container);
-//    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
-//    ingredientsFrame.setLayoutParams(params);
+    stepsFrame = findViewById(R.id.steps_container);
+
+    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT,
+        LayoutParams.MATCH_PARENT);
+    LinearLayout.LayoutParams paramsStepContainer = new LinearLayout.LayoutParams(
+        LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT, 0f);
+    ingredientsFrame.setLayoutParams(params);
+    stepsFrame.setLayoutParams(paramsStepContainer);
+
+    if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+      LinearLayout.LayoutParams params2 = new LinearLayout.LayoutParams(0,
+          ViewGroup.LayoutParams.MATCH_PARENT, 0);
+      stepsFrame.setLayoutParams(params2);
+    }
 
   }
 
+  @Override
+  protected void onResume() {
+    super.onResume();
+    //Receiving the Intent form the MainActivity to pass data to Ingredient & Steps Fragment
+    Intent intent = getIntent();
+    Bundle parcelable = intent.getBundleExtra(INTENT_KEY);
+    RecipeModel recipeModel = parcelable.getParcelable(PARCEL_KEY);
+    mStepsArrayList = recipeModel.getSteps();
+    getSupportActionBar().setTitle(mRecipeName);
+
+    if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+      LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(0, LayoutParams.MATCH_PARENT,
+          1);
+      LinearLayout.LayoutParams paramsStepContainer = new LinearLayout.LayoutParams(0,
+          LayoutParams.MATCH_PARENT, 1);
+      ingredientsFrame.setLayoutParams(params);
+      stepsFrame.setLayoutParams(paramsStepContainer);
+    } else {
+      LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+          ViewGroup.LayoutParams.MATCH_PARENT, 0,
+          1);
+      LinearLayout.LayoutParams paramsStepContainer = new LinearLayout.LayoutParams(
+          ViewGroup.LayoutParams.MATCH_PARENT,
+          0, 1);
+      ingredientsFrame.setLayoutParams(params);
+      stepsFrame.setLayoutParams(paramsStepContainer);
+    }
+
+  }
+
+  @Override
+  protected void onSaveInstanceState(Bundle outState) {
+    super.onSaveInstanceState(outState);
+    outState.putParcelable(STEP_PARCEL_KEY, steps);
+    outState.putString(RECIPE_NAME_KEY, mRecipeName);
+  }
 }

@@ -23,6 +23,8 @@ import java.util.ArrayList;
 public class StepsFragment extends Fragment implements StepsAdapter.StepsAdapterOnClickHandler {
 
   private static final String LOG_TAG = StepsFragment.class.getSimpleName();
+  private static final String STEPS_ARRAY_KEY = "Steps Array List Key";
+
 
   // Define a new interface OnStepsClickListener that triggers a callback in the host activity
   OnStepsClickListener mCallbackHostActivity;
@@ -44,12 +46,16 @@ public class StepsFragment extends Fragment implements StepsAdapter.StepsAdapter
   public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
       @Nullable Bundle savedInstanceState) {
 
-    Bundle bundle = this.getArguments();
-    if (bundle != null) {
-      //Retrieving the RecipeModel sent from the MainActivity Intent Bundle
-      RecipeModel recipeModel = bundle.getParcelable(PARCEL_KEY);
-      //Getting the corresponding recipe ingredients Array List
-      stepsArrayList = recipeModel.getSteps();
+    if (savedInstanceState == null) {
+      Bundle bundle = this.getArguments();
+      if (bundle != null) {
+        //Retrieving the RecipeModel sent from the MainActivity Intent Bundle
+        RecipeModel recipeModel = bundle.getParcelable(PARCEL_KEY);
+        //Getting the corresponding recipe ingredients Array List
+        stepsArrayList = recipeModel.getSteps();
+      }
+    } else {
+      stepsArrayList = savedInstanceState.getParcelableArrayList(STEPS_ARRAY_KEY);
     }
 
     mContext = getActivity().getApplicationContext();
@@ -90,6 +96,12 @@ public class StepsFragment extends Fragment implements StepsAdapter.StepsAdapter
 
     Log.d(LOG_TAG, "Recipe Index is: " + recipeIndex + " " + "Video Url is: " + mVideoURL);
 
+  }
+
+  @Override
+  public void onSaveInstanceState(Bundle outState) {
+    super.onSaveInstanceState(outState);
+    outState.putParcelableArrayList(STEPS_ARRAY_KEY, stepsArrayList);
   }
 
   // OnStepsClickListener interface, calls a method in the host activity named onRecipeSelected

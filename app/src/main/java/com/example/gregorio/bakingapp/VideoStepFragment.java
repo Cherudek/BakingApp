@@ -19,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.example.gregorio.bakingapp.retrofit.Steps;
@@ -72,6 +73,9 @@ public class VideoStepFragment extends Fragment implements ExoPlayer.EventListen
   private PlaybackStateCompat.Builder mStateBuilder;
   private ArrayList<Steps> stepsArrayList;
   private Uri videoUrlUri;
+  private FrameLayout stepsFrame;
+  private View rootView;
+
 
   public VideoStepFragment() {
   }
@@ -96,11 +100,12 @@ public class VideoStepFragment extends Fragment implements ExoPlayer.EventListen
     }
 
     //inflating the ingredient fragment layout within its container in the activity_detail
-    View rootView = inflater.inflate(R.layout.fragment_video_description, container, false);
+    rootView = inflater.inflate(R.layout.fragment_video_description, container, false);
 
-    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT,
-        LayoutParams.MATCH_PARENT);
-    rootView.setLayoutParams(params);
+    LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(
+        LinearLayout.LayoutParams.MATCH_PARENT,
+        LinearLayout.LayoutParams.MATCH_PARENT);
+    rootView.setLayoutParams(params1);
 
     // Initialize the player view.
     mPlayerView = rootView.findViewById(R.id.exo_player);
@@ -130,7 +135,8 @@ public class VideoStepFragment extends Fragment implements ExoPlayer.EventListen
       Handler mainHandler = new Handler();
 
       mPlayerView
-          .setDefaultArtwork(BitmapFactory.decodeResource(getResources(), R.drawable.biscuit_4));
+          .setDefaultArtwork(
+              BitmapFactory.decodeResource(getResources(), R.drawable.baking_app_logo));
 
       BandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
 
