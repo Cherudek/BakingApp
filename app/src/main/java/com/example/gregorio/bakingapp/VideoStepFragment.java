@@ -94,7 +94,7 @@ public class VideoStepFragment extends Fragment implements ExoPlayer.EventListen
         Log.d(LOG_TAG, "The Video Url is: " + videoUrl);
         Log.d(LOG_TAG, "The Long Description is: " + longDescription);
       }
-    } else {
+    } else if (savedInstanceState != null) {
       videoUrl = savedInstanceState.getString(VIDEO_URL_KEY);
       longDescription = savedInstanceState.getString(DESCRIPTION_KEY);
     }
@@ -102,10 +102,10 @@ public class VideoStepFragment extends Fragment implements ExoPlayer.EventListen
     //inflating the ingredient fragment layout within its container in the activity_detail
     rootView = inflater.inflate(R.layout.fragment_video_description, container, false);
 
-    LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(
-        LinearLayout.LayoutParams.MATCH_PARENT,
-        LinearLayout.LayoutParams.MATCH_PARENT);
-    rootView.setLayoutParams(params1);
+//    LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(
+//        LinearLayout.LayoutParams.MATCH_PARENT,
+//        LinearLayout.LayoutParams.MATCH_PARENT);
+//    rootView.setLayoutParams(params1);
 
     // Initialize the player view.
     mPlayerView = rootView.findViewById(R.id.exo_player);
@@ -268,6 +268,8 @@ public class VideoStepFragment extends Fragment implements ExoPlayer.EventListen
     super.onSaveInstanceState(outState);
     outState.putString(VIDEO_URL_KEY, videoUrl);
     outState.putString(DESCRIPTION_KEY, longDescription);
+
+    Log.i(LOG_TAG, "VideoFragment OnSaved Instance Url: " + videoUrl);
   }
 
   /**

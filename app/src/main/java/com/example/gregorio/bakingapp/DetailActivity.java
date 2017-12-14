@@ -33,6 +33,8 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
   public static final String DESCRIPTION_KEY_BUNDLE = "Description bundle";
   public static final String STEP_PARCEL_KEY = "Step Parcel Key";
   public static final String RECIPE_NAME_KEY = "Recipe Name";
+  public static final String STEPS_ARRAY_LIST_KEY = "Steps Array List";
+
 
 
   private String mVideoUrl;
@@ -54,6 +56,7 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
   private Steps steps;
   private Intent intent;
   private Bundle parcelable;
+
   @Override
   protected void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -61,43 +64,43 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
 
     if (savedInstanceState != null) {
       mRecipeName = savedInstanceState.getString(RECIPE_NAME_KEY);
+      mStepsArrayList = savedInstanceState.getParcelableArrayList(STEPS_ARRAY_LIST_KEY);
       steps = savedInstanceState.getParcelable(STEP_PARCEL_KEY);
-    }
 
-      //Instantiate the IngredientsFragment
-      ingredientsFragment = new IngredientsFragment();
-      fragmentManager = getSupportFragmentManager();
+    } else if (savedInstanceState == null) {
 
       //Receiving the Intent form the MainActivity to pass data to Ingredient & Steps Fragment
-    intent = getIntent();
-    parcelable = intent.getBundleExtra(INTENT_KEY);
+      intent = getIntent();
+      parcelable = intent.getBundleExtra(INTENT_KEY);
 
       RecipeModel recipeModel = parcelable.getParcelable(PARCEL_KEY);
       mStepsArrayList = recipeModel.getSteps();
       mRecipeName = recipeModel.getName();
 
-      // provide compatibility to all the versions
-      getSupportActionBar().setTitle(mRecipeName);
-
-      Log.d(LOG_TAG, "My Recipe name is : " + mRecipeName);
+      //Instantiate the IngredientsFragment
+      ingredientsFragment = new IngredientsFragment();
+      //Instantiating the Steps Fragment
+      stepsFragment = new StepsFragment();
 
       //Set the Bundle to the IngredientsFragment
       ingredientsFragment.setArguments(parcelable);
+
+      //Setting an Intent Bundle to the Steps Fragment
+      stepsFragment.setArguments(parcelable);
+
+      fragmentManager = getSupportFragmentManager();
+
+      // provide compatibility to all the versions
+      getSupportActionBar().setTitle(mRecipeName);
 
       fragmentManager.beginTransaction()
           .add(R.id.ingredients_container, ingredientsFragment)
           .commit();
 
-      //Instantiating the Steps Fragment
-      stepsFragment = new StepsFragment();
-
       fragmentManager.beginTransaction()
           .add(R.id.steps_container, stepsFragment)
           .commit();
-
-      //Setting an Intent Bundle to the Steps Fragment
-      stepsFragment.setArguments(parcelable);
-
+    }
 
     ingredientsLabel = findViewById(R.id.ingredient_label);
     ingredientsFrame = findViewById(R.id.ingredients_container);
@@ -153,13 +156,24 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
   }
 
   @Override
+  protected void onStop() {
+    super.onStop();
+    getIntent().putExtra(STEP_PARCEL_KEY, steps);
+
+  }
+
+  @Override
   protected void onResume() {
     super.onResume();
 
-    //Set the Bundle to the IngredientsFragment
-    ingredientsFragment.setArguments(parcelable);
-    //Setting an Intent Bundle to the Steps Fragment
-    stepsFragment.setArguments(parcelable);
+    if (getIntent() != null) {
+      steps = getIntent().getParcelableExtra(STEP_PARCEL_KEY);
+    }
+
+//    //Set the Bundle to the IngredientsFragment
+//    ingredientsFragment.setArguments(parcelable);
+//    //Setting an Intent Bundle to the Steps Fragment
+//    stepsFragment.setArguments(parcelable);
 
     Log.i(LOG_TAG, "OnResume bundle Recipe Name: " + mRecipeName);
     getSupportActionBar().setTitle(mRecipeName);
@@ -170,9 +184,10 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
       //Setting the horizontal View of 2 Fragments with weight 1
       LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
           0, LayoutParams.MATCH_PARENT, 1);
+      ingredientsFrame.setLayoutParams(params);
+
       LinearLayout.LayoutParams paramsStepContainer = new LinearLayout.LayoutParams(
           0, LayoutParams.MATCH_PARENT, 1);
-      ingredientsFrame.setLayoutParams(params);
       stepsFrame.setLayoutParams(paramsStepContainer);
 
     } else {
@@ -181,9 +196,10 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
       //Set the 2 fragments with equal weight 1
       LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
           LayoutParams.MATCH_PARENT, 0, 1);
+      ingredientsFrame.setLayoutParams(params);
+
       LinearLayout.LayoutParams paramsStepContainer = new LinearLayout.LayoutParams(
           LayoutParams.MATCH_PARENT, 0, 1);
-      ingredientsFrame.setLayoutParams(params);
       stepsFrame.setLayoutParams(paramsStepContainer);
     }
 
@@ -192,6 +208,7 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
   @Override
   protected void onSaveInstanceState(Bundle outState) {
     super.onSaveInstanceState(outState);
+    outState.putParcelableArrayList(STEPS_ARRAY_LIST_KEY, mStepsArrayList);
     outState.putParcelable(STEP_PARCEL_KEY, steps);
     outState.putString(RECIPE_NAME_KEY, mRecipeName);
 

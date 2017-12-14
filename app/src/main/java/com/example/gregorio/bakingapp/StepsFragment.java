@@ -54,7 +54,7 @@ public class StepsFragment extends Fragment implements StepsAdapter.StepsAdapter
         //Getting the corresponding recipe ingredients Array List
         stepsArrayList = recipeModel.getSteps();
       }
-    } else {
+    } else if (savedInstanceState != null) {
       stepsArrayList = savedInstanceState.getParcelableArrayList(STEPS_ARRAY_KEY);
     }
 
@@ -90,7 +90,6 @@ public class StepsFragment extends Fragment implements StepsAdapter.StepsAdapter
   @Override
   public void onClick(int recipeIndex) {
     mCallbackHostActivity.onRecipeSelected(recipeIndex);
-
     mStepsData = stepsArrayList.get(recipeIndex);
     mVideoURL = mStepsData.getVideoURL();
 
@@ -102,6 +101,7 @@ public class StepsFragment extends Fragment implements StepsAdapter.StepsAdapter
   public void onSaveInstanceState(Bundle outState) {
     super.onSaveInstanceState(outState);
     outState.putParcelableArrayList(STEPS_ARRAY_KEY, stepsArrayList);
+
   }
 
   // OnStepsClickListener interface, calls a method in the host activity named onRecipeSelected
