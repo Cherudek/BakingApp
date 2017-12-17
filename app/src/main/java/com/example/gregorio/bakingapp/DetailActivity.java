@@ -33,6 +33,10 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
   public static final String STEP_PARCEL_KEY = "Step Parcel Key";
   public static final String RECIPE_NAME_KEY = "Recipe Name";
   public static final String STEPS_ARRAY_LIST_KEY = "Steps Array List";
+  public static final String VIDEO_FRAGMENT_TAG = "Video Fragment Tag";
+  public static final String INGREDIENTS_FRAGMENT_TAG = "Ingredients Fragment Tag";
+  public static final String STEPS_FRAGMENT_TAG = "Steps Fragment Tag";
+
 
 
 
@@ -56,6 +60,7 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
   private Intent intent;
   private Bundle parcelable;
   private Bundle onDestroyBundle;
+  private boolean vertical;
 
   @Override
   protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -93,11 +98,11 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
       getSupportActionBar().setTitle(mRecipeName);
 
       fragmentManager.beginTransaction()
-          .add(R.id.ingredients_container, ingredientsFragment)
+          .add(R.id.ingredients_container, ingredientsFragment, INGREDIENTS_FRAGMENT_TAG)
           .commit();
 
       fragmentManager.beginTransaction()
-          .add(R.id.steps_container, stepsFragment)
+          .add(R.id.steps_container, stepsFragment, STEPS_FRAGMENT_TAG)
           .commit();
 
       ingredientsLabel = findViewById(R.id.ingredient_label);
@@ -130,29 +135,12 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
 
     FragmentManager fm = getSupportFragmentManager();
     fm.beginTransaction()
-        .replace(R.id.ingredients_container, videoStepFragment)
+        .replace(R.id.ingredients_container, videoStepFragment, VIDEO_FRAGMENT_TAG)
         //.remove(stepsFragment)
-        .addToBackStack(null)
+        .addToBackStack("Video Step Fragment")
         .commit();
 
-    stepsFrame = findViewById(R.id.steps_container);
-    ingredientsFrame = findViewById(R.id.ingredients_container);
-
-    //Setting the Ingredients frame  as the only one visible and Hiding the Steps Frame
-    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-        LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
-
-    LinearLayout.LayoutParams paramsStepContainer = new LinearLayout.LayoutParams(
-        LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT, 0f);
-    ingredientsFrame.setLayoutParams(params);
-
-    stepsFrame.setLayoutParams(paramsStepContainer);
-
-    if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-      LinearLayout.LayoutParams params2 = new LinearLayout.LayoutParams(0,
-          ViewGroup.LayoutParams.MATCH_PARENT, 0);
-      stepsFrame.setLayoutParams(params2);
-    }
+    videoFragmentView();
 
   }
 
@@ -199,14 +187,45 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
 
   }
 
+  public void videoFragmentView() {
+
+    stepsFrame = findViewById(R.id.steps_container);
+    ingredientsFrame = findViewById(R.id.ingredients_container);
+
+    //Setting the Ingredients frame  as the only one visible and Hiding the Steps Frame
+    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+        LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+
+    LinearLayout.LayoutParams paramsStepContainer = new LinearLayout.LayoutParams(
+        LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT, 0f);
+
+    ingredientsFrame.setLayoutParams(params);
+
+    stepsFrame.setLayoutParams(paramsStepContainer);
+
+    //Landscape Layout
+    if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+      LinearLayout.LayoutParams params2 = new LinearLayout.LayoutParams(0,
+          ViewGroup.LayoutParams.MATCH_PARENT, 0);
+
+      stepsFrame.setLayoutParams(params2);
+    }
+
+  }
+
   @Override
   protected void onResume() {
     super.onResume();
 
     getSupportActionBar().setTitle(mRecipeName);
 
-
+    if (stepsFrame != null) {
+      resumeTwoFragmentView();
+    } else {
+      videoFragmentView();
+    }
   }
+
 
   @Override
   public void onBackPressed() {
