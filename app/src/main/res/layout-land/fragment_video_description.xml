@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<LinearLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
-  android:orientation="vertical">
+  android:orientation="horizontal">
 
   <FrameLayout
     android:id="@+id/exo_player_frame_layout"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_alignParentTop="true">
+    android:layout_height="match_parent">
 
     <com.google.android.exoplayer2.ui.SimpleExoPlayerView
       android:id="@+id/exo_player"
@@ -23,11 +22,13 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="16dp"
+    android:layout_alignTop="@+id/exo_player_frame_layout"
     android:layout_below="@+id/exo_player_frame_layout"
     android:padding="8dp"
     android:fontFamily="@font/merriweather_sans_light"
     android:text="Description"
-    android:textAlignment="viewStart"/>
+    android:textAlignment="viewStart"
+    android:visibility="gone"/>
 
   <LinearLayout
     android:layout_width="match_parent"
@@ -37,23 +38,26 @@
 
 
     <Button
-      android:id="@+id/previous_steps_btn"
-      android:layout_width="0dp"
-      android:layout_height="38dp"
-      android:layout_weight="1"
-      android:background="@color/colorPrimary"
-      android:drawableLeft="@drawable/ic_keyboard_arrow_left_black_24dp"
-      android:text="Previous"/>
-
-    <Button
       android:id="@+id/next_steps_btn"
       android:layout_width="0dp"
       android:layout_height="38dp"
       android:layout_weight="1"
       android:background="@color/colorPrimary"
+      android:drawableLeft="@drawable/ic_keyboard_arrow_left_black_24dp"
+      android:text="Previous"
+      android:visibility="gone"/>
+
+    <Button
+      android:id="@+id/previous_steps_btn"
+      android:layout_width="0dp"
+      android:layout_height="38dp"
+      android:layout_weight="1"
+      android:background="@color/colorPrimary"
       android:drawableRight="@drawable/ic_keyboard_arrow_right_black_24dp"
-      android:text="Next"/>
+      android:text="Next"
+      android:visibility="gone"/>
 
   </LinearLayout>
 
-</RelativeLayout>
+
+</LinearLayout>

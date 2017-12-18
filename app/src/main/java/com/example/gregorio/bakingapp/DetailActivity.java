@@ -33,12 +33,13 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
   public static final String STEP_PARCEL_KEY = "Step Parcel Key";
   public static final String RECIPE_NAME_KEY = "Recipe Name";
   public static final String STEPS_ARRAY_LIST_KEY = "Steps Array List";
-  public static final String VIDEO_FRAGMENT_TAG = "Video Fragment Tag";
-  public static final String INGREDIENTS_FRAGMENT_TAG = "Ingredients Fragment Tag";
+  public static final String VIDEO_ID_BUNDLE = "Video ID Key";
+  public static final String STEPS_SIZE_BUNDLE = "Steps Size Key";
   public static final String STEPS_FRAGMENT_TAG = "Steps Fragment Tag";
 
   private String mVideoUrl;
   private String mLongDescription;
+  private int mId;
   private Bundle videoUrlBundle;
   private String mRecipeName;
   private FragmentManager fragmentManager;
@@ -97,7 +98,6 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
           .add(R.id.steps_container, stepsFragment)
           .commit();
 
-
       ingredientsLabel = findViewById(R.id.ingredient_label);
       ingredientsFrame = findViewById(R.id.ingredients_container);
       stepsFrame = findViewById(R.id.steps_container);
@@ -111,13 +111,20 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
     steps = mStepsArrayList.get(position);
     mVideoUrl = steps.getVideoURL();
     mLongDescription = steps.getDescription();
+    mId = steps.getId();
+    int stepsSize = mStepsArrayList.size();
 
     videoUrlBundle = new Bundle();
     videoUrlBundle.putString(VIDEO_KEY_BUNDLE, mVideoUrl);
     videoUrlBundle.putString(DESCRIPTION_KEY_BUNDLE, mLongDescription);
+    videoUrlBundle.putInt(VIDEO_ID_BUNDLE, mId);
+    videoUrlBundle.putInt(STEPS_SIZE_BUNDLE, stepsSize);
+    videoUrlBundle.putParcelableArrayList(STEPS_ARRAY_LIST_KEY, mStepsArrayList);
 
     Log.d(LOG_TAG, "My Video Url is : " + mVideoUrl);
     Log.d(LOG_TAG, "My Long Description is : " + mLongDescription);
+    Log.d(LOG_TAG, "My Video ID is : " + mId);
+
 
     //Instantiating the Video & Long description  Fragment
     VideoStepFragment videoStepFragment = new VideoStepFragment();
@@ -138,7 +145,6 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
   @Override
   protected void onDestroy() {
     super.onDestroy();
-
     onDestroyBundle = new Bundle();
     onDestroyBundle.putParcelableArrayList(STEPS_ARRAY_LIST_KEY, mStepsArrayList);
   }

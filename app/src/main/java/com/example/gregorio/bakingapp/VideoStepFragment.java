@@ -1,6 +1,10 @@
 package com.example.gregorio.bakingapp;
 
 import static com.example.gregorio.bakingapp.DetailActivity.DESCRIPTION_KEY_BUNDLE;
+import static com.example.gregorio.bakingapp.DetailActivity.STEPS_ARRAY_LIST_KEY;
+import static com.example.gregorio.bakingapp.DetailActivity.STEPS_SIZE_BUNDLE;
+import static com.example.gregorio.bakingapp.DetailActivity.STEP_PARCEL_KEY;
+import static com.example.gregorio.bakingapp.DetailActivity.VIDEO_ID_BUNDLE;
 import static com.example.gregorio.bakingapp.DetailActivity.VIDEO_KEY_BUNDLE;
 
 import android.content.Context;
@@ -73,6 +77,8 @@ public class VideoStepFragment extends Fragment implements ExoPlayer.EventListen
   private Button nextStep;
   private String longDescription;
   private String videoUrl;
+  private int stepId;
+  private int stepsSize;
   private PlaybackStateCompat.Builder mStateBuilder;
   private ArrayList<Steps> stepsArrayList;
   private Uri videoUrlUri;
@@ -95,8 +101,16 @@ public class VideoStepFragment extends Fragment implements ExoPlayer.EventListen
         //Retrieving the RecipeModel sent from the MainActivity Intent Bundle
         videoUrl = bundle.getString(VIDEO_KEY_BUNDLE);
         longDescription = bundle.getString(DESCRIPTION_KEY_BUNDLE);
+        stepId = bundle.getInt(VIDEO_ID_BUNDLE);
+        stepsSize = bundle.getInt(STEPS_SIZE_BUNDLE);
+        stepsArrayList = bundle.getParcelableArrayList(STEPS_ARRAY_LIST_KEY);
+
         Log.d(LOG_TAG, "The Video Url is: " + videoUrl);
         Log.d(LOG_TAG, "The Long Description is: " + longDescription);
+        Log.d(LOG_TAG, "The Step ID is: " + stepId);
+        Log.d(LOG_TAG, "The Number of steps are: " + stepsSize);
+        Log.d(LOG_TAG, "The Step Array List is : " + stepsArrayList);
+
       }
     } else if (savedInstanceState != null) {
       videoUrl = savedInstanceState.getString(VIDEO_URL_KEY);
@@ -120,14 +134,14 @@ public class VideoStepFragment extends Fragment implements ExoPlayer.EventListen
     nextStep.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
-        //recipeNextStep();
+        recipeNextStep();
       }
     });
 
     previousStep.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
-        //recipePreviousStep();
+        recipePreviousStep();
       }
     });
 
@@ -143,8 +157,59 @@ public class VideoStepFragment extends Fragment implements ExoPlayer.EventListen
       mExoPlayer.seekTo(currentPosition);
     }
 
-
     return rootView;
+  }
+
+  //Get the next Video Step Description
+  private void recipeNextStep() {
+    if (stepId <= stepsSize) {
+      int index = stepId++;
+      Steps steps = stepsArrayList.get(index);
+      String stepDescription = steps.getDescription();
+      String stepVideoUrel = steps.getVideoURL();
+      //Setting the TextView with the Long Description
+      tvLongDescription.setText(stepDescription);
+      //Parse the video url
+      Uri nextVideoUrl = Uri.parse(stepVideoUrel);
+      initializePlayer(nextVideoUrl);
+
+    } else {
+      stepId = 0;
+      Steps steps = stepsArrayList.get(stepId);
+      String stepDescription = steps.getDescription();
+      String stepVideoUrel = steps.getVideoURL();
+      //Setting the TextView with the Long Description
+      tvLongDescription.setText(stepDescription);
+      //Parse the video url
+      Uri previousVideoUrl = Uri.parse(stepVideoUrel);
+      initializePlayer(previousVideoUrl);
+    }
+  }
+
+
+  //Get the previous Video Step Description
+  private void recipePreviousStep() {
+    if (stepId == 0) {
+      stepId = stepsSize;
+      Steps steps = stepsArrayList.get(stepId);
+      String stepDescription = steps.getDescription();
+      String stepVideoUrl = steps.getVideoURL();
+      //Setting the TextView with the Long Description
+      tvLongDescription.setText(stepDescription);
+      //Parse the video url
+      videoUrlUri = Uri.parse(stepVideoUrl);
+      initializePlayer(videoUrlUri);
+    } else {
+      stepId--;
+      Steps steps = stepsArrayList.get(stepId--);
+      String stepDescription = steps.getDescription();
+      String stepVideoUrl = steps.getVideoURL();
+      //Setting the TextView with the Long Description
+      tvLongDescription.setText(stepDescription);
+      //Parse the video url
+      videoUrlUri = Uri.parse(stepVideoUrl);
+      initializePlayer(videoUrlUri);
+    }
   }
 
 

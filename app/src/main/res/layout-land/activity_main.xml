@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:orientation="horizontal"
+  tools:context="com.example.gregorio.bakingapp.MainActivity">
+
+  <FrameLayout
+    android:id="@+id/recipe_container"
+    android:layout_width="0dp"
+    android:layout_height="match_parent"
+    android:layout_weight="1">
+  </FrameLayout>
+
+  <ImageView
+    android:id="@+id/cake_main"
+    android:layout_width="0dp"
+    android:layout_height="150dp"
+    android:layout_weight="1"
+    android:layout_gravity="center_vertical"
+    android:src="@drawable/piece_of_cake"/>
+
+</LinearLayout>
