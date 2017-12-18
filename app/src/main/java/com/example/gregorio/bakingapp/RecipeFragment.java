@@ -83,7 +83,6 @@ public class RecipeFragment extends Fragment implements RecipeAdapter.RecipeAdap
     recipeAdapter = new RecipeAdapter(this, numberOFRecipes);
     recyclerView.setAdapter(recipeAdapter);
 
-
     //Retrofit OkHttp connection builder
     OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
 
@@ -111,7 +110,6 @@ public class RecipeFragment extends Fragment implements RecipeAdapter.RecipeAdap
           repos = response.body();
           numberOFRecipes = repos.size();
           recipeAdapter.setRecipeData(repos, mContext);
-
         }
       }
 
@@ -126,7 +124,6 @@ public class RecipeFragment extends Fragment implements RecipeAdapter.RecipeAdap
 
     return rootView;
   }
-
 
   @Override
   public void onClick(int recipeIndex) {

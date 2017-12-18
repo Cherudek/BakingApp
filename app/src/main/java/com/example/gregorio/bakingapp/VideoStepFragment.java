@@ -16,6 +16,7 @@ import android.support.v4.media.session.PlaybackStateCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
@@ -60,6 +61,8 @@ public class VideoStepFragment extends Fragment implements ExoPlayer.EventListen
   private static final String LOG_TAG = VideoStepFragment.class.getSimpleName();
   private static final String VIDEO_URL_KEY = "Video Url Key";
   private static final String DESCRIPTION_KEY = "Description Key";
+  private static final String CURRENT_POSITION_KEY = "Current Position Key";
+
 
   private static MediaSessionCompat mMediaSession;
   private Context mContext;
@@ -75,6 +78,7 @@ public class VideoStepFragment extends Fragment implements ExoPlayer.EventListen
   private Uri videoUrlUri;
   private FrameLayout stepsFrame;
   private View rootView;
+  private long currentPosition;
 
 
   public VideoStepFragment() {
@@ -97,15 +101,11 @@ public class VideoStepFragment extends Fragment implements ExoPlayer.EventListen
     } else if (savedInstanceState != null) {
       videoUrl = savedInstanceState.getString(VIDEO_URL_KEY);
       longDescription = savedInstanceState.getString(DESCRIPTION_KEY);
+      currentPosition = savedInstanceState.getLong(CURRENT_POSITION_KEY);
     }
 
     //inflating the ingredient fragment layout within its container in the activity_detail
     rootView = inflater.inflate(R.layout.fragment_video_description, container, false);
-
-//    LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(
-//        LinearLayout.LayoutParams.MATCH_PARENT,
-//        LinearLayout.LayoutParams.MATCH_PARENT);
-//    rootView.setLayoutParams(params1);
 
     // Initialize the player view.
     mPlayerView = rootView.findViewById(R.id.exo_player);
@@ -114,10 +114,35 @@ public class VideoStepFragment extends Fragment implements ExoPlayer.EventListen
 
     tvLongDescription = rootView.findViewById(R.id.long_description);
 
+    nextStep = rootView.findViewById(R.id.next_steps_btn);
+    previousStep = rootView.findViewById(R.id.previous_steps_btn);
+
+    nextStep.setOnClickListener(new OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        //recipeNextStep();
+      }
+    });
+
+    previousStep.setOnClickListener(new OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        //recipePreviousStep();
+      }
+    });
+
     //Setting the TextView with the Long Description
     tvLongDescription.setText(longDescription);
+    //Parse the video url
     videoUrlUri = Uri.parse(videoUrl);
-    initializePlayer(videoUrlUri);
+
+    if (mExoPlayer == null) {
+      //passing the video url to the exo player
+      initializePlayer(videoUrlUri);
+    } else {
+      mExoPlayer.seekTo(currentPosition);
+    }
+
 
     return rootView;
   }
@@ -167,10 +192,16 @@ public class VideoStepFragment extends Fragment implements ExoPlayer.EventListen
       MediaSource videoSource = new ExtractorMediaSource(mediaUri,
           dataSourceFactory, extractorsFactory, null, null);
 
+      //if the player is not null go to saved position after rotation.
+      if (mExoPlayer != null) {
+        mExoPlayer.seekTo(currentPosition);
+      }
+
       // Prepare the player with the source.
       mExoPlayer.prepare(videoSource);
       mExoPlayer.setPlayWhenReady(true);
     }
+
   }
 
   /**
@@ -258,6 +289,14 @@ public class VideoStepFragment extends Fragment implements ExoPlayer.EventListen
   }
 
   @Override
+  public void onPause() {
+    super.onPause();
+    //save the current video position to reinstate on phone rotation
+    currentPosition = mExoPlayer.getCurrentPosition();
+
+  }
+
+  @Override
   public void onDestroyView() {
     super.onDestroyView();
     releasePlayer();
@@ -268,8 +307,11 @@ public class VideoStepFragment extends Fragment implements ExoPlayer.EventListen
     super.onSaveInstanceState(outState);
     outState.putString(VIDEO_URL_KEY, videoUrl);
     outState.putString(DESCRIPTION_KEY, longDescription);
+    outState.putLong(CURRENT_POSITION_KEY, currentPosition);
 
     Log.i(LOG_TAG, "VideoFragment OnSaved Instance Url: " + videoUrl);
+    Log.i(LOG_TAG, "VideoFragment OnSaved Instance Current Position: " + currentPosition);
+
   }
 
   /**

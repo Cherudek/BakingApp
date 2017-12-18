@@ -37,14 +37,10 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
   public static final String INGREDIENTS_FRAGMENT_TAG = "Ingredients Fragment Tag";
   public static final String STEPS_FRAGMENT_TAG = "Steps Fragment Tag";
 
-
-
-
   private String mVideoUrl;
   private String mLongDescription;
   private Bundle videoUrlBundle;
   private String mRecipeName;
-  private VideoStepFragment videoStepFragment;
   private FragmentManager fragmentManager;
   private ArrayList<Steps> mStepsArrayList;
 
@@ -60,7 +56,6 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
   private Intent intent;
   private Bundle parcelable;
   private Bundle onDestroyBundle;
-  private boolean vertical;
 
   @Override
   protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -98,18 +93,15 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
       getSupportActionBar().setTitle(mRecipeName);
 
       fragmentManager.beginTransaction()
-          .add(R.id.ingredients_container, ingredientsFragment, INGREDIENTS_FRAGMENT_TAG)
+          .add(R.id.ingredients_container, ingredientsFragment)
+          .add(R.id.steps_container, stepsFragment)
           .commit();
 
-      fragmentManager.beginTransaction()
-          .add(R.id.steps_container, stepsFragment, STEPS_FRAGMENT_TAG)
-          .commit();
 
       ingredientsLabel = findViewById(R.id.ingredient_label);
       ingredientsFrame = findViewById(R.id.ingredients_container);
       stepsFrame = findViewById(R.id.steps_container);
       stepsLabel = findViewById(R.id.steps_label);
-
     }
   }
 
@@ -135,15 +127,13 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
 
     FragmentManager fm = getSupportFragmentManager();
     fm.beginTransaction()
-        .replace(R.id.ingredients_container, videoStepFragment, VIDEO_FRAGMENT_TAG)
+        .replace(R.id.ingredients_container, videoStepFragment)
         //.remove(stepsFragment)
-        .addToBackStack("Video Step Fragment")
+        .addToBackStack(null)
         .commit();
 
     videoFragmentView();
-
   }
-
 
   @Override
   protected void onDestroy() {
@@ -168,7 +158,6 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
           0, LayoutParams.MATCH_PARENT, 1);
       stepsFrame.setLayoutParams(paramsStepContainer);
 
-
     } else {
 
       //If the Phone is in Portrait Mode
@@ -181,10 +170,7 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
       LinearLayout.LayoutParams paramsStepContainer = new LinearLayout.LayoutParams(
           LayoutParams.MATCH_PARENT, 0, 1);
       stepsFrame.setLayoutParams(paramsStepContainer);
-
     }
-
-
   }
 
   public void videoFragmentView() {
@@ -210,7 +196,6 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
 
       stepsFrame.setLayoutParams(params2);
     }
-
   }
 
   @Override
@@ -219,13 +204,15 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
 
     getSupportActionBar().setTitle(mRecipeName);
 
+    //Check whether we are in the Ingredients/Steps or Video layout
     if (stepsFrame != null) {
+      //Ingredients/Steps fragments layout
       resumeTwoFragmentView();
     } else {
+      //Video fragment view
       videoFragmentView();
     }
   }
-
 
   @Override
   public void onBackPressed() {
