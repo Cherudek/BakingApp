@@ -66,6 +66,7 @@ public class VideoStepFragment extends Fragment implements ExoPlayer.EventListen
   private static final String VIDEO_URL_KEY = "Video Url Key";
   private static final String DESCRIPTION_KEY = "Description Key";
   private static final String CURRENT_POSITION_KEY = "Current Position Key";
+  private static final String STEP_ARRAY_LIST_KEY = "Step Array List";
 
 
   private static MediaSessionCompat mMediaSession;
@@ -116,6 +117,7 @@ public class VideoStepFragment extends Fragment implements ExoPlayer.EventListen
       videoUrl = savedInstanceState.getString(VIDEO_URL_KEY);
       longDescription = savedInstanceState.getString(DESCRIPTION_KEY);
       currentPosition = savedInstanceState.getLong(CURRENT_POSITION_KEY);
+      stepsArrayList = savedInstanceState.getParcelableArrayList(STEP_ARRAY_LIST_KEY);
     }
 
     //inflating the ingredient fragment layout within its container in the activity_detail
@@ -151,19 +153,32 @@ public class VideoStepFragment extends Fragment implements ExoPlayer.EventListen
     videoUrlUri = Uri.parse(videoUrl);
 
     if (mExoPlayer == null) {
+
+      BandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
+
+      TrackSelection.Factory videoTrackSelectionFactory =
+          new AdaptiveTrackSelection.Factory(bandwidthMeter);
+
+      TrackSelector trackSelector =
+          new DefaultTrackSelector(videoTrackSelectionFactory);
+      // 2. Create the player
+      mExoPlayer = ExoPlayerFactory.newSimpleInstance(getContext(), trackSelector);
+
+    }
+
       //passing the video url to the exo player
       initializePlayer(videoUrlUri);
-    } else {
-      mExoPlayer.seekTo(currentPosition);
-    }
 
     return rootView;
   }
 
   //Get the next Video Step Description
   private void recipeNextStep() {
-    if (stepId <= stepsSize) {
-      int index = stepId++;
+
+    int maxStepId = stepsSize - 1;
+
+    if (stepId < maxStepId) {
+      int index = ++stepId;
       Steps steps = stepsArrayList.get(index);
       String stepDescription = steps.getDescription();
       String stepVideoUrel = steps.getVideoURL();
@@ -186,32 +201,31 @@ public class VideoStepFragment extends Fragment implements ExoPlayer.EventListen
     }
   }
 
-
   //Get the previous Video Step Description
   private void recipePreviousStep() {
     if (stepId == 0) {
-      stepId = stepsSize;
-      Steps steps = stepsArrayList.get(stepId);
+      int previousStepId = stepsSize - 1;
+      Steps steps = stepsArrayList.get(previousStepId);
+
       String stepDescription = steps.getDescription();
       String stepVideoUrl = steps.getVideoURL();
       //Setting the TextView with the Long Description
       tvLongDescription.setText(stepDescription);
       //Parse the video url
-      videoUrlUri = Uri.parse(stepVideoUrl);
-      initializePlayer(videoUrlUri);
+      Uri previousVideoUrl = Uri.parse(stepVideoUrl);
+      initializePlayer(previousVideoUrl);
     } else {
-      stepId--;
-      Steps steps = stepsArrayList.get(stepId--);
+      int previousStepId = --stepId;
+      Steps steps = stepsArrayList.get(previousStepId);
       String stepDescription = steps.getDescription();
       String stepVideoUrl = steps.getVideoURL();
       //Setting the TextView with the Long Description
       tvLongDescription.setText(stepDescription);
       //Parse the video url
-      videoUrlUri = Uri.parse(stepVideoUrl);
-      initializePlayer(videoUrlUri);
+      Uri videoUrl = Uri.parse(stepVideoUrl);
+      initializePlayer(videoUrl);
     }
   }
-
 
   /**
    * Initialize ExoPlayer.
@@ -219,7 +233,8 @@ public class VideoStepFragment extends Fragment implements ExoPlayer.EventListen
    * @param mediaUri The URI of the sample to play.
    */
   private void initializePlayer(Uri mediaUri) {
-    if (mExoPlayer == null) {
+
+//    if (mExoPlayer == null) {
 
       // 1. Create a default TrackSelector
       Handler mainHandler = new Handler();
@@ -228,16 +243,17 @@ public class VideoStepFragment extends Fragment implements ExoPlayer.EventListen
           .setDefaultArtwork(
               BitmapFactory.decodeResource(getResources(), R.drawable.baking_app_logo));
 
-      BandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
+//      BandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
 
-      TrackSelection.Factory videoTrackSelectionFactory =
-          new AdaptiveTrackSelection.Factory(bandwidthMeter);
+//      TrackSelection.Factory videoTrackSelectionFactory =
+//          new AdaptiveTrackSelection.Factory(bandwidthMeter);
+//
+//      TrackSelector trackSelector =
+//          new DefaultTrackSelector(videoTrackSelectionFactory);
 
-      TrackSelector trackSelector =
-          new DefaultTrackSelector(videoTrackSelectionFactory);
+//      // 2. Create the player
+//      mExoPlayer = ExoPlayerFactory.newSimpleInstance(getContext(), trackSelector);
 
-      // 2. Create the player
-      mExoPlayer = ExoPlayerFactory.newSimpleInstance(getContext(), trackSelector);
       LoadControl loadControl = new DefaultLoadControl();
 
       //Setting the Player to a SimpleExoPlayerView
@@ -260,14 +276,17 @@ public class VideoStepFragment extends Fragment implements ExoPlayer.EventListen
       //if the player is not null go to saved position after rotation.
       if (mExoPlayer != null) {
         mExoPlayer.seekTo(currentPosition);
+        // Prepare the player with the source.
+        mExoPlayer.prepare(videoSource);
+        mExoPlayer.setPlayWhenReady(true);
       }
 
-      // Prepare the player with the source.
-      mExoPlayer.prepare(videoSource);
-      mExoPlayer.setPlayWhenReady(true);
-    }
-
+    // Prepare the player with the source.
+    mExoPlayer.prepare(videoSource);
+    mExoPlayer.setPlayWhenReady(true);
   }
+
+//  }
 
   /**
    * Initializes the Media Session to be enabled with media buttons, transport controls, callbacks
@@ -373,6 +392,7 @@ public class VideoStepFragment extends Fragment implements ExoPlayer.EventListen
     outState.putString(VIDEO_URL_KEY, videoUrl);
     outState.putString(DESCRIPTION_KEY, longDescription);
     outState.putLong(CURRENT_POSITION_KEY, currentPosition);
+    outState.putParcelableArrayList(STEP_ARRAY_LIST_KEY, stepsArrayList);
 
     Log.i(LOG_TAG, "VideoFragment OnSaved Instance Url: " + videoUrl);
     Log.i(LOG_TAG, "VideoFragment OnSaved Instance Current Position: " + currentPosition);

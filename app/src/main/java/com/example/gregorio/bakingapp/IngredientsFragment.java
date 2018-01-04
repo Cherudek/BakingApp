@@ -44,6 +44,7 @@ public class IngredientsFragment extends Fragment implements
 
     if (savedInstanceState != null) {
       ingredientsArrayList = savedInstanceState.getParcelableArrayList(SAVED_INSTANCE_KEY);
+
     } else {
       Bundle bundle = this.getArguments();
       if (bundle != null) {

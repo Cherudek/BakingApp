@@ -46,7 +46,10 @@ public class StepsFragment extends Fragment implements StepsAdapter.StepsAdapter
   public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
       @Nullable Bundle savedInstanceState) {
 
-    if (savedInstanceState == null) {
+    if (savedInstanceState != null) {
+      stepsArrayList = savedInstanceState.getParcelableArrayList(STEPS_ARRAY_KEY);
+
+    } else {
       Bundle bundle = this.getArguments();
       if (bundle != null) {
         //Retrieving the RecipeModel sent from the MainActivity Intent Bundle
@@ -54,8 +57,7 @@ public class StepsFragment extends Fragment implements StepsAdapter.StepsAdapter
         //Getting the corresponding recipe ingredients Array List
         stepsArrayList = recipeModel.getSteps();
       }
-    } else if (savedInstanceState != null) {
-      stepsArrayList = savedInstanceState.getParcelableArrayList(STEPS_ARRAY_KEY);
+
     }
 
     mContext = getActivity().getApplicationContext();
@@ -97,6 +99,8 @@ public class StepsFragment extends Fragment implements StepsAdapter.StepsAdapter
 
   }
 
+
+  //Saving the current State of the Recipe Steps Fragment
   @Override
   public void onSaveInstanceState(Bundle outState) {
     super.onSaveInstanceState(outState);

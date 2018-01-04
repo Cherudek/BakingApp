@@ -17,6 +17,7 @@ import android.widget.FrameLayout.LayoutParams;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.example.gregorio.bakingapp.StepsFragment.OnStepsClickListener;
+import com.example.gregorio.bakingapp.retrofit.Ingredients;
 import com.example.gregorio.bakingapp.retrofit.RecipeModel;
 import com.example.gregorio.bakingapp.retrofit.Steps;
 import java.util.ArrayList;
@@ -33,6 +34,7 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
   public static final String STEP_PARCEL_KEY = "Step Parcel Key";
   public static final String RECIPE_NAME_KEY = "Recipe Name";
   public static final String STEPS_ARRAY_LIST_KEY = "Steps Array List";
+  public static final String INGREDIENTS_ARRAY_LIST_KEY = "Ingredients Array List Key";
   public static final String VIDEO_ID_BUNDLE = "Video ID Key";
   public static final String STEPS_SIZE_BUNDLE = "Steps Size Key";
   public static final String STEPS_FRAGMENT_TAG = "Steps Fragment Tag";
@@ -44,11 +46,12 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
   private String mRecipeName;
   private FragmentManager fragmentManager;
   private ArrayList<Steps> mStepsArrayList;
+  private ArrayList<Ingredients> mIngredientsArrayList;
+
 
   private TextView ingredientsLabel;
   private FrameLayout ingredientsFrame;
   private FrameLayout stepsFrame;
-  private LinearLayout detailContainer;
   private TextView stepsLabel;
   private StepsFragment stepsFragment;
   private IngredientsFragment ingredientsFragment;
@@ -66,8 +69,14 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
     if (savedInstanceState != null) {
       mRecipeName = savedInstanceState.getString(RECIPE_NAME_KEY);
       mStepsArrayList = savedInstanceState.getParcelableArrayList(STEPS_ARRAY_LIST_KEY);
+      mIngredientsArrayList = savedInstanceState.getParcelableArrayList(INGREDIENTS_ARRAY_LIST_KEY);
 
-    } else if (savedInstanceState == null) {
+    } else {
+
+      ingredientsLabel = findViewById(R.id.ingredient_label);
+      ingredientsFrame = findViewById(R.id.ingredients_container);
+      stepsFrame = findViewById(R.id.steps_container);
+      stepsLabel = findViewById(R.id.steps_label);
 
       //Receiving the Intent form the MainActivity to pass data to Ingredient & Steps Fragment
       intent = getIntent();
@@ -75,6 +84,7 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
 
       RecipeModel recipeModel = parcelable.getParcelable(PARCEL_KEY);
       mStepsArrayList = recipeModel.getSteps();
+      mIngredientsArrayList = recipeModel.getIngredients();
       mRecipeName = recipeModel.getName();
 
       //Instantiate the IngredientsFragment
@@ -98,12 +108,17 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
           .add(R.id.steps_container, stepsFragment)
           .commit();
 
-      ingredientsLabel = findViewById(R.id.ingredient_label);
-      ingredientsFrame = findViewById(R.id.ingredients_container);
-      stepsFrame = findViewById(R.id.steps_container);
-      stepsLabel = findViewById(R.id.steps_label);
+      // fragmentSetUp();
+
     }
+
   }
+
+  public void fragmentSetUp() {
+
+
+    }
+
 
   @Override
   public void onRecipeSelected(int position) {
@@ -135,19 +150,19 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
     FragmentManager fm = getSupportFragmentManager();
     fm.beginTransaction()
         .replace(R.id.ingredients_container, videoStepFragment)
-        //.remove(stepsFragment)
         .addToBackStack(null)
         .commit();
 
     videoFragmentView();
   }
 
-  @Override
-  protected void onDestroy() {
-    super.onDestroy();
-    onDestroyBundle = new Bundle();
-    onDestroyBundle.putParcelableArrayList(STEPS_ARRAY_LIST_KEY, mStepsArrayList);
-  }
+//  @Override
+//  protected void onDestroy() {
+//    super.onDestroy();
+//    onDestroyBundle = new Bundle();
+//    onDestroyBundle.putParcelableArrayList(STEPS_ARRAY_LIST_KEY, mStepsArrayList);
+//    onDestroyBundle.putParcelableArrayList(INGREDIENTS_ARRAY_LIST_KEY, mIngredientsArrayList);
+//  }
 
   public void resumeTwoFragmentView() {
 
@@ -159,7 +174,6 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
           0, LayoutParams.MATCH_PARENT, 1);
       ingredientsFrame.setLayoutParams(params);
 
-      stepsFrame.setVisibility(View.VISIBLE);
       LinearLayout.LayoutParams paramsStepContainer = new LinearLayout.LayoutParams(
           0, LayoutParams.MATCH_PARENT, 1);
       stepsFrame.setLayoutParams(paramsStepContainer);
@@ -172,7 +186,6 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
           LayoutParams.MATCH_PARENT, 0, 1);
       ingredientsFrame.setLayoutParams(params);
 
-      stepsFrame.setVisibility(View.VISIBLE);
       LinearLayout.LayoutParams paramsStepContainer = new LinearLayout.LayoutParams(
           LayoutParams.MATCH_PARENT, 0, 1);
       stepsFrame.setLayoutParams(paramsStepContainer);
@@ -192,7 +205,6 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
         LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT, 0f);
 
     ingredientsFrame.setLayoutParams(params);
-
     stepsFrame.setLayoutParams(paramsStepContainer);
 
     //Landscape Layout
@@ -211,9 +223,11 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
     getSupportActionBar().setTitle(mRecipeName);
 
     //Check whether we are in the Ingredients/Steps or Video layout
-    if (stepsFrame != null) {
+    if (stepsFrame != null && ingredientsFrame != null) {
       //Ingredients/Steps fragments layout
       resumeTwoFragmentView();
+      fragmentSetUp();
+
     } else {
       //Video fragment view
       videoFragmentView();
@@ -231,12 +245,17 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
   protected void onSaveInstanceState(Bundle outState) {
     super.onSaveInstanceState(outState);
     outState.putParcelableArrayList(STEPS_ARRAY_LIST_KEY, mStepsArrayList);
+    outState.putParcelableArrayList(INGREDIENTS_ARRAY_LIST_KEY, mIngredientsArrayList);
     outState.putParcelable(STEP_PARCEL_KEY, steps);
     outState.putString(RECIPE_NAME_KEY, mRecipeName);
     int stepsArraySize = mStepsArrayList.size();
+    int ingredientsArraySize = mIngredientsArrayList.size();
 
-    Log.i(LOG_TAG, "Recipe Key Saved:  " + mRecipeName);
-    Log.i(LOG_TAG, "OnResume bundle Recipe Name: " + stepsArraySize);
+    Log.i(LOG_TAG, "Recipe Name Key Saved:  " + mRecipeName);
+    Log.i(LOG_TAG, "OnSavedInstance bundle Steps Array Size: " + stepsArraySize);
+    Log.i(LOG_TAG, "OnSavedInstance bundle Ingredients Array Size: " + ingredientsArraySize);
+
+
 
   }
 }
