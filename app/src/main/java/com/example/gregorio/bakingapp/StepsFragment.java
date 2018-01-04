@@ -99,6 +99,12 @@ public class StepsFragment extends Fragment implements StepsAdapter.StepsAdapter
 
   }
 
+  @Override
+  public void onResume() {
+    super.onResume();
+
+
+  }
 
   //Saving the current State of the Recipe Steps Fragment
   @Override

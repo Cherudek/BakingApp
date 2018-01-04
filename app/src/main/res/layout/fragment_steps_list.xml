@@ -18,7 +18,7 @@
       android:layout_gravity="center"
       android:padding="8dp"
       android:fontFamily="@font/montserrat"
-      android:text="STEPS"
+      android:text="@string/steps"
       android:textAlignment="center"/>
 
     <android.support.v7.widget.RecyclerView
