@@ -1,40 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+
+<RelativeLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:tools="http://schemas.android.com/tools"
-  android:id="@+id/detail_container"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
-  android:orientation="horizontal"
-  tools:context="com.example.gregorio.bakingapp.DetailActivity">
+  android:orientation="horizontal">
 
-
-  <ScrollView
-    android:layout_width="0dp"
+  <FrameLayout
+    android:id="@+id/details_container"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_weight="1">
-    <FrameLayout
-      android:id="@+id/ingredients_container"
-      android:layout_width="match_parent"
-      android:layout_height="match_parent">
-    </FrameLayout>
+    android:layout_alignParentLeft="true">
+  </FrameLayout>
 
-  </ScrollView>
+  <Button
+    android:id="@+id/btn_view_steps"
+    android:layout_width="match_parent"
+    android:layout_height="38dp"
+    android:layout_alignParentBottom="true"
+    android:background="@color/colorPrimary"
+    android:text="@string/view_steps"
+    android:visibility="gone">
+  </Button>
 
-
-  <ScrollView
-    android:layout_width="0dp"
-    android:layout_height="match_parent"
-    android:layout_weight="1">
-    <FrameLayout
-      android:id="@+id/steps_container"
-      android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      >
-    </FrameLayout>
-
-  </ScrollView>
-
-
-</LinearLayout>
-
+</RelativeLayout>

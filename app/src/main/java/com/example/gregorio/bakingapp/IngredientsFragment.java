@@ -9,7 +9,9 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.Button;
 import com.example.gregorio.bakingapp.adapters.IngredientsAdapter;
 import com.example.gregorio.bakingapp.retrofit.Ingredients;
 import com.example.gregorio.bakingapp.retrofit.RecipeModel;
@@ -68,12 +70,11 @@ public class IngredientsFragment extends Fragment implements
     ingredientsAdapter.setIngredientsData(ingredientsArrayList, mContext);
 
     return rootView;
-
   }
+
 
   @Override
   public void onClick(int recipeIndex) {
-
   }
 
   /**
@@ -83,6 +84,4 @@ public class IngredientsFragment extends Fragment implements
   public void onSaveInstanceState(Bundle currentState) {
     currentState.putParcelableArrayList(SAVED_INSTANCE_KEY, ingredientsArrayList);
   }
-
-
 }

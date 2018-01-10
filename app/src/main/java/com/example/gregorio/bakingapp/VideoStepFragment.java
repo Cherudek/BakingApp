@@ -161,6 +161,7 @@ public class VideoStepFragment extends Fragment implements ExoPlayer.EventListen
 
       TrackSelector trackSelector =
           new DefaultTrackSelector(videoTrackSelectionFactory);
+
       // 2. Create the player
       mExoPlayer = ExoPlayerFactory.newSimpleInstance(getContext(), trackSelector);
 
