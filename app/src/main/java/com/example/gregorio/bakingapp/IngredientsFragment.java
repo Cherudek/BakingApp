@@ -28,12 +28,16 @@ public class IngredientsFragment extends Fragment implements
   private static final String SAVED_INSTANCE_KEY = "Saved Instance Key";
 
 
-  ArrayList<Ingredients> ingredientsArrayList;
+  // Define a new interface OnStepsClickListener that triggers a callback in the host activity
+  OnStepsBtnClickListener mCallbackHostActivity;
+
+  private ArrayList<Ingredients> ingredientsArrayList;
   private IngredientsAdapter ingredientsAdapter;
   private RecyclerView rvIngredients;
   private LinearLayoutManager layoutManager;
   private int numberOfIngredients;
   private Context mContext;
+  private Button viewSteps;
 
   //Constructor
   public IngredientsFragment() {
@@ -69,9 +73,33 @@ public class IngredientsFragment extends Fragment implements
     //Passing the Context and the Ingredients Array to our IngredientsAdapter to populate the RecycleView.
     ingredientsAdapter.setIngredientsData(ingredientsArrayList, mContext);
 
+    viewSteps = rootView.findViewById(R.id.btn_view_steps);
+
+    viewSteps.setOnClickListener(new OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        mCallbackHostActivity.viewRecipeSteps();
+
+      }
+    });
+
     return rootView;
+
   }
 
+  @Override
+  public void onAttach(Context context) {
+    super.onAttach(context);
+
+    // This makes sure that the host activity has implemented the callback interface
+    // If not, it throws an exception
+    try {
+      mCallbackHostActivity = (OnStepsBtnClickListener) context;
+    } catch (ClassCastException e) {
+      throw new ClassCastException(context.toString()
+          + " must implement OnStepsClickListener");
+    }
+  }
 
   @Override
   public void onClick(int recipeIndex) {
@@ -83,5 +111,11 @@ public class IngredientsFragment extends Fragment implements
   @Override
   public void onSaveInstanceState(Bundle currentState) {
     currentState.putParcelableArrayList(SAVED_INSTANCE_KEY, ingredientsArrayList);
+  }
+
+  // OnStepsClickListener interface, calls a method in the host activity named onRecipeSelected
+  public interface OnStepsBtnClickListener {
+
+    void viewRecipeSteps();
   }
 }

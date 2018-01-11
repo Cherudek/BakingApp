@@ -1,25 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<RelativeLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
   android:orientation="vertical">
 
-    <TextView
-      android:id="@+id/ingredient_label"
-      android:textStyle="bold"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_gravity="center"
-      android:padding="8dp"
-      android:fontFamily="@font/montserrat"
-      android:text="@string/ingredients"
-      android:textAlignment="center"/>
+  <TextView
+    android:id="@+id/ingredient_label"
+    android:textStyle="bold"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_alignParentTop="true"
+    android:layout_gravity="center"
+    android:padding="8dp"
+    android:fontFamily="@font/montserrat"
+    android:gravity="center"
+    android:text="@string/ingredients"
+    android:textAlignment="center"/>
 
-    <android.support.v7.widget.RecyclerView
-      android:id="@+id/rv_fragment_detail_list"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content">
-    </android.support.v7.widget.RecyclerView>
+  <android.support.v7.widget.RecyclerView
+    android:id="@+id/rv_fragment_detail_list"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_below="@+id/ingredient_label">
+  </android.support.v7.widget.RecyclerView>
 
-  </LinearLayout>
+  <Button
+    android:id="@+id/btn_view_steps"
+    android:layout_width="match_parent"
+    android:layout_height="38dp"
+    android:layout_alignParentBottom="true"
+    android:background="@color/colorPrimary"
+    android:text="@string/view_steps"
+    >
+  </Button>
+
+</RelativeLayout>
