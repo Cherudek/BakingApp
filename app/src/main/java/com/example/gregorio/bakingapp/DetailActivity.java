@@ -19,6 +19,7 @@ import android.widget.FrameLayout;
 import android.widget.FrameLayout.LayoutParams;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import com.example.gregorio.bakingapp.IngredientsFragment.OnStepsBtnClickListener;
 import com.example.gregorio.bakingapp.StepsFragment.OnStepsClickListener;
 import com.example.gregorio.bakingapp.retrofit.Ingredients;
 import com.example.gregorio.bakingapp.retrofit.RecipeModel;
@@ -29,7 +30,8 @@ import java.util.ArrayList;
  * Created by Gregorio on 22/11/2017.
  */
 
-public class DetailActivity extends AppCompatActivity implements OnStepsClickListener {
+public class DetailActivity extends AppCompatActivity implements OnStepsClickListener,
+    OnStepsBtnClickListener {
 
   public static final String LOG_TAG = DetailActivity.class.getSimpleName();
   public static final String VIDEO_KEY_BUNDLE = "Video URL bundle";
@@ -68,7 +70,6 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
   private Intent intent;
   private Bundle parcelable;
   private Bundle onDestroyBundle;
-  private Button viewSteps;
 
   private VideoStepFragment videoStepFragment;
 
@@ -81,14 +82,6 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
     ingredientsFrame = findViewById(R.id.details_container);
     stepsLabel = findViewById(R.id.steps_label);
 
-    viewSteps = findViewById(R.id.btn_view_steps);
-    viewSteps.setOnClickListener(new OnClickListener() {
-      @Override
-      public void onClick(View v) {
-        viewRecipeSteps();
-      }
-    });
-
 
     if (savedInstanceState != null) {
       mRecipeName = savedInstanceState.getString(RECIPE_NAME_KEY);
@@ -100,14 +93,14 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
       Log.i(LOG_TAG, "OnSavedInstance bundle Ingredients Array Size: " + mIngredientsArrayList);
     } else {
 
-      // This method will launch  set up the Ingredients recyclerView and the View recipe Steps Button.
+      // This method will launch  set up the Ingredients fragment (Title, RecyclerView and 1 Btn).
       fragmentSetUp();
     }
   }
 
   // This method will launch the recipe steps fragment that will replace the Ingredients one
   // in the Detail Activity
-  private void viewRecipeSteps() {
+  public void viewRecipeSteps() {
 
     //Instantiating the Steps Fragment
     stepsFragment = new StepsFragment();
@@ -128,11 +121,9 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
         .addToBackStack(null)
         .commit();
 
-    viewSteps.setVisibility(View.INVISIBLE);
-
   }
 
-  // This method will launch the set up of the Ingredients recyclerView and the View recipe Steps Button.
+  // This method will launch the set up of the Ingredients Fragment (recyclerView and the View recipe Steps Button).
 
   public void fragmentSetUp() {
 
@@ -159,12 +150,10 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
     fragmentManager.beginTransaction()
         .add(R.id.details_container, ingredientsFragment, INGREDIENTS_FRAGMENT_TAG)
         .commit();
-
-    viewSteps.setVisibility(View.VISIBLE);
-
   }
 
 
+  // This method will trigger OnStepsClickListener Interface to Set up the VideoSteps Fragment on the
   @Override
   public void onRecipeSelected(int position) {
 
@@ -185,7 +174,6 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
     Log.d(LOG_TAG, "My Long Description is : " + mLongDescription);
     Log.d(LOG_TAG, "My Video ID is : " + mId);
 
-
     //Instantiating the Video & Long description  Fragment
     videoStepFragment = new VideoStepFragment();
     if (videoUrlBundle != null) {
@@ -198,83 +186,8 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
         .addToBackStack(null)
         .commit();
 
-    viewSteps.setVisibility(View.INVISIBLE);
-
-    //videoFragmentView();
   }
 
-
-  public void resumeTwoFragmentView() {
-
-    //Check Phone Orientation
-    if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-
-      //Setting the horizontal View of 2 Fragments with weight 1
-      LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-          0, LayoutParams.MATCH_PARENT, 1);
-      ingredientsFrame.setLayoutParams(params);
-
-      LinearLayout.LayoutParams paramsStepContainer = new LinearLayout.LayoutParams(
-          0, LayoutParams.MATCH_PARENT, 1);
-      stepsFrame.setLayoutParams(paramsStepContainer);
-
-    } else {
-
-      //If the Phone is in Portrait Mode
-      //Set the 2 fragments with equal weight 1
-      LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-          LayoutParams.MATCH_PARENT, 0, 1);
-      ingredientsFrame.setLayoutParams(params);
-
-      LinearLayout.LayoutParams paramsStepContainer = new LinearLayout.LayoutParams(
-          LayoutParams.MATCH_PARENT, 0, 1);
-      stepsFrame.setLayoutParams(paramsStepContainer);
-    }
-  }
-
-  public void videoFragmentView() {
-
-    ingredientsFrame = findViewById(R.id.details_container);
-
-    //Setting the Ingredients frame  as the only one visible and Hiding the Steps Frame
-    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-        LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
-
-    LinearLayout.LayoutParams paramsStepContainer = new LinearLayout.LayoutParams(
-        LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT, 0f);
-
-    ingredientsFrame.setLayoutParams(params);
-//    stepsFrame.setLayoutParams(paramsStepContainer);
-//    stepsFrame.setVisibility(View.INVISIBLE);
-
-    //Landscape Layout
-    if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-      LinearLayout.LayoutParams params2 = new LinearLayout.LayoutParams(0,
-          ViewGroup.LayoutParams.MATCH_PARENT, 0);
-
-      //stepsFrame.setLayoutParams(params2);
-    }
-  }
-
-  @Override
-  protected void onResume() {
-    super.onResume();
-
-    getSupportActionBar().setTitle(mRecipeName);
-
-    if (ingredientsFrame != null && ingredientsFrame.isInLayout()) {
-      viewSteps.setVisibility(View.VISIBLE);
-    }
-
-
-  }
-
-  @Override
-  public void onBackPressed() {
-    super.onBackPressed();
-
-    //resumeTwoFragmentView();
-  }
 
   @Override
   protected void onSaveInstanceState(Bundle outState) {

@@ -6,7 +6,6 @@
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
   android:padding="4dp"
-  android:gravity="center"
   android:orientation="horizontal">
 
   <TextView
@@ -14,7 +13,9 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_marginRight="8dp"
+    android:layout_gravity="left"
     android:fontFamily="@font/merriweather_sans_light"
+    android:textSize="20sp"
     tools:text="1."/>
 
   <TextView
@@ -23,13 +24,16 @@
     android:layout_height="wrap_content"
     android:layout_marginRight="8dp"
     android:fontFamily="@font/merriweather_sans_light"
-    android:textSize="12dp"
+    android:gravity="left"
+    android:textColor="@color/primary_text"
+    android:textSize="18dp"
     tools:text="Mix cream cheese and dry ingredients."/>
 
   <ImageView
     android:id="@+id/step_detail"
     android:layout_width="20dp"
     android:layout_height="20dp"
+    android:layout_gravity="left"
     app:srcCompat="@drawable/ic_play_circle_outline_black_24dp"/>
 
 </LinearLayout>

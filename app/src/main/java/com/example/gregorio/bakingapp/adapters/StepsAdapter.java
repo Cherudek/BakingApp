@@ -1,6 +1,7 @@
 package com.example.gregorio.bakingapp.adapters;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -62,6 +63,14 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsViewHolder> {
     mId = String.valueOf(id);
     tvId.setText(mId);
     tvShortDescription.setText(mShortDescription);
+
+    if (position % 2 == 1) {
+      holder.itemView.setBackgroundColor(Color.parseColor("#FFFFFF"));
+      //  holder.imageView.setBackgroundColor(Color.parseColor("#FFFFFF"));
+    } else {
+      holder.itemView.setBackgroundColor(Color.parseColor("#FFFAF8FD"));
+      //  holder.imageView.setBackgroundColor(Color.parseColor("#FFFAF8FD"));
+    }
   }
 
   @Override

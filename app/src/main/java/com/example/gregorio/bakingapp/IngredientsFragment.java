@@ -29,7 +29,7 @@ public class IngredientsFragment extends Fragment implements
 
 
   // Define a new interface OnStepsClickListener that triggers a callback in the host activity
-  OnStepsBtnClickListener mCallbackHostActivity;
+  private OnStepsBtnClickListener mCallbackHostActivity;
 
   private ArrayList<Ingredients> ingredientsArrayList;
   private IngredientsAdapter ingredientsAdapter;
@@ -73,8 +73,8 @@ public class IngredientsFragment extends Fragment implements
     //Passing the Context and the Ingredients Array to our IngredientsAdapter to populate the RecycleView.
     ingredientsAdapter.setIngredientsData(ingredientsArrayList, mContext);
 
+    //Find the Button to Launch the Step by Step Fragment
     viewSteps = rootView.findViewById(R.id.btn_view_steps);
-
     viewSteps.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
@@ -84,14 +84,16 @@ public class IngredientsFragment extends Fragment implements
     });
 
     return rootView;
-
   }
 
+
+  //Attaching the onClick Btn Interface to the Detail Activity
   @Override
   public void onAttach(Context context) {
     super.onAttach(context);
 
-    // This makes sure that the host activity has implemented the callback interface
+    // This makes sure that the host activity has implemented the callback interface to launch
+    // the Step by Step Fragment
     // If not, it throws an exception
     try {
       mCallbackHostActivity = (OnStepsBtnClickListener) context;
@@ -113,7 +115,7 @@ public class IngredientsFragment extends Fragment implements
     currentState.putParcelableArrayList(SAVED_INSTANCE_KEY, ingredientsArrayList);
   }
 
-  // OnStepsClickListener interface, calls a method in the host activity named onRecipeSelected
+  // OnStepsClickListener interface, calls a method in the Detail activity named viewRecipeSteps()
   public interface OnStepsBtnClickListener {
 
     void viewRecipeSteps();

@@ -11,16 +11,19 @@
       android:textStyle="bold"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
+      android:layout_marginTop="24dp"
+      android:layout_marginBottom="18dp"
       android:layout_gravity="center"
-      android:padding="8dp"
       android:fontFamily="@font/montserrat"
       android:text="@string/steps"
-      android:textAlignment="center"/>
+      android:textAlignment="center"
+      android:textSize="22sp"/>
 
     <android.support.v7.widget.RecyclerView
       android:id="@+id/rv_fragment_step_list"
       android:layout_width="match_parent"
-      android:layout_height="wrap_content">
+      android:layout_height="wrap_content"
+      android:layout_marginLeft="8dp">
     </android.support.v7.widget.RecyclerView>
 
 

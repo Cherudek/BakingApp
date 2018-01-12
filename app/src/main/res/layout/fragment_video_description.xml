@@ -27,7 +27,8 @@
     android:padding="8dp"
     android:fontFamily="@font/merriweather_sans_light"
     android:text="Description"
-    android:textAlignment="viewStart"/>
+    android:textAlignment="viewStart"
+    android:textSize="18sp"/>
 
   <LinearLayout
     android:layout_width="match_parent"

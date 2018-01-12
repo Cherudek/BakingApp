@@ -1,6 +1,7 @@
 package com.example.gregorio.bakingapp.adapters;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -64,6 +65,14 @@ public class IngredientsAdapter extends
     mMeasure = currentIngredient.getMeasure();
     mIngredient = currentIngredient.getIngredient();
     mQuantityString = String.valueOf(quantity);
+
+    if (position % 2 == 1) {
+      holder.itemView.setBackgroundColor(Color.parseColor("#FFFFFF"));
+      //  holder.imageView.setBackgroundColor(Color.parseColor("#FFFFFF"));
+    } else {
+      holder.itemView.setBackgroundColor(Color.parseColor("#FFFAF8FD"));
+      //  holder.imageView.setBackgroundColor(Color.parseColor("#FFFAF8FD"));
+    }
 
     tvQuantity.setText(mQuantityString);
     tvMeasure.setText(mMeasure);
