@@ -24,6 +24,8 @@ public class RecipeModel implements Parcelable {
       return new RecipeModel[size];
     }
   };
+
+
   private int id;
   private ArrayList<Ingredients> ingredients = null;
   private String name;

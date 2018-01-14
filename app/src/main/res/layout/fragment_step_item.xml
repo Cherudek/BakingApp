@@ -5,7 +5,8 @@
   xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
-  android:padding="4dp"
+  android:paddingTop="8dp"
+  android:paddingBottom="8dp"
   android:orientation="horizontal">
 
   <TextView
@@ -13,7 +14,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_marginRight="8dp"
-    android:layout_gravity="left"
+    android:layout_gravity="center_vertical"
     android:fontFamily="@font/merriweather_sans_light"
     android:textSize="20sp"
     tools:text="1."/>
@@ -33,7 +34,7 @@
     android:id="@+id/step_detail"
     android:layout_width="20dp"
     android:layout_height="20dp"
-    android:layout_gravity="left"
+    android:layout_gravity="center_vertical"
     app:srcCompat="@drawable/ic_play_circle_outline_black_24dp"/>
 
 </LinearLayout>
