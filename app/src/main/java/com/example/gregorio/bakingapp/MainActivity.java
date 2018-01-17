@@ -1,5 +1,8 @@
 package com.example.gregorio.bakingapp;
 
+import android.app.PendingIntent;
+import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
 import android.content.Intent;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
@@ -46,11 +49,21 @@ public class MainActivity extends AppCompatActivity implements OnRecipeClickList
     //Select the correct recipe model to pass to the Detail Intent
     RecipeModel recipeModels = mRecipes.get(position - 1);
 
+    //Intent to open the detail activity and a parcel bringing recipe data.
     Intent intent = new Intent(this, DetailActivity.class);
     Bundle bundle = new Bundle();
     bundle.putParcelable(PARCEL_KEY, recipeModels);
-
     intent.putExtra(INTENT_KEY, bundle);
     startActivity(intent);
+
+    //Intent to pass recipe data (ingredient list) to the Widget Layout
+    Intent widgetIntent = new Intent(this, IngredientsWidgetProvider.class);
+    widgetIntent.putExtra(INTENT_KEY, bundle);
+    widgetIntent.setAction("android.appwidget.action.APPWIDGET_UPDATE");
+    int ids[] = AppWidgetManager.getInstance(getApplication())
+        .getAppWidgetIds(new ComponentName(getApplication(), IngredientsWidgetProvider.class));
+    widgetIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids);
+    sendBroadcast(widgetIntent);
+
   }
 }

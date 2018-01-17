@@ -132,8 +132,11 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
     parcelable = intent.getBundleExtra(INTENT_KEY);
 
     RecipeModel recipeModel = parcelable.getParcelable(PARCEL_KEY);
+
     mIngredientsArrayList = recipeModel.getIngredients();
+
     mStepsArrayList = recipeModel.getSteps();
+
     mRecipeName = recipeModel.getName();
 
     //Instantiate the IngredientsFragment
