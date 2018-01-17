@@ -2,6 +2,7 @@ package com.example.gregorio.bakingapp;
 
 import static com.example.gregorio.bakingapp.MainActivity.INTENT_KEY;
 import static com.example.gregorio.bakingapp.MainActivity.PARCEL_KEY;
+import static com.example.gregorio.bakingapp.MainActivity.RECIPE_NAME_KEY;
 
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
@@ -22,19 +23,21 @@ public class IngredientsWidgetProvider extends AppWidgetProvider {
 
   private int numberOfIngredients;
   private String ingredientsList;
+  private String recipeName;
   private String LOG_TAG = IngredientsWidgetProvider.class.getSimpleName();
 
 
   static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
-      int appWidgetId, String ingredientsList) {
+      int appWidgetId, String ingredientsList, String recipeName) {
 
-    CharSequence widgetText = context.getString(R.string.ingredients);
+    CharSequence widgetTitle =
+        recipeName.toUpperCase() + " " + context.getString(R.string.ingredients);
     // Construct the RemoteViews object
     RemoteViews views = new RemoteViews(context.getPackageName(),
         R.layout.ingredients_widget_provider);
 
     //set the Title of the label title view
-    views.setTextViewText(R.id.appwidget_title, widgetText);
+    views.setTextViewText(R.id.appwidget_title, widgetTitle);
 
     // TO DO fetch the ingredients list from the ingredients fragment.
     //set the text
@@ -53,9 +56,12 @@ public class IngredientsWidgetProvider extends AppWidgetProvider {
   @Override
   public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
 
+    ingredientsList = "";
+    recipeName = "";
+
     // There may be multiple widgets active, so update all of them
     for (int appWidgetId : appWidgetIds) {
-      updateAppWidget(context, appWidgetManager, appWidgetId, ingredientsList);
+      updateAppWidget(context, appWidgetManager, appWidgetId, ingredientsList, recipeName);
     }
   }
 
@@ -76,14 +82,16 @@ public class IngredientsWidgetProvider extends AppWidgetProvider {
 
     //Get the Broadcast parcelable and number of Widgets from the MainActivity
     Bundle parcelable = intent.getParcelableExtra(INTENT_KEY);
+    recipeName = intent.getStringExtra(RECIPE_NAME_KEY);
     int[] ids = intent.getIntArrayExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS);
 
     //Detecting the action from the Broadcast received
     String action = intent.getAction();
     AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
 
-    if (action == AppWidgetManager.ACTION_APPWIDGET_UPDATE && parcelable != null) {
+    if (action.equals(AppWidgetManager.ACTION_APPWIDGET_UPDATE) && parcelable != null) {
 
+      //Extract the data from the Broadcast Intent
       parcelable = intent.getParcelableExtra(INTENT_KEY);
       RecipeModel recipeModel = parcelable.getParcelable(PARCEL_KEY);
       ArrayList<Ingredients> mIngredientsArrayList = recipeModel.getIngredients();
@@ -94,20 +102,18 @@ public class IngredientsWidgetProvider extends AppWidgetProvider {
       for (int a = 0; a < numberOfIngredients; a++) {
         Ingredients currentIngredients = mIngredientsArrayList.get(a);
         ingredientsList = ingredientsList + currentIngredients.getIngredient() + "\n";
-
       }
 
       //Iterating through all the instances of the widget to update all the Widgets
       for (int i = 0; i < ids.length; i++) {
-        updateAppWidget(context, appWidgetManager, ids[i], ingredientsList);
+        updateAppWidget(context, appWidgetManager, ids[i], ingredientsList, recipeName);
 
       }
+      Log.i(LOG_TAG, "onReceive: Recipe Name is: " + recipeName);
       Log.i(LOG_TAG, "onReceive: Number of Ingredients: " + ingredientsList);
       Log.i(LOG_TAG, "onReceive: Widgets Ids: " + ids);
 
     }
-
-
   }
 }
 

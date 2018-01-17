@@ -23,6 +23,8 @@ public class MainActivity extends AppCompatActivity implements OnRecipeClickList
 
   public static final String INTENT_KEY = "Bundle";
   public static final String PARCEL_KEY = "Parcel";
+  public static final String RECIPE_NAME_KEY = "Recipe Name Key";
+
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +50,7 @@ public class MainActivity extends AppCompatActivity implements OnRecipeClickList
     int size = mRecipes.size();
     //Select the correct recipe model to pass to the Detail Intent
     RecipeModel recipeModels = mRecipes.get(position - 1);
+    String recipeName = recipeModels.getName();
 
     //Intent to open the detail activity and a parcel bringing recipe data.
     Intent intent = new Intent(this, DetailActivity.class);
@@ -59,6 +62,7 @@ public class MainActivity extends AppCompatActivity implements OnRecipeClickList
     //Intent to pass recipe data (ingredient list) to the Widget Layout
     Intent widgetIntent = new Intent(this, IngredientsWidgetProvider.class);
     widgetIntent.putExtra(INTENT_KEY, bundle);
+    widgetIntent.putExtra(RECIPE_NAME_KEY, recipeName);
     widgetIntent.setAction("android.appwidget.action.APPWIDGET_UPDATE");
     int ids[] = AppWidgetManager.getInstance(getApplication())
         .getAppWidgetIds(new ComponentName(getApplication(), IngredientsWidgetProvider.class));
