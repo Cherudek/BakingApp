@@ -37,7 +37,6 @@ public class IngredientsWidgetProvider extends AppWidgetProvider {
     views.setTextViewText(R.id.appwidget_title, widgetText);
 
     // TO DO fetch the ingredients list from the ingredients fragment.
-
     //set the text
     views.setTextViewText(R.id.appwidget_ingredients_list, ingredientsList);
 
@@ -53,8 +52,6 @@ public class IngredientsWidgetProvider extends AppWidgetProvider {
 
   @Override
   public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-    Log.i(LOG_TAG, "onUpdate: Number of Ingredients: " + numberOfIngredients);
-    ingredientsList = String.valueOf(numberOfIngredients);
 
     // There may be multiple widgets active, so update all of them
     for (int appWidgetId : appWidgetIds) {
@@ -77,11 +74,12 @@ public class IngredientsWidgetProvider extends AppWidgetProvider {
   public void onReceive(Context context, Intent intent) {
     super.onReceive(context, intent);
 
+    //Get the Broadcast parcelable and number of Widgets from the MainActivity
     Bundle parcelable = intent.getParcelableExtra(INTENT_KEY);
-    int ids[] = intent.getIntArrayExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS);
+    int[] ids = intent.getIntArrayExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS);
 
+    //Detecting the action from the Broadcast received
     String action = intent.getAction();
-
     AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
 
     if (action == AppWidgetManager.ACTION_APPWIDGET_UPDATE && parcelable != null) {
@@ -90,12 +88,22 @@ public class IngredientsWidgetProvider extends AppWidgetProvider {
       RecipeModel recipeModel = parcelable.getParcelable(PARCEL_KEY);
       ArrayList<Ingredients> mIngredientsArrayList = recipeModel.getIngredients();
       numberOfIngredients = mIngredientsArrayList.size();
-      ingredientsList = String.valueOf(numberOfIngredients);
 
-      updateAppWidget(context, appWidgetManager, ids[0], ingredientsList);
+      // Iterating through the Ingredients Array List to extract the ingredients to update
+      //the Widget ingredients list
+      for (int a = 0; a < numberOfIngredients; a++) {
+        Ingredients currentIngredients = mIngredientsArrayList.get(a);
+        ingredientsList = ingredientsList + currentIngredients.getIngredient() + "\n";
+
+      }
+
+      //Iterating through all the instances of the widget to update all the Widgets
+      for (int i = 0; i < ids.length; i++) {
+        updateAppWidget(context, appWidgetManager, ids[i], ingredientsList);
+
+      }
       Log.i(LOG_TAG, "onReceive: Number of Ingredients: " + ingredientsList);
       Log.i(LOG_TAG, "onReceive: Widgets Ids: " + ids);
-
 
     }
 
