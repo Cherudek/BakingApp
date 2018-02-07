@@ -56,6 +56,7 @@ public class IngredientsWidgetProvider extends AppWidgetProvider {
   @Override
   public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
 
+    //Set The Initial Value to blank
     ingredientsList = "";
     recipeName = "";
 
@@ -74,6 +75,7 @@ public class IngredientsWidgetProvider extends AppWidgetProvider {
   @Override
   public void onDisabled(Context context) {
     // Enter relevant functionality for when the last widget is disabled
+
   }
 
   @Override
@@ -109,10 +111,10 @@ public class IngredientsWidgetProvider extends AppWidgetProvider {
         updateAppWidget(context, appWidgetManager, ids[i], ingredientsList, recipeName);
 
       }
+
       Log.i(LOG_TAG, "onReceive: Recipe Name is: " + recipeName);
       Log.i(LOG_TAG, "onReceive: Number of Ingredients: " + ingredientsList);
       Log.i(LOG_TAG, "onReceive: Widgets Ids: " + ids);
-
     }
   }
 }
