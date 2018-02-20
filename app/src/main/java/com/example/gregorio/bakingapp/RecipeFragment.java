@@ -67,6 +67,9 @@ public class RecipeFragment extends Fragment implements RecipeAdapter.RecipeAdap
     // Load the saved state (the list of images and list index) if there is one
     if (savedInstanceState != null) {
       repos = savedInstanceState.getParcelableArrayList(BUNDLE_KEY);
+
+      // TODO Add an if else statement in case the is no internet connection and the
+      // JSON does not fetch any data (Repos is null).
       int size = repos.size();
       Log.d(LOG_TAG, "SavedInstance state returned size is:  " + size);
     }

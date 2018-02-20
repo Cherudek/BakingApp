@@ -40,14 +40,12 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
   public static final String RECIPE_NAME_KEY = "Recipe Name";
   public static final String STEPS_ARRAY_LIST_KEY = "Steps Array List Key";
   public static final String INGREDIENTS_ARRAY_LIST_KEY = "Ingredients Array List Key";
+  public static final String VIDEO_POSITION_BUNDLE = "Video Position Key";
   public static final String VIDEO_ID_BUNDLE = "Video ID Key";
   public static final String STEPS_SIZE_BUNDLE = "Steps Size Key";
   public static final String STEP_FRAGMENT_TAG = "Step Fragment Tag";
   public static final String INGREDIENTS_FRAGMENT_TAG = "Ingredients Fragment Tag";
   public static final String VIDEO_FRAGMENT_TAG = "Video Fragment Tag";
-
-
-
 
   private String mVideoUrl;
   private String mLongDescription;
@@ -57,7 +55,6 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
   private FragmentManager fragmentManager;
   private ArrayList<Steps> mStepsArrayList;
   private ArrayList<Ingredients> mIngredientsArrayList;
-
 
   private TextView ingredientsLabel;
   private FrameLayout ingredientsFrame;
@@ -70,6 +67,7 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
   private Intent intent;
   private Bundle parcelable;
   private Bundle onDestroyBundle;
+  private Integer position;
 
   private VideoStepFragment videoStepFragment;
 
@@ -130,13 +128,9 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
     //Receiving the Intent form the MainActivity to pass data to Ingredient & Steps Fragment
     intent = getIntent();
     parcelable = intent.getBundleExtra(INTENT_KEY);
-
     RecipeModel recipeModel = parcelable.getParcelable(PARCEL_KEY);
-
     mIngredientsArrayList = recipeModel.getIngredients();
-
     mStepsArrayList = recipeModel.getSteps();
-
     mRecipeName = recipeModel.getName();
 
     //Instantiate the IngredientsFragment
@@ -155,8 +149,8 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
         .commit();
   }
 
-
   // This method will trigger OnStepsClickListener Interface to Set up the VideoSteps Fragment on the
+
   @Override
   public void onRecipeSelected(int position) {
 
@@ -172,10 +166,13 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
     videoUrlBundle.putInt(VIDEO_ID_BUNDLE, mId);
     videoUrlBundle.putInt(STEPS_SIZE_BUNDLE, stepsSize);
     videoUrlBundle.putParcelableArrayList(STEPS_ARRAY_LIST_KEY, mStepsArrayList);
+    videoUrlBundle.putInt(VIDEO_POSITION_BUNDLE, position);
 
     Log.d(LOG_TAG, "My Video Url is : " + mVideoUrl);
     Log.d(LOG_TAG, "My Long Description is : " + mLongDescription);
     Log.d(LOG_TAG, "My Video ID is : " + mId);
+    Log.d(LOG_TAG, "My Video Position is : " + position);
+
 
     //Instantiating the Video & Long description  Fragment
     videoStepFragment = new VideoStepFragment();
@@ -188,7 +185,6 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
         .replace(R.id.details_container, videoStepFragment)
         .addToBackStack(null)
         .commit();
-
   }
 
 
@@ -199,6 +195,7 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
     outState.putParcelableArrayList(INGREDIENTS_ARRAY_LIST_KEY, mIngredientsArrayList);
     outState.putParcelable(STEP_PARCEL_KEY, steps);
     outState.putString(RECIPE_NAME_KEY, mRecipeName);
+
     int stepsArraySize = mStepsArrayList.size();
     int ingredientsArraySize = mIngredientsArrayList.size();
 

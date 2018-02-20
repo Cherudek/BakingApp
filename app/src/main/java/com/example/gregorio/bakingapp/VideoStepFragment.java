@@ -68,7 +68,6 @@ public class VideoStepFragment extends Fragment implements ExoPlayer.EventListen
   private static final String CURRENT_POSITION_KEY = "Current Position Key";
   private static final String STEP_ARRAY_LIST_KEY = "Step Array List";
 
-
   private static MediaSessionCompat mMediaSession;
   private Context mContext;
   private SimpleExoPlayer mExoPlayer;
@@ -204,8 +203,11 @@ public class VideoStepFragment extends Fragment implements ExoPlayer.EventListen
 
   //Get the previous Video Step Description
   private void recipePreviousStep() {
+
+    int minStepId = stepsSize + 1;
+
     if (stepId == 0) {
-      int previousStepId = stepsSize - 1;
+      int previousStepId = --stepsSize;
       Steps steps = stepsArrayList.get(previousStepId);
 
       String stepDescription = steps.getDescription();
@@ -215,7 +217,8 @@ public class VideoStepFragment extends Fragment implements ExoPlayer.EventListen
       //Parse the video url
       Uri previousVideoUrl = Uri.parse(stepVideoUrl);
       initializePlayer(previousVideoUrl);
-    } else {
+
+    } else if (stepId < minStepId) {
       int previousStepId = --stepId;
       Steps steps = stepsArrayList.get(previousStepId);
       String stepDescription = steps.getDescription();
