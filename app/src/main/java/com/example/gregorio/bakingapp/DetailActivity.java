@@ -187,6 +187,13 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
         .commit();
   }
 
+  @Override
+  protected void onResume() {
+    super.onResume();
+
+    getSupportActionBar().setTitle(mRecipeName);
+
+  }
 
   @Override
   protected void onSaveInstanceState(Bundle outState) {

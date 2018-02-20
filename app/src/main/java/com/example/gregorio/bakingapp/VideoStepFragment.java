@@ -1,9 +1,9 @@
 package com.example.gregorio.bakingapp;
 
 import static com.example.gregorio.bakingapp.DetailActivity.DESCRIPTION_KEY_BUNDLE;
+import static com.example.gregorio.bakingapp.DetailActivity.RECIPE_NAME_KEY;
 import static com.example.gregorio.bakingapp.DetailActivity.STEPS_ARRAY_LIST_KEY;
 import static com.example.gregorio.bakingapp.DetailActivity.STEPS_SIZE_BUNDLE;
-import static com.example.gregorio.bakingapp.DetailActivity.STEP_PARCEL_KEY;
 import static com.example.gregorio.bakingapp.DetailActivity.VIDEO_ID_BUNDLE;
 import static com.example.gregorio.bakingapp.DetailActivity.VIDEO_KEY_BUNDLE;
 
@@ -12,7 +12,6 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.ColorInt;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.media.session.MediaSessionCompat;
@@ -22,10 +21,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.example.gregorio.bakingapp.retrofit.Steps;
 import com.google.android.exoplayer2.DefaultLoadControl;
@@ -46,14 +43,12 @@ import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
 import com.google.android.exoplayer2.trackselection.TrackSelection;
 import com.google.android.exoplayer2.trackselection.TrackSelectionArray;
 import com.google.android.exoplayer2.trackselection.TrackSelector;
-import com.google.android.exoplayer2.ui.PlaybackControlView;
 import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
 import com.google.android.exoplayer2.upstream.BandwidthMeter;
 import com.google.android.exoplayer2.upstream.DataSource;
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
-import java.net.URI;
 import java.util.ArrayList;
 
 /**
@@ -65,7 +60,11 @@ public class VideoStepFragment extends Fragment implements ExoPlayer.EventListen
   private static final String LOG_TAG = VideoStepFragment.class.getSimpleName();
   private static final String VIDEO_URL_KEY = "Video Url Key";
   private static final String DESCRIPTION_KEY = "Description Key";
-  private static final String CURRENT_POSITION_KEY = "Current Position Key";
+  private static final String CURRENT_PLAYER_POSITION_KEY = "Current Player Position Key";
+  private static final String CURRENT_STEP_SIZE_KEY = "Current Step Size Position Key";
+  private static final String CURRENT_STEP_POSITION_KEY = "Current Step Position Key";
+  private static final String CURRENT_RECIPE_NAME_KEY = "Current Recipe Name Key";
+
   private static final String STEP_ARRAY_LIST_KEY = "Step Array List";
 
   private static MediaSessionCompat mMediaSession;
@@ -84,7 +83,8 @@ public class VideoStepFragment extends Fragment implements ExoPlayer.EventListen
   private Uri videoUrlUri;
   private FrameLayout stepsFrame;
   private View rootView;
-  private long currentPosition;
+  private long currentPlayerPosition;
+  private String recipeName;
 
 
   public VideoStepFragment() {
@@ -96,7 +96,9 @@ public class VideoStepFragment extends Fragment implements ExoPlayer.EventListen
       @Nullable Bundle savedInstanceState) {
 
     if (savedInstanceState == null) {
+
       Bundle bundle = this.getArguments();
+
       if (bundle != null) {
         //Retrieving the RecipeModel sent from the MainActivity Intent Bundle
         videoUrl = bundle.getString(VIDEO_KEY_BUNDLE);
@@ -104,19 +106,27 @@ public class VideoStepFragment extends Fragment implements ExoPlayer.EventListen
         stepId = bundle.getInt(VIDEO_ID_BUNDLE);
         stepsSize = bundle.getInt(STEPS_SIZE_BUNDLE);
         stepsArrayList = bundle.getParcelableArrayList(STEPS_ARRAY_LIST_KEY);
+        recipeName = bundle.getString(RECIPE_NAME_KEY);
 
-        Log.d(LOG_TAG, "The Video Url is: " + videoUrl);
-        Log.d(LOG_TAG, "The Long Description is: " + longDescription);
-        Log.d(LOG_TAG, "The Step ID is: " + stepId);
-        Log.d(LOG_TAG, "The Number of steps are: " + stepsSize);
-        Log.d(LOG_TAG, "The Step Array List is : " + stepsArrayList);
+        Log.i(LOG_TAG, "The Video Url is: " + videoUrl);
+        Log.i(LOG_TAG, "The Long Description is: " + longDescription);
+        Log.i(LOG_TAG, "The Step ID is: " + stepId);
+        Log.i(LOG_TAG, "The Number of steps are: " + stepsSize);
+        Log.i(LOG_TAG, "The Step Array List is : " + stepsArrayList);
 
       }
+
     } else if (savedInstanceState != null) {
+
       videoUrl = savedInstanceState.getString(VIDEO_URL_KEY);
       longDescription = savedInstanceState.getString(DESCRIPTION_KEY);
-      currentPosition = savedInstanceState.getLong(CURRENT_POSITION_KEY);
+      currentPlayerPosition = savedInstanceState.getLong(CURRENT_PLAYER_POSITION_KEY);
       stepsArrayList = savedInstanceState.getParcelableArrayList(STEP_ARRAY_LIST_KEY);
+      recipeName = savedInstanceState.getString(RECIPE_NAME_KEY);
+      stepId = savedInstanceState.getInt(CURRENT_STEP_POSITION_KEY);
+
+      Log.i(LOG_TAG, "ON VIEW CREATE RESTORE STEP is: " + stepId);
+
     }
 
     //inflating the ingredient fragment layout within its container in the activity_detail
@@ -172,6 +182,26 @@ public class VideoStepFragment extends Fragment implements ExoPlayer.EventListen
     return rootView;
   }
 
+  //On Phone Rotation Restore the values saved in the savedInstanceSate bundle
+
+  @Override
+  public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+    super.onActivityCreated(savedInstanceState);
+
+    if (savedInstanceState != null) {
+      videoUrl = savedInstanceState.getString(VIDEO_URL_KEY);
+      longDescription = savedInstanceState.getString(DESCRIPTION_KEY);
+      currentPlayerPosition = savedInstanceState.getLong(CURRENT_PLAYER_POSITION_KEY);
+      stepsArrayList = savedInstanceState.getParcelableArrayList(STEP_ARRAY_LIST_KEY);
+      recipeName = savedInstanceState.getString(RECIPE_NAME_KEY);
+      stepId = savedInstanceState.getInt(CURRENT_STEP_POSITION_KEY);
+      stepsSize = savedInstanceState.getInt(CURRENT_STEP_SIZE_KEY);
+
+      Log.i(LOG_TAG, "ON ACTIVITY CREATED RESTORE STEP is: " + stepId);
+
+    }
+  }
+
   //Get the next Video Step Description
   private void recipeNextStep() {
 
@@ -180,55 +210,39 @@ public class VideoStepFragment extends Fragment implements ExoPlayer.EventListen
     if (stepId < maxStepId) {
       int index = ++stepId;
       Steps steps = stepsArrayList.get(index);
-      String stepDescription = steps.getDescription();
-      String stepVideoUrel = steps.getVideoURL();
-      //Setting the TextView with the Long Description
-      tvLongDescription.setText(stepDescription);
-      //Parse the video url
-      Uri nextVideoUrl = Uri.parse(stepVideoUrel);
-      initializePlayer(nextVideoUrl);
-
+      setStep(steps);
     } else {
       stepId = 0;
       Steps steps = stepsArrayList.get(stepId);
-      String stepDescription = steps.getDescription();
-      String stepVideoUrel = steps.getVideoURL();
-      //Setting the TextView with the Long Description
-      tvLongDescription.setText(stepDescription);
-      //Parse the video url
-      Uri previousVideoUrl = Uri.parse(stepVideoUrel);
-      initializePlayer(previousVideoUrl);
+      setStep(steps);
     }
   }
 
   //Get the previous Video Step Description
   private void recipePreviousStep() {
 
-    int minStepId = stepsSize + 1;
+    int totStepNo = stepsSize - 1;
 
-    if (stepId == 0) {
-      int previousStepId = --stepsSize;
-      Steps steps = stepsArrayList.get(previousStepId);
-
-      String stepDescription = steps.getDescription();
-      String stepVideoUrl = steps.getVideoURL();
-      //Setting the TextView with the Long Description
-      tvLongDescription.setText(stepDescription);
-      //Parse the video url
-      Uri previousVideoUrl = Uri.parse(stepVideoUrl);
-      initializePlayer(previousVideoUrl);
-
-    } else if (stepId < minStepId) {
-      int previousStepId = --stepId;
-      Steps steps = stepsArrayList.get(previousStepId);
-      String stepDescription = steps.getDescription();
-      String stepVideoUrl = steps.getVideoURL();
-      //Setting the TextView with the Long Description
-      tvLongDescription.setText(stepDescription);
-      //Parse the video url
-      Uri videoUrl = Uri.parse(stepVideoUrl);
-      initializePlayer(videoUrl);
+    if (stepId < totStepNo && stepId > 0) {
+      int index = --stepId;
+      Steps steps = stepsArrayList.get(index);
+      setStep(steps);
+    } else {
+      Steps steps = stepsArrayList.get(stepId);
+      setStep(steps);
     }
+  }
+
+  // Provided the step object populate the UI
+  private void setStep(Steps steps) {
+
+    String stepDescription = steps.getDescription();
+    String stepVideoUrl = steps.getVideoURL();
+    //Setting the TextView with the Long Description
+    tvLongDescription.setText(stepDescription);
+    //Parse the video url
+    Uri previousVideoUrl = Uri.parse(stepVideoUrl);
+    initializePlayer(previousVideoUrl);
   }
 
   /**
@@ -279,7 +293,7 @@ public class VideoStepFragment extends Fragment implements ExoPlayer.EventListen
 
       //if the player is not null go to saved position after rotation.
       if (mExoPlayer != null) {
-        mExoPlayer.seekTo(currentPosition);
+        mExoPlayer.seekTo(currentPlayerPosition);
         // Prepare the player with the source.
         mExoPlayer.prepare(videoSource);
         mExoPlayer.setPlayWhenReady(true);
@@ -380,9 +394,19 @@ public class VideoStepFragment extends Fragment implements ExoPlayer.EventListen
   public void onPause() {
     super.onPause();
     //save the current video position to reinstate on phone rotation
-    currentPosition = mExoPlayer.getCurrentPosition();
+    currentPlayerPosition = mExoPlayer.getCurrentPosition();
 
   }
+
+//  @Override
+//  public void onResume() {
+//    super.onResume();
+//
+//    //Setting the TextView with the Long Description
+//    tvLongDescription.setText(longDescription);
+//    //Parse the video url
+//    videoUrlUri = Uri.parse(videoUrl);
+//  }
 
   @Override
   public void onDestroyView() {
@@ -395,11 +419,18 @@ public class VideoStepFragment extends Fragment implements ExoPlayer.EventListen
     super.onSaveInstanceState(outState);
     outState.putString(VIDEO_URL_KEY, videoUrl);
     outState.putString(DESCRIPTION_KEY, longDescription);
-    outState.putLong(CURRENT_POSITION_KEY, currentPosition);
+    outState.putLong(CURRENT_PLAYER_POSITION_KEY, currentPlayerPosition);
     outState.putParcelableArrayList(STEP_ARRAY_LIST_KEY, stepsArrayList);
+    outState.putString(CURRENT_RECIPE_NAME_KEY, recipeName);
+    outState.putInt(CURRENT_STEP_POSITION_KEY, stepId);
+    outState.putInt(CURRENT_STEP_SIZE_KEY, stepsSize);
 
-    Log.i(LOG_TAG, "VideoFragment OnSaved Instance Url: " + videoUrl);
-    Log.i(LOG_TAG, "VideoFragment OnSaved Instance Current Position: " + currentPosition);
+    Log.d(LOG_TAG, "VideoFragment OnSaved Instance Url: " + videoUrl);
+    Log.d(LOG_TAG,
+        "VideoFragment OnSaved Instance Current Player Position: " + currentPlayerPosition);
+    Log.d(LOG_TAG, "VideoFragment OnSaved Instance Steps Number: " + stepsSize);
+    Log.d(LOG_TAG, "VideoFragment OnSaved Instance Steps Number: " + stepsSize);
+
 
   }
 
