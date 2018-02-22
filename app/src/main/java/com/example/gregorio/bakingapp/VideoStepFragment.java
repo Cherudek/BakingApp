@@ -98,7 +98,6 @@ public class VideoStepFragment extends Fragment implements ExoPlayer.EventListen
       @Nullable Bundle savedInstanceState) {
 
     //On Phone Rotation Restore the values saved in the savedInstanceSate bundle
-
     if (savedInstanceState != null) {
 
       currentPlayerPosition = savedInstanceState.getLong(CURRENT_PLAYER_POSITION_KEY);
@@ -108,6 +107,7 @@ public class VideoStepFragment extends Fragment implements ExoPlayer.EventListen
       Steps savedInstanceStep = stepsArrayList.get(stepId);
       videoUrl = savedInstanceStep.getVideoURL();
       longDescription = savedInstanceStep.getDescription();
+      playWhenReady = savedInstanceState.getBoolean(PLAYER_STATE_KEY);
 
       recipeName = savedInstanceState.getString(RECIPE_NAME_KEY);
       stepsSize = savedInstanceState.getInt(CURRENT_STEP_SIZE_KEY);
@@ -128,16 +128,12 @@ public class VideoStepFragment extends Fragment implements ExoPlayer.EventListen
         recipeName = bundle.getString(RECIPE_NAME_KEY);
 
         Log.i(LOG_TAG, "The Video Url is: " + videoUrl);
-        Log.i(LOG_TAG, "The Long Description is: " + longDescription);
         Log.i(LOG_TAG, "The Step ID is: " + stepId);
         Log.i(LOG_TAG, "The Number of steps are: " + stepsSize);
         Log.i(LOG_TAG, "The Step Array List is : " + stepsArrayList);
 
       }
-
     }
-
-
 
     //inflating the ingredient fragment layout within its container in the activity_detail
     rootView = inflater.inflate(R.layout.fragment_video_description, container, false);
@@ -175,7 +171,7 @@ public class VideoStepFragment extends Fragment implements ExoPlayer.EventListen
           new AdaptiveTrackSelection.Factory(bandwidthMeter);
       TrackSelector trackSelector =
           new DefaultTrackSelector(videoTrackSelectionFactory);
-      // 2. Create the player
+      //Create the player
       mExoPlayer = ExoPlayerFactory.newSimpleInstance(getContext(), trackSelector);
 
     }
@@ -184,30 +180,6 @@ public class VideoStepFragment extends Fragment implements ExoPlayer.EventListen
 
     return rootView;
   }
-
-//  //On Phone Rotation Restore the values saved in the savedInstanceSate bundle
-//
-//  @Override
-//  public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-//    super.onActivityCreated(savedInstanceState);
-//
-//    if (savedInstanceState != null) {
-//      currentPlayerPosition = savedInstanceState.getLong(CURRENT_PLAYER_POSITION_KEY);
-//      stepsArrayList = savedInstanceState.getParcelableArrayList(STEP_ARRAY_LIST_KEY);
-//      stepId = savedInstanceState.getInt(CURRENT_STEP_POSITION_KEY);
-//
-//      Steps savedInstanceStep = stepsArrayList.get(stepId);
-//      videoUrl = savedInstanceStep.getVideoURL();
-//      longDescription = savedInstanceStep.getDescription();
-//
-//      recipeName = savedInstanceState.getString(RECIPE_NAME_KEY);
-//      stepsSize = savedInstanceState.getInt(CURRENT_STEP_SIZE_KEY);
-//
-//      Log.i(LOG_TAG, "ON ACTIVITY CREATED RESTORE STEP is: " + stepId);
-//
-//
-//    }
-//  }
 
   //Get the next Video Step Data
   private void recipeNextStep() {
@@ -237,7 +209,7 @@ public class VideoStepFragment extends Fragment implements ExoPlayer.EventListen
     }
   }
 
-  // Provided the step object to populate the UI
+  // Provide the step object to populate the UI
   private void setStep(Steps steps) {
 
     String stepDescription = steps.getDescription();
@@ -305,7 +277,7 @@ public class VideoStepFragment extends Fragment implements ExoPlayer.EventListen
 
     // Prepare the player with the source.
     mExoPlayer.prepare(videoSource);
-    mExoPlayer.setPlayWhenReady(true);
+    mExoPlayer.setPlayWhenReady(playWhenReady);
   }
 
 
@@ -396,19 +368,10 @@ public class VideoStepFragment extends Fragment implements ExoPlayer.EventListen
     super.onPause();
     //save the current video player position to reinstate on phone rotation
     currentPlayerPosition = mExoPlayer.getCurrentPosition();
-    //playWhenReady = mExoPlayer.getPlayWhenReady();
-  }
+    playWhenReady = mExoPlayer.getPlayWhenReady();
+    mExoPlayer.release();
 
-//    @Override
-//    public void onResume() {
-//    super.onResume();
-//
-//    //Setting the TextView with the Long Description
-//    tvLongDescription.setText(longDescription);
-//    //initializePlayer(videoUrlUri);
-//
-//
-//    }
+  }
 
   @Override
   public void onDestroyView() {
