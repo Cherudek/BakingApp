@@ -44,7 +44,7 @@ public class RecyclerViewTest2 {
     onView(ViewMatchers.withId(R.id.btn_view_steps))
         .perform(click());
 
-    onView(ViewMatchers.withId(R.id.rv_fragment_detail_list))
+    onView(ViewMatchers.withId(R.id.rv_fragment_step_list))
         .perform(RecyclerViewActions.actionOnItemAtPosition(2,
             ViewActions.scrollTo()));
 
