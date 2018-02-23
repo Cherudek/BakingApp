@@ -6,10 +6,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import com.example.gregorio.bakingapp.R;
 import com.example.gregorio.bakingapp.retrofit.Ingredients;
 import com.example.gregorio.bakingapp.retrofit.RecipeModel;
+import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -55,8 +57,15 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
     String recipeName = currentRecipe.getName();
     int servingsNumber = currentRecipe.getServings();
     String servingsText = String.valueOf(servingsNumber);
+    String imageString = currentRecipe.getImage();
     recipe.setText(recipeName);
     servings.setText(servingsText);
+
+    //Load the image is the Url is not empty
+    if (!imageString.isEmpty()) {
+      Picasso.with(holder.image.getContext()).load(imageString).into(holder.image);
+    }
+
   }
 
   @Override
@@ -82,10 +91,13 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
 
   public class RecipeViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
+    public final ImageView image;
+
     public RecipeViewHolder(View itemView) {
       super(itemView);
       recipe = itemView.findViewById(R.id.recipe_name);
       servings = itemView.findViewById(R.id.servings);
+      image = itemView.findViewById(R.id.cake_image);
       itemView.setOnClickListener(this);
     }
 
@@ -103,7 +115,6 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
 
       Log.d(LOG_TAG, "Click position: " + recipeName + " Servings: " + recipeServings
           + " Ingredients: " + ingredientString);
-
 
     }
   }

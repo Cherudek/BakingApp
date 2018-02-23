@@ -63,5 +63,8 @@ dependencies {
     compile 'com.android.support.test.espresso:espresso-idling-resource:3.0.1'
     compile 'com.android.support:recyclerview-v7:26.1.0'
 
+    //Picasso Image Library
+    compile "com.squareup.picasso:picasso:2.4.0"
+
 
 }

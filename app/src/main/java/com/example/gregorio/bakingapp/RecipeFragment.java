@@ -70,8 +70,13 @@ public class RecipeFragment extends Fragment implements RecipeAdapter.RecipeAdap
 
       // TODO Add an if else statement in case the is no internet connection and the
       // JSON does not fetch any data (Repos is null).
-      int size = repos.size();
-      Log.d(LOG_TAG, "SavedInstance state returned size is:  " + size);
+      if (repos != null) {
+        int size = repos.size();
+        Log.d(LOG_TAG, "SavedInstance state returned size is:  " + size);
+      } else {
+        Toast.makeText(getContext(), "Sorry Couldn't fetch any data...", Toast.LENGTH_SHORT).show();
+      }
+
     }
 
     mContext = getActivity().getApplicationContext();
@@ -108,7 +113,7 @@ public class RecipeFragment extends Fragment implements RecipeAdapter.RecipeAdap
       public void onResponse(Call<ArrayList<RecipeModel>> call,
           Response<ArrayList<RecipeModel>> response) {
         // The network call was a success and we got a response
-        // TODO: use the repository list and display it
+
         if (response !=null){
           repos = response.body();
           numberOFRecipes = repos.size();
@@ -119,9 +124,8 @@ public class RecipeFragment extends Fragment implements RecipeAdapter.RecipeAdap
       @Override
       public void onFailure(Call<ArrayList<RecipeModel>> call, Throwable t) {
         // the network call was a failure
-        // TODO: handle error
         t.getStackTrace();
-        Toast.makeText(getContext(), "Error Fetching JSON", Toast.LENGTH_LONG).show();
+        Toast.makeText(getContext(), R.string.connection_error, Toast.LENGTH_LONG).show();
       }
     });
 

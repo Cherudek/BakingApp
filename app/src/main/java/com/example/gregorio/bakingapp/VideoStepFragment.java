@@ -23,6 +23,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 import com.example.gregorio.bakingapp.retrofit.Steps;
 import com.google.android.exoplayer2.DefaultLoadControl;
@@ -49,6 +50,7 @@ import com.google.android.exoplayer2.upstream.DataSource;
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
+import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 
 /**
@@ -87,6 +89,10 @@ public class VideoStepFragment extends Fragment implements ExoPlayer.EventListen
   private long currentPlayerPosition;
   private String recipeName;
   private boolean playWhenReady;
+  private ImageView stepImage;
+  private String thumbnailUrl;
+
+
 
 
   public VideoStepFragment() {
@@ -108,6 +114,7 @@ public class VideoStepFragment extends Fragment implements ExoPlayer.EventListen
       videoUrl = savedInstanceStep.getVideoURL();
       longDescription = savedInstanceStep.getDescription();
       playWhenReady = savedInstanceState.getBoolean(PLAYER_STATE_KEY);
+      thumbnailUrl = savedInstanceStep.getThumbnailURL();
 
       recipeName = savedInstanceState.getString(RECIPE_NAME_KEY);
       stepsSize = savedInstanceState.getInt(CURRENT_STEP_SIZE_KEY);
@@ -126,7 +133,10 @@ public class VideoStepFragment extends Fragment implements ExoPlayer.EventListen
         stepsSize = bundle.getInt(STEPS_SIZE_BUNDLE);
         stepsArrayList = bundle.getParcelableArrayList(STEPS_ARRAY_LIST_KEY);
         recipeName = bundle.getString(RECIPE_NAME_KEY);
+        Steps step = stepsArrayList.get(stepId);
+        thumbnailUrl = step.getThumbnailURL();
 
+        Log.i(LOG_TAG, "The thumbnail Url is: " + thumbnailUrl);
         Log.i(LOG_TAG, "The Video Url is: " + videoUrl);
         Log.i(LOG_TAG, "The Step ID is: " + stepId);
         Log.i(LOG_TAG, "The Number of steps are: " + stepsSize);
@@ -144,6 +154,8 @@ public class VideoStepFragment extends Fragment implements ExoPlayer.EventListen
     tvLongDescription = rootView.findViewById(R.id.long_description);
     nextStep = rootView.findViewById(R.id.next_steps_btn);
     previousStep = rootView.findViewById(R.id.previous_steps_btn);
+    stepImage = rootView.findViewById(R.id.recipe_step_image);
+
 
     //Setting the OnClickListeners on the Next and Previous Btns
     nextStep.setOnClickListener(new OnClickListener() {
@@ -163,6 +175,10 @@ public class VideoStepFragment extends Fragment implements ExoPlayer.EventListen
     tvLongDescription.setText(longDescription);
     //Parse the video url
     videoUrlUri = Uri.parse(videoUrl);
+    //Set the thumbnail image to the ImageView if the Url is not empty
+    if (!thumbnailUrl.isEmpty()) {
+      Picasso.with(mContext).load(thumbnailUrl).into(stepImage);
+    }
 
     //SetUp of the Exo Player
     if (mExoPlayer == null) {

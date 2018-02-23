@@ -25,8 +25,8 @@ public class RecipeModel implements Parcelable {
     }
   };
 
-
   private int id;
+  private String image;
   private ArrayList<Ingredients> ingredients = null;
   private String name;
   private int servings;
@@ -37,8 +37,29 @@ public class RecipeModel implements Parcelable {
   public RecipeModel() {
   }
 
+  //Without Image Field
+//  protected RecipeModel(Parcel in) {
+//    id = in.readInt();
+//    if (in.readByte() == 0x01) {
+//      ingredients = new ArrayList<Ingredients>();
+//      in.readList(ingredients, Ingredients.class.getClassLoader());
+//    } else {
+//      ingredients = null;
+//    }
+//    name = in.readString();
+//    servings = in.readInt();
+//    if (in.readByte() == 0x01) {
+//      steps = new ArrayList<Steps>();
+//      in.readList(steps, Steps.class.getClassLoader());
+//    } else {
+//      steps = null;
+//    }
+//  }
+
+  //With Image field
   protected RecipeModel(Parcel in) {
     id = in.readInt();
+    image = in.readString();
     if (in.readByte() == 0x01) {
       ingredients = new ArrayList<Ingredients>();
       in.readList(ingredients, Ingredients.class.getClassLoader());
@@ -57,6 +78,14 @@ public class RecipeModel implements Parcelable {
 
   public int getId() {
     return id;
+  }
+
+  public String getImage() {
+    return image;
+  }
+
+  public void setImage(String image) {
+    this.image = image;
   }
 
   public String getName() {
@@ -80,9 +109,32 @@ public class RecipeModel implements Parcelable {
     return 0;
   }
 
+  //Without Image Field
+//  @Override
+//  public void writeToParcel(Parcel dest, int flags) {
+//    dest.writeInt(id);
+//    if (ingredients == null) {
+//      dest.writeByte((byte) (0x00));
+//    } else {
+//      dest.writeByte((byte) (0x01));
+//      dest.writeList(ingredients);
+//    }
+//    dest.writeString(name);
+//    dest.writeInt(servings);
+//    if (steps == null) {
+//      dest.writeByte((byte) (0x00));
+//    } else {
+//      dest.writeByte((byte) (0x01));
+//      dest.writeList(steps);
+//    }
+//  }
+
+
+  //With Image Field
   @Override
   public void writeToParcel(Parcel dest, int flags) {
     dest.writeInt(id);
+    dest.writeString(image);
     if (ingredients == null) {
       dest.writeByte((byte) (0x00));
     } else {
@@ -98,6 +150,4 @@ public class RecipeModel implements Parcelable {
       dest.writeList(steps);
     }
   }
-
-
 }

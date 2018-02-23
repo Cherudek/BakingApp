@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import com.example.gregorio.bakingapp.R;
 import com.example.gregorio.bakingapp.adapters.StepsAdapter.StepsViewHolder;
@@ -93,6 +94,7 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsViewHolder> {
 
   public class StepsViewHolder extends RecyclerView.ViewHolder implements
       View.OnClickListener {
+
 
     public StepsViewHolder(View itemView) {
       super(itemView);
