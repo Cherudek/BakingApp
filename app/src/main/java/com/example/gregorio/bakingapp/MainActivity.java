@@ -20,7 +20,6 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity implements OnRecipeClickListener {
 
   public static final String LOG_TAG = MainActivity.class.getSimpleName();
-
   public static final String INTENT_KEY = "Bundle";
   public static final String PARCEL_KEY = "Parcel";
   public static final String RECIPE_NAME_KEY = "Recipe Name Key";

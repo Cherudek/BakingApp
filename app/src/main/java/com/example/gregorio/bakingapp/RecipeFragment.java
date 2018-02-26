@@ -5,8 +5,10 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,16 +30,15 @@ public class RecipeFragment extends Fragment implements RecipeAdapter.RecipeAdap
 
   private static final String LOG_TAG = RecipeFragment.class.getSimpleName();
   private static final String BUNDLE_KEY = "OnSavedInstance Bundle";
-
-
+  public Boolean isTabletLandscape;
   // Define a new interface OnStepsClickListener that triggers a callback in the host activity
   OnRecipeClickListener mCallback;
-
   private String API_BASE_URL = "https://d17h27t6h515a5.cloudfront.net/topher/2017/May/59121517_baking/";
   private RecipesCall recipesCall;
   private RecyclerView recyclerView;
   private RecipeAdapter recipeAdapter;
   private LinearLayoutManager layoutManager;
+  private GridLayoutManager gridLayoutManager;
   private int numberOFRecipes;
   private Context mContext;
   private ArrayList<RecipeModel> repos;
@@ -58,6 +59,7 @@ public class RecipeFragment extends Fragment implements RecipeAdapter.RecipeAdap
           + " must implement OnStepsClickListener");
     }
   }
+
 
   @Nullable
   @Override
@@ -80,6 +82,8 @@ public class RecipeFragment extends Fragment implements RecipeAdapter.RecipeAdap
     }
 
     mContext = getActivity().getApplicationContext();
+    //  isTabletLandscape = mContext.getResources().getBoolean(mContext, R.bool.)
+
 
     //inflating the main fragment layout within its container
     View rootView = inflater.inflate(R.layout.fragment_main_list, container, false);
@@ -87,7 +91,14 @@ public class RecipeFragment extends Fragment implements RecipeAdapter.RecipeAdap
     //finding the recyclerView and setting the Adapter
     recyclerView = rootView.findViewById(R.id.rv_fragment_list);
     layoutManager = new LinearLayoutManager(getContext());
-    recyclerView.setLayoutManager(layoutManager);
+    gridLayoutManager = new GridLayoutManager(mContext, 2);
+
+    //Check if I am in Tablet Landscape mode
+    if (isTabletLandscape) {
+      recyclerView.setLayoutManager(gridLayoutManager);
+    } else {
+      recyclerView.setLayoutManager(layoutManager);
+    }
     recipeAdapter = new RecipeAdapter(this, numberOFRecipes);
     recyclerView.setAdapter(recipeAdapter);
 
@@ -131,6 +142,22 @@ public class RecipeFragment extends Fragment implements RecipeAdapter.RecipeAdap
 
     return rootView;
   }
+
+//  // this method dynamically calculate the number of columns and
+//  // the layout would adapt to the screen size and orientation
+//
+//  private int numberOfColumns() {
+//    DisplayMetrics displayMetrics = new DisplayMetrics();
+//    mContext.getDefaultDisplay().getMetrics(displayMetrics);
+//    // You can change this divider to adjust the size of the poster
+//    int widthDivider = 300;
+//    int width = displayMetrics.widthPixels;
+//    int nColumns = width / widthDivider;
+//    if (nColumns < 2) {
+//      return 2;
+//    }
+//    return nColumns;
+//  }
 
   @Override
   public void onClick(int recipeIndex) {

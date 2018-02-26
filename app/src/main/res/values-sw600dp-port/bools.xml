@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-  <bool name="use_vertical_layout">true</bool>
   <bool name="isTabletLand">false</bool>
+  <bool name="use_vertical_layout">false</bool>
+
 
 </resources>
