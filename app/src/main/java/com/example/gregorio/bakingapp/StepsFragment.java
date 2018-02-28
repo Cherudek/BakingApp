@@ -1,17 +1,24 @@
 package com.example.gregorio.bakingapp;
 
+import static com.example.gregorio.bakingapp.DetailActivity.VIDEO_FRAGMENT_TAG;
 import static com.example.gregorio.bakingapp.MainActivity.PARCEL_KEY;
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.Button;
 import com.example.gregorio.bakingapp.adapters.StepsAdapter;
+import com.example.gregorio.bakingapp.retrofit.Ingredients;
 import com.example.gregorio.bakingapp.retrofit.RecipeModel;
 import com.example.gregorio.bakingapp.retrofit.Steps;
 import java.util.ArrayList;
@@ -24,12 +31,19 @@ public class StepsFragment extends Fragment implements StepsAdapter.StepsAdapter
 
   private static final String LOG_TAG = StepsFragment.class.getSimpleName();
   private static final String STEPS_ARRAY_KEY = "Steps Array List Key";
+  private static final String INGREDIENTS_ARRAY_KEY = "Ingredients Array List Key";
+  private static final String RECIPE_MODEL_KEY = "Recipe Model Key";
+
+
 
 
   // Define a new interface OnStepsClickListener that triggers a callback in the host activity
   OnStepsClickListener mCallbackHostActivity;
+  OnBtnIngredientsListClickListener mCallbackHostActivity2;
 
-  ArrayList<Steps> stepsArrayList;
+  private ArrayList<Steps> stepsArrayList;
+  private ArrayList<Ingredients> ingredientsArrayList;
+
   private StepsAdapter stepsAdapter;
   private RecyclerView rvSteps;
   private LinearLayoutManager layoutManager;
@@ -37,28 +51,42 @@ public class StepsFragment extends Fragment implements StepsAdapter.StepsAdapter
   private Context mContext;
   private Steps mStepsData;
   private String mVideoURL;
+  private VideoStepFragment videoStepFragment;
+  private Boolean isTabletLandscape;
+  private Boolean isTabletPortrait;
+  private Boolean isPortrait;
+  private Button viewIngredients;
+  private RecipeModel recipeModel;
+  private Bundle bundle;
 
   public StepsFragment() {
   }
 
   @Nullable
   @Override
-  public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
+  public View onCreateView(final LayoutInflater inflater, @Nullable ViewGroup container,
       @Nullable Bundle savedInstanceState) {
 
     if (savedInstanceState != null) {
       stepsArrayList = savedInstanceState.getParcelableArrayList(STEPS_ARRAY_KEY);
+      recipeModel = savedInstanceState.getParcelable(RECIPE_MODEL_KEY);
 
     } else {
-      Bundle bundle = this.getArguments();
+      bundle = this.getArguments();
       if (bundle != null) {
         //Retrieving the RecipeModel sent from the MainActivity Intent Bundle
-        RecipeModel recipeModel = bundle.getParcelable(PARCEL_KEY);
+        recipeModel = bundle.getParcelable(PARCEL_KEY);
         //Getting the corresponding recipe ingredients Array List
         stepsArrayList = recipeModel.getSteps();
+        ingredientsArrayList = recipeModel.getIngredients();
+
       }
 
     }
+
+    isTabletLandscape = getResources().getBoolean(R.bool.isTabletLand);
+    isTabletPortrait = getResources().getBoolean(R.bool.isTablet);
+    isPortrait = getResources().getBoolean(R.bool.use_vertical_layout);
 
     mContext = getActivity().getApplicationContext();
     //inflating the ingredient fragment layout within its container in the activity_detail
@@ -72,6 +100,20 @@ public class StepsFragment extends Fragment implements StepsAdapter.StepsAdapter
     //Passing the Context and the Steps Array to our StepsAdapter to populate the RecycleView.
     stepsAdapter.setStepsData(stepsArrayList, mContext);
 
+    if (isTabletLandscape) {
+      viewIngredients = rootView.findViewById(R.id.btn_view_ingredients);
+
+      // Only on Tablet landscape mode
+      viewIngredients.setOnClickListener(new OnClickListener() {
+        @Override
+        public void onClick(View v) {
+          mCallbackHostActivity2.onBtnIngredientList();
+        }
+      });
+    }
+
+
+
     return rootView;
   }
 
@@ -83,20 +125,62 @@ public class StepsFragment extends Fragment implements StepsAdapter.StepsAdapter
     // If not, it throws an exception
     try {
       mCallbackHostActivity = (OnStepsClickListener) context;
+      mCallbackHostActivity2 = (OnBtnIngredientsListClickListener) context;
     } catch (ClassCastException e) {
       throw new ClassCastException(context.toString()
           + " must implement OnStepsClickListener");
     }
   }
 
+
   @Override
   public void onClick(int recipeIndex) {
-    mCallbackHostActivity.onRecipeSelected(recipeIndex);
+    mCallbackHostActivity.onStepSelected(recipeIndex);
+
     mStepsData = stepsArrayList.get(recipeIndex);
     mVideoURL = mStepsData.getVideoURL();
 
-    Log.d(LOG_TAG, "Recipe Index is: " + recipeIndex + " " + "Video Url is: " + mVideoURL);
-
+//    if(isTabletLandscape){
+//
+//      // Reload current fragment
+//      videoStepFragment  = null;
+//      FragmentManager fm = getFragmentManager();
+//
+//      videoStepFragment = (VideoStepFragment) fm.findFragmentByTag(VIDEO_FRAGMENT_TAG);
+//      final FragmentTransaction ft = getFragmentManager().beginTransaction();
+//      ft.detach(videoStepFragment);
+//      ft.attach(videoStepFragment);
+//      ft.commit();
+//
+//      Log.d(LOG_TAG, "Recipe Index is: " + recipeIndex + " " + "Video Url is: " + mVideoURL);
+//
+//    } else if(isTabletPortrait) {
+//
+//      if(videoStepFragment == null){
+//        videoStepFragment = new VideoStepFragment();
+//        recipeModel = bundle.getParcelable(PARCEL_KEY);
+//        Bundle bundle = new Bundle();
+//        bundle.putParcelable(VIDEO_FRAGMENT_TAG, recipeModel);
+//        videoStepFragment.setArguments(bundle);
+//
+//      }
+//
+//      FragmentManager fm = getFragmentManager();
+//      recipeModel = bundle.getParcelable(PARCEL_KEY);
+//      Bundle bundle = new Bundle();
+//      bundle.putParcelable(INGREDIENTS_ARRAY_KEY, recipeModel);
+//      videoStepFragment.setArguments(bundle);
+//
+//      final FragmentTransaction ft = getFragmentManager().beginTransaction();
+//      ft.detach(videoStepFragment);
+//      ft.attach(videoStepFragment);
+//      ft.commit();
+//
+//      fm.beginTransaction()
+//          .replace(R.id.details_container, videoStepFragment)
+//          .addToBackStack(null)
+//          .commit();
+//    }
   }
 
   @Override
@@ -111,12 +195,18 @@ public class StepsFragment extends Fragment implements StepsAdapter.StepsAdapter
   public void onSaveInstanceState(Bundle outState) {
     super.onSaveInstanceState(outState);
     outState.putParcelableArrayList(STEPS_ARRAY_KEY, stepsArrayList);
+    outState.putParcelable(RECIPE_MODEL_KEY, recipeModel);
 
   }
 
-  // OnStepsClickListener interface, calls a method in the host activity named onRecipeSelected
+  public interface OnBtnIngredientsListClickListener {
+
+    void onBtnIngredientList();
+  }
+
+  // OnStepsClickListener interface, calls a method in the host activity named onStepSelected
   public interface OnStepsClickListener {
 
-    void onRecipeSelected(int position);
+    void onStepSelected(int position);
   }
 }

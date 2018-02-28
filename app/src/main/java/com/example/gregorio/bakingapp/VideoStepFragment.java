@@ -109,13 +109,14 @@ public class VideoStepFragment extends Fragment implements ExoPlayer.EventListen
       currentPlayerPosition = savedInstanceState.getLong(CURRENT_PLAYER_POSITION_KEY);
       stepsArrayList = savedInstanceState.getParcelableArrayList(STEP_ARRAY_LIST_KEY);
       stepId = savedInstanceState.getInt(CURRENT_STEP_POSITION_KEY);
+      if (stepsArrayList != null) {
+        Steps savedInstanceStep = stepsArrayList.get(stepId);
+        videoUrl = savedInstanceStep.getVideoURL();
+        longDescription = savedInstanceStep.getDescription();
+        thumbnailUrl = savedInstanceStep.getThumbnailURL();
+      }
 
-      Steps savedInstanceStep = stepsArrayList.get(stepId);
-      videoUrl = savedInstanceStep.getVideoURL();
-      longDescription = savedInstanceStep.getDescription();
       playWhenReady = savedInstanceState.getBoolean(PLAYER_STATE_KEY);
-      thumbnailUrl = savedInstanceStep.getThumbnailURL();
-
       recipeName = savedInstanceState.getString(RECIPE_NAME_KEY);
       stepsSize = savedInstanceState.getInt(CURRENT_STEP_SIZE_KEY);
 
@@ -133,8 +134,11 @@ public class VideoStepFragment extends Fragment implements ExoPlayer.EventListen
         stepsSize = bundle.getInt(STEPS_SIZE_BUNDLE);
         stepsArrayList = bundle.getParcelableArrayList(STEPS_ARRAY_LIST_KEY);
         recipeName = bundle.getString(RECIPE_NAME_KEY);
-        Steps step = stepsArrayList.get(stepId);
-        thumbnailUrl = step.getThumbnailURL();
+        if (stepsArrayList != null) {
+          Steps step = stepsArrayList.get(stepId);
+          thumbnailUrl = step.getThumbnailURL();
+
+        }
 
         Log.i(LOG_TAG, "The thumbnail Url is: " + thumbnailUrl);
         Log.i(LOG_TAG, "The Video Url is: " + videoUrl);
@@ -171,12 +175,23 @@ public class VideoStepFragment extends Fragment implements ExoPlayer.EventListen
       }
     });
 
-    //Setting the TextView with the Long Description
-    tvLongDescription.setText(longDescription);
-    //Parse the video url
-    videoUrlUri = Uri.parse(videoUrl);
+    if (longDescription != null && !longDescription.isEmpty()) {
+      //Setting the TextView with the Long Description
+      tvLongDescription.setText(longDescription);
+    } else {
+      tvLongDescription.setText("");
+    }
+
+    if (videoUrl != null && !videoUrl.isEmpty()) {
+      //Parse the video url
+      videoUrlUri = Uri.parse(videoUrl);
+    } else {
+      videoUrlUri = Uri.parse("");
+
+    }
+
     //Set the thumbnail image to the ImageView if the Url is not empty
-    if (!thumbnailUrl.isEmpty()) {
+    if (thumbnailUrl != null && !thumbnailUrl.isEmpty()) {
       Picasso.with(mContext).load(thumbnailUrl).into(stepImage);
     }
 
@@ -200,28 +215,33 @@ public class VideoStepFragment extends Fragment implements ExoPlayer.EventListen
   //Get the next Video Step Data
   private void recipeNextStep() {
 
-    int maxStepId = stepsSize - 1;
-    if (stepId < maxStepId) {
-      int index = ++stepId;
-      Steps steps = stepsArrayList.get(index);
-      setStep(steps);
-    } else {
-      stepId = 0;
-      Steps steps = stepsArrayList.get(stepId);
-      setStep(steps);
+    if (stepsArrayList != null) {
+      int maxStepId = stepsSize - 1;
+      if (stepId < maxStepId) {
+        int index = ++stepId;
+        Steps steps = stepsArrayList.get(index);
+        setStep(steps);
+      } else {
+        stepId = 0;
+        Steps steps = stepsArrayList.get(stepId);
+        setStep(steps);
+      }
     }
   }
 
   //Get the previous Video Step Data
   private void recipePreviousStep() {
-    int totStepNo = stepsSize - 1;
-    if (stepId < totStepNo && stepId > 0) {
-      int index = --stepId;
-      Steps steps = stepsArrayList.get(index);
-      setStep(steps);
-    } else {
-      Steps steps = stepsArrayList.get(stepId);
-      setStep(steps);
+
+    if (stepsArrayList != null) {
+      int totStepNo = stepsSize - 1;
+      if (stepId < totStepNo && stepId > 0) {
+        int index = --stepId;
+        Steps steps = stepsArrayList.get(index);
+        setStep(steps);
+      } else {
+        Steps steps = stepsArrayList.get(stepId);
+        setStep(steps);
+      }
     }
   }
 

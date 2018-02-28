@@ -1,6 +1,7 @@
 package com.example.gregorio.bakingapp.adapters;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -58,12 +59,17 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
     int servingsNumber = currentRecipe.getServings();
     String servingsText = String.valueOf(servingsNumber);
     String imageString = currentRecipe.getImage();
+    String placeHolder = String.valueOf(mContext.getDrawable(R.drawable.baking_app_logo));
     recipe.setText(recipeName);
     servings.setText(servingsText);
 
     //Load the image is the Url is not empty
     if (!imageString.isEmpty()) {
       Picasso.with(holder.image.getContext()).load(imageString).into(holder.image);
+    } else {
+      Picasso.with(holder.image.getContext()).load(placeHolder).placeholder(R.drawable.coming_soon)
+          .into(holder.image);
+      Log.d(LOG_TAG, "The image Place holder is: " + placeHolder);
     }
 
   }

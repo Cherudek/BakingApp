@@ -6,9 +6,11 @@ import static com.example.gregorio.bakingapp.MainActivity.PARCEL_KEY;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -20,6 +22,7 @@ import android.widget.FrameLayout.LayoutParams;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.example.gregorio.bakingapp.IngredientsFragment.OnStepsBtnClickListener;
+import com.example.gregorio.bakingapp.StepsFragment.OnBtnIngredientsListClickListener;
 import com.example.gregorio.bakingapp.StepsFragment.OnStepsClickListener;
 import com.example.gregorio.bakingapp.retrofit.Ingredients;
 import com.example.gregorio.bakingapp.retrofit.RecipeModel;
@@ -31,12 +34,13 @@ import java.util.ArrayList;
  */
 
 public class DetailActivity extends AppCompatActivity implements OnStepsClickListener,
-    OnStepsBtnClickListener {
+    OnStepsBtnClickListener, OnBtnIngredientsListClickListener {
 
   public static final String LOG_TAG = DetailActivity.class.getSimpleName();
   public static final String VIDEO_KEY_BUNDLE = "Video URL bundle";
   public static final String DESCRIPTION_KEY_BUNDLE = "Description bundle";
   public static final String STEP_PARCEL_KEY = "Step Parcel Key";
+  public static final String INGREDIENTS_PARCEL_KEY = "Ingredients Parcel Key";
   public static final String RECIPE_NAME_KEY = "Recipe Name";
   public static final String STEPS_ARRAY_LIST_KEY = "Steps Array List Key";
   public static final String INGREDIENTS_ARRAY_LIST_KEY = "Ingredients Array List Key";
@@ -46,6 +50,8 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
   public static final String STEP_FRAGMENT_TAG = "Step Fragment Tag";
   public static final String INGREDIENTS_FRAGMENT_TAG = "Ingredients Fragment Tag";
   public static final String VIDEO_FRAGMENT_TAG = "Video Fragment Tag";
+  public static final String IS_TABLET_LANDSCAPE_TAG = "Tablet Landscape Tag";
+  private static final String RECIPE_MODEL_KEY = "Recipe Model Key";
 
   private String mVideoUrl;
   private String mLongDescription;
@@ -60,16 +66,20 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
   private FrameLayout ingredientsFrame;
   private FrameLayout stepsFrame;
   private TextView stepsLabel;
+
   private StepsFragment stepsFragment;
   private IngredientsFragment ingredientsFragment;
+  private VideoStepFragment videoStepFragment;
 
   private Steps steps;
   private Intent intent;
   private Bundle parcelable;
   private Bundle onDestroyBundle;
   private Integer position;
+  private Boolean isTabletLandscape;
+  private Boolean isTabletPortrait;
+  private RecipeModel recipeModel;
 
-  private VideoStepFragment videoStepFragment;
 
   @Override
   protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -79,12 +89,16 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
     ingredientsLabel = findViewById(R.id.ingredient_label);
     ingredientsFrame = findViewById(R.id.details_container);
     stepsLabel = findViewById(R.id.steps_label);
+    isTabletLandscape = getResources().getBoolean(R.bool.isTabletLand);
+    isTabletPortrait = getResources().getBoolean(R.bool.isTablet);
 
 
     if (savedInstanceState != null) {
       mRecipeName = savedInstanceState.getString(RECIPE_NAME_KEY);
       mStepsArrayList = savedInstanceState.getParcelableArrayList(STEPS_ARRAY_LIST_KEY);
       mIngredientsArrayList = savedInstanceState.getParcelableArrayList(INGREDIENTS_ARRAY_LIST_KEY);
+      isTabletLandscape = savedInstanceState.getBoolean(IS_TABLET_LANDSCAPE_TAG);
+      recipeModel = savedInstanceState.getParcelable(RECIPE_MODEL_KEY);
 
       Log.i(LOG_TAG, "Recipe Name Key Saved:  " + mRecipeName);
       Log.i(LOG_TAG, "OnSavedInstance bundle Steps Array Size: " + mStepsArrayList);
@@ -93,6 +107,46 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
 
       // This method will launch  set up the Ingredients fragment (Title, RecyclerView and 1 Btn).
       fragmentSetUp();
+    }
+  }
+
+  // This method will launch the set up of the Ingredients Fragment (recyclerView and the View recipe Steps Button).
+
+  public void fragmentSetUp() {
+
+    //Receiving the Intent form the MainActivity to pass data to Ingredient & Steps Fragment
+    intent = getIntent();
+    parcelable = intent.getBundleExtra(INTENT_KEY);
+    recipeModel = parcelable.getParcelable(PARCEL_KEY);
+    mIngredientsArrayList = recipeModel.getIngredients();
+    mStepsArrayList = recipeModel.getSteps();
+    mRecipeName = recipeModel.getName();
+
+    //Instantiate the IngredientsFragment
+    ingredientsFragment = new IngredientsFragment();
+    // stepsFragment = new StepsFragment();
+    videoStepFragment = new VideoStepFragment();
+
+    //Set the Bundle to the IngredientsFragment
+    ingredientsFragment.setArguments(parcelable);
+    videoStepFragment.setArguments(parcelable);
+
+    fragmentManager = getSupportFragmentManager();
+
+    // provide compatibility to all the versions
+    getSupportActionBar().setTitle(mRecipeName);
+
+    //Check if we are in Tablet Landscape layout
+    if (isTabletLandscape) {
+      fragmentManager.beginTransaction()
+          .add(R.id.details_container, ingredientsFragment, INGREDIENTS_FRAGMENT_TAG)
+          .add(R.id.details_container_2, videoStepFragment, VIDEO_FRAGMENT_TAG)
+          .commit();
+    } else {
+      fragmentManager.beginTransaction()
+          .add(R.id.details_container, ingredientsFragment, INGREDIENTS_FRAGMENT_TAG)
+          .remove(videoStepFragment)
+          .commit();
     }
   }
 
@@ -114,45 +168,23 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
     // provide compatibility to all the versions
     getSupportActionBar().setTitle(mRecipeName);
 
-    fragmentManager.beginTransaction()
-        .replace(R.id.details_container, stepsFragment, STEP_FRAGMENT_TAG)
-        .addToBackStack(null)
-        .commit();
-
+    if (isTabletLandscape) {
+      fragmentManager.beginTransaction()
+          .replace(R.id.details_container, stepsFragment, STEP_FRAGMENT_TAG)
+          .addToBackStack(null)
+          .commit();
+    } else {
+      fragmentManager.beginTransaction()
+          .replace(R.id.details_container, stepsFragment, STEP_FRAGMENT_TAG)
+          .addToBackStack(null)
+          .commit();
+    }
   }
 
-  // This method will launch the set up of the Ingredients Fragment (recyclerView and the View recipe Steps Button).
-
-  public void fragmentSetUp() {
-
-    //Receiving the Intent form the MainActivity to pass data to Ingredient & Steps Fragment
-    intent = getIntent();
-    parcelable = intent.getBundleExtra(INTENT_KEY);
-    RecipeModel recipeModel = parcelable.getParcelable(PARCEL_KEY);
-    mIngredientsArrayList = recipeModel.getIngredients();
-    mStepsArrayList = recipeModel.getSteps();
-    mRecipeName = recipeModel.getName();
-
-    //Instantiate the IngredientsFragment
-    ingredientsFragment = new IngredientsFragment();
-
-    //Set the Bundle to the IngredientsFragment
-    ingredientsFragment.setArguments(parcelable);
-
-    fragmentManager = getSupportFragmentManager();
-
-    // provide compatibility to all the versions
-    getSupportActionBar().setTitle(mRecipeName);
-
-    fragmentManager.beginTransaction()
-        .add(R.id.details_container, ingredientsFragment, INGREDIENTS_FRAGMENT_TAG)
-        .commit();
-  }
 
   // This method will trigger OnStepsClickListener Interface to Set up the VideoSteps Fragment on the
-
   @Override
-  public void onRecipeSelected(int position) {
+  public void onStepSelected(int position) {
 
     steps = mStepsArrayList.get(position);
     mVideoUrl = steps.getVideoURL();
@@ -175,24 +207,137 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
 
 
     //Instantiating the Video & Long description  Fragment
-    videoStepFragment = new VideoStepFragment();
+    if (videoStepFragment == null) {
+      videoStepFragment = new VideoStepFragment();
+      videoStepFragment.setArguments(videoUrlBundle);
+    }
+
+    //Instantiating the steps  Fragment
+    if (stepsFragment == null) {
+      stepsFragment = new StepsFragment();
+      Bundle bundle = new Bundle();
+      RecipeModel recipeModel = parcelable.getParcelable(PARCEL_KEY);
+      bundle.putParcelable(STEPS_ARRAY_LIST_KEY, recipeModel);
+      stepsFragment.setArguments(bundle);
+
+    }
+
     if (videoUrlBundle != null) {
       videoStepFragment.setArguments(videoUrlBundle);
     }
 
-    FragmentManager fm = getSupportFragmentManager();
-    fm.beginTransaction()
-        .replace(R.id.details_container, videoStepFragment)
-        .addToBackStack(null)
-        .commit();
+    //if fragments are not null pass on the bundle and start the fragment transaction
+//    Bundle bundle = new Bundle();
+//    RecipeModel recipeModel = parcelable.getParcelable(PARCEL_KEY);
+//    bundle.putParcelable(INGREDIENTS_PARCEL_KEY, recipeModel);
+
+    videoStepFragment.setArguments(videoUrlBundle);
+    stepsFragment.setArguments(parcelable);
+
+    if (isTabletLandscape) {
+
+      // Reload current fragment
+      videoStepFragment = null;
+      FragmentManager fm = getSupportFragmentManager();
+
+      videoStepFragment = (VideoStepFragment) fm.findFragmentByTag(VIDEO_FRAGMENT_TAG);
+      final FragmentTransaction ft = fm.beginTransaction();
+      ft.detach(videoStepFragment);
+      ft.attach(videoStepFragment);
+      ft.commit();
+
+      fm.beginTransaction()
+          .replace(R.id.details_container, stepsFragment, STEP_FRAGMENT_TAG)
+          .replace(R.id.details_container_2, videoStepFragment, VIDEO_FRAGMENT_TAG)
+          .addToBackStack(null)
+          .commit();
+
+    } else if (isTabletPortrait) {
+
+      if (videoStepFragment == null) {
+        videoStepFragment = new VideoStepFragment();
+        videoStepFragment.setArguments(videoUrlBundle);
+
+      }
+
+      FragmentManager fm = getSupportFragmentManager();
+      videoStepFragment.setArguments(videoUrlBundle);
+
+      fm.beginTransaction()
+          .replace(R.id.details_container, videoStepFragment, VIDEO_FRAGMENT_TAG)
+          .addToBackStack(null)
+          .commit();
+    } else {
+
+      //For Mobile (Portrait and landscape)
+      FragmentManager fm = getSupportFragmentManager();
+      fm.beginTransaction()
+          .replace(R.id.details_container, videoStepFragment, VIDEO_FRAGMENT_TAG)
+          // .hide(stepsFragment)
+          .addToBackStack(null)
+          .commit();
+    }
+  }
+
+  // This method will trigger OnBtnIngredientsListClickListener Interface to Set up the Ingredient Fragment
+  @Override
+  public void onBtnIngredientList() {
+
+    if (ingredientsFragment == null) {
+      ingredientsFragment = new IngredientsFragment();
+    }
+
+    ingredientsFragment.setArguments(parcelable);
+
+    if (isTabletLandscape) {
+      fragmentManager.beginTransaction()
+          .replace(R.id.details_container, ingredientsFragment, INGREDIENTS_FRAGMENT_TAG)
+          .addToBackStack(null)
+          .commit();
+    }
   }
 
   @Override
   protected void onResume() {
     super.onResume();
-
     getSupportActionBar().setTitle(mRecipeName);
 
+    if (isTabletLandscape) {
+
+      stepsFragment = new StepsFragment();
+      videoStepFragment = new VideoStepFragment();
+      ingredientsFragment = new IngredientsFragment();
+
+      // Create fragment and give it an argument specifying the article it should show
+      stepsFragment.setArguments(parcelable);
+      videoStepFragment.setArguments(videoUrlBundle);
+      ingredientsFragment.setArguments(parcelable);
+
+      FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+
+      // Replace whatever is in the fragment_container view with this fragment,
+      // and add the transaction to the back stack so the user can navigate back
+      transaction.replace(R.id.details_container, ingredientsFragment, INGREDIENTS_FRAGMENT_TAG)
+          .replace(R.id.details_container_2, videoStepFragment, VIDEO_FRAGMENT_TAG)
+          .addToBackStack(null)
+          .commit();
+
+    } else if (isTabletPortrait) {
+
+      ingredientsFragment = new IngredientsFragment();
+//      Bundle bundle = new Bundle();
+//      RecipeModel recipeModel = parcelable.getParcelable(PARCEL_KEY);
+//      bundle.putParcelable(INGREDIENTS_PARCEL_KEY, recipeModel);
+      ingredientsFragment.setArguments(parcelable);
+
+      FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+
+      // Replace whatever is in the fragment_container view with this fragment,
+      // and add the transaction to the back stack so the user can navigate back
+      transaction.replace(R.id.details_container, ingredientsFragment, INGREDIENTS_FRAGMENT_TAG)
+          .addToBackStack(null)
+          .commit();
+    }
   }
 
   @Override
@@ -202,6 +347,8 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
     outState.putParcelableArrayList(INGREDIENTS_ARRAY_LIST_KEY, mIngredientsArrayList);
     outState.putParcelable(STEP_PARCEL_KEY, steps);
     outState.putString(RECIPE_NAME_KEY, mRecipeName);
+    outState.putBoolean(IS_TABLET_LANDSCAPE_TAG, isTabletLandscape);
+    outState.putParcelable(RECIPE_MODEL_KEY, recipeModel);
 
     int stepsArraySize = mStepsArrayList.size();
     int ingredientsArraySize = mIngredientsArrayList.size();
@@ -211,4 +358,6 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
     Log.i(LOG_TAG, "OnSavedInstance bundle Ingredients Array Size: " + ingredientsArraySize);
 
   }
+
+
 }

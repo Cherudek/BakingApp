@@ -82,8 +82,11 @@ public class IngredientsAdapter extends
 
   @Override
   public int getItemCount() {
-    int ingredientsNumber = mIngredientsData.size();
-    return ingredientsNumber;
+    if (mIngredientsData != null) {
+      int ingredientsNumber = mIngredientsData.size();
+      return ingredientsNumber;
+    }
+    return 0;
   }
 
   public void setIngredientsData(ArrayList<Ingredients> recipesIn, Context context) {

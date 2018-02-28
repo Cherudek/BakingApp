@@ -33,6 +33,7 @@ public class RecipeFragment extends Fragment implements RecipeAdapter.RecipeAdap
   public Boolean isTabletLandscape;
   // Define a new interface OnStepsClickListener that triggers a callback in the host activity
   OnRecipeClickListener mCallback;
+  private Boolean isTablet;
   private String API_BASE_URL = "https://d17h27t6h515a5.cloudfront.net/topher/2017/May/59121517_baking/";
   private RecipesCall recipesCall;
   private RecyclerView recyclerView;
@@ -82,7 +83,8 @@ public class RecipeFragment extends Fragment implements RecipeAdapter.RecipeAdap
     }
 
     mContext = getActivity().getApplicationContext();
-    //  isTabletLandscape = mContext.getResources().getBoolean(mContext, R.bool.)
+    isTabletLandscape = getResources().getBoolean(R.bool.isTabletLand);
+    isTablet = getResources().getBoolean(R.bool.isTablet);
 
 
     //inflating the main fragment layout within its container
@@ -93,8 +95,8 @@ public class RecipeFragment extends Fragment implements RecipeAdapter.RecipeAdap
     layoutManager = new LinearLayoutManager(getContext());
     gridLayoutManager = new GridLayoutManager(mContext, 2);
 
-    //Check if I am in Tablet Landscape mode
-    if (isTabletLandscape) {
+    //Check if I am in Tablet or in Tablet Landscape mode
+    if (isTabletLandscape || isTablet) {
       recyclerView.setLayoutManager(gridLayoutManager);
     } else {
       recyclerView.setLayoutManager(layoutManager);
@@ -172,7 +174,7 @@ public class RecipeFragment extends Fragment implements RecipeAdapter.RecipeAdap
     currentState.putParcelableArrayList(BUNDLE_KEY, repos);
   }
 
-  // OnStepsClickListener interface, calls a method in the host activity named onRecipeSelected
+  // OnStepsClickListener interface, calls a method in the host activity named onStepSelected
   public interface OnRecipeClickListener {
     void onRecipeSelected(int position, ArrayList<RecipeModel> recipes);
   }

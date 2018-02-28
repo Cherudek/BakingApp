@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent">
+
+  <FrameLayout
+    android:id="@+id/exo_player_frame_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_alignParentTop="true">
+
+    <com.google.android.exoplayer2.ui.SimpleExoPlayerView
+      android:id="@+id/exo_player"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"/>
+  </FrameLayout>
+
+  <TextView
+    android:id="@+id/long_description"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="16dp"
+    android:layout_below="@+id/exo_player_frame_layout"
+    android:padding="8dp"
+    android:fontFamily="@font/merriweather_sans_light"
+    android:text="Description"
+    android:textAlignment="viewStart"
+    android:textSize="18sp"/>
+
+  <ImageView
+    android:id="@+id/recipe_step_image"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_below="@+id/long_description"/>
+
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="38dp"
+    android:layout_alignParentBottom="true"
+    android:orientation="horizontal">
+
+
+    <Button
+      android:id="@+id/previous_steps_btn"
+      android:layout_width="0dp"
+      android:layout_height="38dp"
+      android:layout_weight="1"
+      android:background="@color/colorPrimary"
+      android:drawableLeft="@drawable/ic_keyboard_arrow_left_black_24dp"
+      android:text="Previous"/>
+
+    <Button
+      android:id="@+id/next_steps_btn"
+      android:layout_width="0dp"
+      android:layout_height="38dp"
+      android:layout_weight="1"
+      android:background="@color/colorPrimary"
+      android:drawableRight="@drawable/ic_keyboard_arrow_right_black_24dp"
+      android:text="Next"/>
+
+  </LinearLayout>
+
+</RelativeLayout>
