@@ -85,7 +85,7 @@ public class StepsFragment extends Fragment implements StepsAdapter.StepsAdapter
     }
 
     isTabletLandscape = getResources().getBoolean(R.bool.isTabletLand);
-    isTabletPortrait = getResources().getBoolean(R.bool.isTablet);
+    isTabletPortrait = getResources().getBoolean(R.bool.isTabletPortrait);
     isPortrait = getResources().getBoolean(R.bool.use_vertical_layout);
 
     mContext = getActivity().getApplicationContext();
@@ -103,7 +103,8 @@ public class StepsFragment extends Fragment implements StepsAdapter.StepsAdapter
     if (isTabletLandscape) {
       viewIngredients = rootView.findViewById(R.id.btn_view_ingredients);
 
-      // Only on Tablet landscape mode
+      // Only on Tablet landscape mode set an onClick listener to navigate ack to the
+      // Ingredients fragment
       viewIngredients.setOnClickListener(new OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -111,8 +112,6 @@ public class StepsFragment extends Fragment implements StepsAdapter.StepsAdapter
         }
       });
     }
-
-
 
     return rootView;
   }
@@ -132,6 +131,17 @@ public class StepsFragment extends Fragment implements StepsAdapter.StepsAdapter
     }
   }
 
+  @Override
+  public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+    super.onActivityCreated(savedInstanceState);
+
+    if (savedInstanceState != null) {
+      stepsArrayList = savedInstanceState.getParcelableArrayList(STEPS_ARRAY_KEY);
+      recipeModel = savedInstanceState.getParcelable(RECIPE_MODEL_KEY);
+
+    }
+
+  }
 
   @Override
   public void onClick(int recipeIndex) {
@@ -140,47 +150,6 @@ public class StepsFragment extends Fragment implements StepsAdapter.StepsAdapter
     mStepsData = stepsArrayList.get(recipeIndex);
     mVideoURL = mStepsData.getVideoURL();
 
-//    if(isTabletLandscape){
-//
-//      // Reload current fragment
-//      videoStepFragment  = null;
-//      FragmentManager fm = getFragmentManager();
-//
-//      videoStepFragment = (VideoStepFragment) fm.findFragmentByTag(VIDEO_FRAGMENT_TAG);
-//      final FragmentTransaction ft = getFragmentManager().beginTransaction();
-//      ft.detach(videoStepFragment);
-//      ft.attach(videoStepFragment);
-//      ft.commit();
-//
-//      Log.d(LOG_TAG, "Recipe Index is: " + recipeIndex + " " + "Video Url is: " + mVideoURL);
-//
-//    } else if(isTabletPortrait) {
-//
-//      if(videoStepFragment == null){
-//        videoStepFragment = new VideoStepFragment();
-//        recipeModel = bundle.getParcelable(PARCEL_KEY);
-//        Bundle bundle = new Bundle();
-//        bundle.putParcelable(VIDEO_FRAGMENT_TAG, recipeModel);
-//        videoStepFragment.setArguments(bundle);
-//
-//      }
-//
-//      FragmentManager fm = getFragmentManager();
-//      recipeModel = bundle.getParcelable(PARCEL_KEY);
-//      Bundle bundle = new Bundle();
-//      bundle.putParcelable(INGREDIENTS_ARRAY_KEY, recipeModel);
-//      videoStepFragment.setArguments(bundle);
-//
-//      final FragmentTransaction ft = getFragmentManager().beginTransaction();
-//      ft.detach(videoStepFragment);
-//      ft.attach(videoStepFragment);
-//      ft.commit();
-//
-//      fm.beginTransaction()
-//          .replace(R.id.details_container, videoStepFragment)
-//          .addToBackStack(null)
-//          .commit();
-//    }
   }
 
   @Override

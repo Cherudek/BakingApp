@@ -39,12 +39,10 @@ public class IngredientsAdapter extends
   private String mMeasure;
   private String mIngredient;
 
-
   public IngredientsAdapter(IngredientsAdapterOnClickHandler clickHandler, int numberOfItems) {
     this.mClickHandler = clickHandler;
     int items = numberOfItems;
   }
-
 
   @Override
   public IngredientsViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -55,7 +53,6 @@ public class IngredientsAdapter extends
     boolean shouldAttachToParentImmediately = false;
     View view = inflater.inflate(layoutIdForListItem, parent, shouldAttachToParentImmediately);
     return new IngredientsViewHolder(view);
-
   }
 
   @Override
@@ -68,10 +65,8 @@ public class IngredientsAdapter extends
 
     if (position % 2 == 1) {
       holder.itemView.setBackgroundColor(Color.parseColor("#FFFFFF"));
-      //  holder.imageView.setBackgroundColor(Color.parseColor("#FFFFFF"));
     } else {
       holder.itemView.setBackgroundColor(Color.parseColor("#FFFAF8FD"));
-      //  holder.imageView.setBackgroundColor(Color.parseColor("#FFFAF8FD"));
     }
 
     tvQuantity.setText(mQuantityString);

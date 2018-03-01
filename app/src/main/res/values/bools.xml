@@ -2,6 +2,6 @@
 <resources>
   <bool name="use_vertical_layout">false</bool>
   <bool name="isTabletLand">false</bool>
-  <bool name="isTablet">false</bool>
+  <bool name="isTabletPortrait">false</bool>
 
 </resources>

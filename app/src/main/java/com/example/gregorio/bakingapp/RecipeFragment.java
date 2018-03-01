@@ -84,7 +84,7 @@ public class RecipeFragment extends Fragment implements RecipeAdapter.RecipeAdap
 
     mContext = getActivity().getApplicationContext();
     isTabletLandscape = getResources().getBoolean(R.bool.isTabletLand);
-    isTablet = getResources().getBoolean(R.bool.isTablet);
+    isTablet = getResources().getBoolean(R.bool.isTabletPortrait);
 
 
     //inflating the main fragment layout within its container

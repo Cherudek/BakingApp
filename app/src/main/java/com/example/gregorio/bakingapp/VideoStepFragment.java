@@ -257,6 +257,31 @@ public class VideoStepFragment extends Fragment implements ExoPlayer.EventListen
     initializePlayer(previousVideoUrl);
   }
 
+  @Override
+  public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+    super.onActivityCreated(savedInstanceState);
+
+    //On Phone Rotation Restore the values saved in the savedInstanceSate bundle
+    if (savedInstanceState != null) {
+
+      currentPlayerPosition = savedInstanceState.getLong(CURRENT_PLAYER_POSITION_KEY);
+      stepsArrayList = savedInstanceState.getParcelableArrayList(STEP_ARRAY_LIST_KEY);
+      stepId = savedInstanceState.getInt(CURRENT_STEP_POSITION_KEY);
+      if (stepsArrayList != null) {
+        Steps savedInstanceStep = stepsArrayList.get(stepId);
+        videoUrl = savedInstanceStep.getVideoURL();
+        longDescription = savedInstanceStep.getDescription();
+        thumbnailUrl = savedInstanceStep.getThumbnailURL();
+      }
+
+      playWhenReady = savedInstanceState.getBoolean(PLAYER_STATE_KEY);
+      recipeName = savedInstanceState.getString(RECIPE_NAME_KEY);
+      stepsSize = savedInstanceState.getInt(CURRENT_STEP_SIZE_KEY);
+
+      Log.i(LOG_TAG, "ON VIEW CREATE RESTORE STEP is: " + stepId);
+    }
+  }
+
   /**
    * Initialize ExoPlayer.
    *
@@ -418,8 +443,7 @@ public class VideoStepFragment extends Fragment implements ExoPlayer.EventListen
   @Override
   public void onSaveInstanceState(Bundle outState) {
     super.onSaveInstanceState(outState);
-    //outState.putString(VIDEO_URL_KEY, videoUrl);
-    //outState.putString(DESCRIPTION_KEY, longDescription);
+
     outState.putLong(CURRENT_PLAYER_POSITION_KEY, currentPlayerPosition);
     outState.putParcelableArrayList(STEP_ARRAY_LIST_KEY, stepsArrayList);
     outState.putString(CURRENT_RECIPE_NAME_KEY, recipeName);

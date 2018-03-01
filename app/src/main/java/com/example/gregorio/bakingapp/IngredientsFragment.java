@@ -104,6 +104,15 @@ public class IngredientsFragment extends Fragment implements
   }
 
   @Override
+  public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+    super.onActivityCreated(savedInstanceState);
+    if (savedInstanceState != null) {
+      ingredientsArrayList = savedInstanceState.getParcelableArrayList(SAVED_INSTANCE_KEY);
+    }
+
+  }
+
+  @Override
   public void onClick(int recipeIndex) {
   }
 
