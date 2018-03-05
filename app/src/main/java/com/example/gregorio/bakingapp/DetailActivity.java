@@ -109,10 +109,17 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
       Log.i(LOG_TAG, "OnSavedInstance bundle Steps Array Size: " + mStepsArrayList);
       Log.i(LOG_TAG, "OnSavedInstance bundle Ingredients Array Size: " + mIngredientsArrayList);
 
+      //This will be called in case we need to replace the fragment after a rotation using the saved states
+      fragmentSetUp2();
+      Log.d(LOG_TAG, "OnCreate: fragmentSetUp2() *** TEST ***");
+
+
     } else {
 
       // This method will launch  set up the Ingredients fragment (Title, RecyclerView and 1 Btn).
       fragmentSetUp();
+      Log.d(LOG_TAG, "OnCreate: fragmentSetUp() *** TEST ***");
+
     }
   }
 
@@ -150,7 +157,16 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
           .addToBackStack(null)
           .commit();
 
-      Log.d(LOG_TAG, "OnCreate: fragmentSetUp() *** TEST *** isTabletLandscape");
+      Log.d(LOG_TAG, "fragmentSetUp() *** TEST *** isTabletLandscape");
+
+    } else if (isTabletPortrait) {
+
+      fragmentManager.beginTransaction()
+          .add(R.id.details_container, ingredientsFragment, INGREDIENTS_FRAGMENT_TAG)
+          .addToBackStack(null)
+          .commit();
+
+      Log.d(LOG_TAG, "fragmentSetUp() *** TEST *** is Tablet Portrait");
 
     } else {
 
@@ -159,7 +175,56 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
           .addToBackStack(null)
           .commit();
 
-      Log.d(LOG_TAG, "OnCreate: fragmentSetUp() *** TEST *** is NOT Tablet Landscape");
+      Log.d(LOG_TAG, "fragmentSetUp() *** TEST *** is Mobile");
+
+
+    }
+  }
+
+  // Fragment Set Up using saved data bundle
+  public void fragmentSetUp2() {
+
+    //Instantiate the IngredientsFragment
+    ingredientsFragment = new IngredientsFragment();
+    // stepsFragment = new StepsFragment();
+    videoStepFragment = new VideoStepFragment();
+
+    //Set the Bundle to the IngredientsFragment
+    ingredientsFragment.setArguments(parcelable);
+    videoStepFragment.setArguments(parcelable);
+
+    fragmentManager = getSupportFragmentManager();
+
+    // provide compatibility to all the versions
+    getSupportActionBar().setTitle(mRecipeName);
+
+    //Check if we are in Tablet Landscape layout
+    if (isTabletLandscape) {
+
+      FrameLayout container2 = findViewById(R.id.details_container_2);
+      container2.setVisibility(View.VISIBLE);
+
+      fragmentManager.beginTransaction()
+          .replace(R.id.details_container, ingredientsFragment)
+          .add(R.id.details_container_2, videoStepFragment)
+          .addToBackStack(null)
+          .commit();
+
+      Log.d(LOG_TAG, "fragmentSetUp2() *** TEST *** isTabletLandscape");
+
+    } else if (isTabletPortrait) {
+
+      fragmentManager.beginTransaction()
+          .add(R.id.details_container, ingredientsFragment, INGREDIENTS_FRAGMENT_TAG)
+          .remove(videoStepFragment)
+          .addToBackStack(null)
+          .commit();
+
+      Log.d(LOG_TAG, "fragmentSetUp2() *** TEST *** is Tablet Portrait");
+
+    } else {
+
+      Log.d(LOG_TAG, "fragmentSetUp2() *** TEST *** is Mobile");
 
     }
   }
@@ -339,130 +404,83 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
 
     }
   }
-//
-//  @Override
-//  public void onConfigurationChanged(Configuration newConfig) {
-//    super.onConfigurationChanged(newConfig);
-//
-//      if (newConfig.orientation ==
-//          Configuration.ORIENTATION_LANDSCAPE) {
-//
-//        // Change things
-//        Log.d(LOG_TAG, "onConfigurationChanged  *****  TEST ***** is Landscape");
-//
-//      } else if (newConfig.orientation ==
-//          Configuration.ORIENTATION_PORTRAIT) {
-//        // Change other things
-//        stepsFragment = new StepsFragment();
-//        ingredientsFragment = new IngredientsFragment();
-//        ingredientsFragment.setArguments(parcelable);
-//        stepsFragment.setArguments(parcelable);
-//
-//        FrameLayout container2 = findViewById(R.id.details_container_2);
-//        container2.setVisibility(View.INVISIBLE);
-//
-//        FrameLayout detailContainer = findViewById(R.id.details_container);
-//        detailContainer.setVisibility(View.VISIBLE);
-//
-//        FragmentManager fm = getSupportFragmentManager();
-//
-//        videoStepFragment = (VideoStepFragment) fm.findFragmentByTag(VIDEO_FRAGMENT_TAG);
-//        stepsFragment = (StepsFragment) fm.findFragmentByTag(STEP_FRAGMENT_TAG);
-//        ingredientsFragment = (IngredientsFragment) fm.findFragmentByTag(INGREDIENTS_FRAGMENT_TAG);
-//
-//        final FragmentTransaction ft = fm.beginTransaction();
-//        ft.detach(videoStepFragment);
-//        ft.detach(stepsFragment);
-//        ft.detach(ingredientsFragment);
-//        ft.commit();
-//
-//        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-//
-//        // Replace whatever is in the fragment_container view with this fragment,
-//        // and add the transaction to the back stack so the user can navigate back
-//        transaction.replace(R.id.details_container, videoStepFragment, INGREDIENTS_FRAGMENT_TAG)
-//            .addToBackStack(null)
-//            .commit();
-//
-//        Log.d(LOG_TAG, "onConfigurationChanged  *****  TEST ***** is Portrait");
-//      }
-//
-//  }
+
 
   @Override
   protected void onResume() {
     super.onResume();
     getSupportActionBar().setTitle(mRecipeName);
 
-    // fragmentSetUp();
-
-    if (isTabletLandscape) {
-
-      stepsFragment = new StepsFragment();
-      videoStepFragment = new VideoStepFragment();
-      ingredientsFragment = new IngredientsFragment();
-
-      // Create fragment and give it an argument specifying the article it should show
-      stepsFragment.setArguments(parcelable);
-      videoStepFragment.setArguments(videoUrlBundle);
-      ingredientsFragment.setArguments(parcelable);
-
-      FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-
-      // Replace whatever is in the fragment_container view with this fragment,
-      // and add the transaction to the back stack so the user can navigate back
-      transaction.replace(R.id.details_container, ingredientsFragment, INGREDIENTS_FRAGMENT_TAG)
-          .replace(R.id.details_container_2, videoStepFragment, VIDEO_FRAGMENT_TAG)
-          .addToBackStack(null)
-          .commit();
-
-      Log.d(LOG_TAG, "OnResume  *****  TEST ***** is Tablet Landscape");
-
-
-    } else if (isTabletPortrait) {
-
-      if (ingredientsFragment == null) {
-        ingredientsFragment = new IngredientsFragment();
-        ingredientsFragment.setArguments(parcelable);
-      }
-      if (stepsFragment == null) {
-        stepsFragment = new StepsFragment();
-        stepsFragment.setArguments(parcelable);
-      }
-      if (videoStepFragment == null) {
-        videoStepFragment = new VideoStepFragment();
-        videoStepFragment.setArguments(videoUrlBundle);
-      }
-
-      FrameLayout container2 = findViewById(R.id.details_container_2);
-      container2.setVisibility(View.VISIBLE);
-      FrameLayout detailContainer = findViewById(R.id.details_container);
-      detailContainer.setVisibility(View.VISIBLE);
-
-      FragmentManager fm = getSupportFragmentManager();
-
-      // videoStepFragment = (VideoStepFragment) fm.findFragmentByTag(VIDEO_FRAGMENT_TAG);
-      // stepsFragment = (StepsFragment) fm.findFragmentByTag(STEP_FRAGMENT_TAG);
-      //ingredientsFragment = (IngredientsFragment) fm.findFragmentByTag(INGREDIENTS_FRAGMENT_TAG);
+    // fragmentSetUp2();
+    // Log.d(LOG_TAG, "OnResume: fragmentReplacement() *** TEST ****");
 //
-//      final FragmentTransaction ft = fm.beginTransaction();
-//      ft.detach(videoStepFragment);
-//      ft.detach(stepsFragment);
-//      ft.detach(ingredientsFragment);
-//      ft.attach(videoStepFragment);
-//      ft.attach(ingredientsFragment);
-//      ft.commit();
-
-      FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-      // Replace whatever is in the fragment_container view with this fragment,
-      //and add the transaction to the back stack so the user can navigate back
-      transaction.replace(R.id.details_container, ingredientsFragment, INGREDIENTS_FRAGMENT_TAG)
-          .addToBackStack(null)
-          .commit();
-
-      Log.d(LOG_TAG, "OnResume  *****  TEST ***** is Tablet Portrait");
-
-    }
+//    if (isTabletLandscape) {
+//
+//      stepsFragment = new StepsFragment();
+//      videoStepFragment = new VideoStepFragment();
+//      ingredientsFragment = new IngredientsFragment();
+//
+//      // Create fragment and give it an argument specifying the article it should show
+//      stepsFragment.setArguments(parcelable);
+//      videoStepFragment.setArguments(videoUrlBundle);
+//      ingredientsFragment.setArguments(parcelable);
+//
+//      FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+//
+//      // Replace whatever is in the fragment_container view with this fragment,
+//      // and add the transaction to the back stack so the user can navigate back
+//      transaction.replace(R.id.details_container, ingredientsFragment, INGREDIENTS_FRAGMENT_TAG)
+//          .replace(R.id.details_container_2, videoStepFragment, VIDEO_FRAGMENT_TAG)
+//          .addToBackStack(null)
+//          .commit();
+//
+//      Log.d(LOG_TAG, "OnResume  *****  TEST ***** is Tablet Landscape");
+//
+//
+//    } else if (isTabletPortrait) {
+//
+//      if (ingredientsFragment == null) {
+//        ingredientsFragment = new IngredientsFragment();
+//        ingredientsFragment.setArguments(parcelable);
+//      }
+//      if (stepsFragment == null) {
+//        stepsFragment = new StepsFragment();
+//        stepsFragment.setArguments(parcelable);
+//      }
+//      if (videoStepFragment == null) {
+//        videoStepFragment = new VideoStepFragment();
+//        videoStepFragment.setArguments(videoUrlBundle);
+//      }
+//
+//      FrameLayout container2 = findViewById(R.id.details_container_2);
+//      container2.setVisibility(View.VISIBLE);
+//      FrameLayout detailContainer = findViewById(R.id.details_container);
+//      detailContainer.setVisibility(View.VISIBLE);
+//
+//      FragmentManager fm = getSupportFragmentManager();
+//
+//      // videoStepFragment = (VideoStepFragment) fm.findFragmentByTag(VIDEO_FRAGMENT_TAG);
+//      // stepsFragment = (StepsFragment) fm.findFragmentByTag(STEP_FRAGMENT_TAG);
+//      //ingredientsFragment = (IngredientsFragment) fm.findFragmentByTag(INGREDIENTS_FRAGMENT_TAG);
+////
+////      final FragmentTransaction ft = fm.beginTransaction();
+////      ft.detach(videoStepFragment);
+////      ft.detach(stepsFragment);
+////      ft.detach(ingredientsFragment);
+////      ft.attach(videoStepFragment);
+////      ft.attach(ingredientsFragment);
+////      ft.commit();
+//
+//      FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+//      // Replace whatever is in the fragment_container view with this fragment,
+//      //and add the transaction to the back stack so the user can navigate back
+//      transaction.replace(R.id.details_container, ingredientsFragment, INGREDIENTS_FRAGMENT_TAG)
+//          .addToBackStack(null)
+//          .commit();
+//
+//      Log.d(LOG_TAG, "OnResume  *****  TEST ***** is Tablet Portrait");
+//
+//    }
   }
 
   @Override
