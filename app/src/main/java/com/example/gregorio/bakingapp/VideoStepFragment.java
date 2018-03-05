@@ -92,9 +92,6 @@ public class VideoStepFragment extends Fragment implements ExoPlayer.EventListen
   private ImageView stepImage;
   private String thumbnailUrl;
 
-
-
-
   public VideoStepFragment() {
   }
 
@@ -103,8 +100,30 @@ public class VideoStepFragment extends Fragment implements ExoPlayer.EventListen
   public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
       @Nullable Bundle savedInstanceState) {
 
-    //On Phone Rotation Restore the values saved in the savedInstanceSate bundle
-    if (savedInstanceState != null) {
+    Bundle bundle = this.getArguments();
+
+    if (bundle != null) {
+      //Retrieving the RecipeModel sent from the MainActivity Intent Bundle
+      videoUrl = bundle.getString(VIDEO_KEY_BUNDLE);
+      longDescription = bundle.getString(DESCRIPTION_KEY_BUNDLE);
+      stepId = bundle.getInt(VIDEO_ID_BUNDLE);
+      stepsSize = bundle.getInt(STEPS_SIZE_BUNDLE);
+      stepsArrayList = bundle.getParcelableArrayList(STEPS_ARRAY_LIST_KEY);
+      recipeName = bundle.getString(RECIPE_NAME_KEY);
+      if (stepsArrayList != null) {
+        Steps step = stepsArrayList.get(stepId);
+        thumbnailUrl = step.getThumbnailURL();
+      }
+
+      Log.d(LOG_TAG, " TEST *** onCreateView (bundle != null) The Video Url is: " + videoUrl);
+      Log.d(LOG_TAG, " TEST *** onCreateView (bundle != null) The Step ID is: " + stepId);
+      Log.d(LOG_TAG,
+          " TEST *** onCreateView (bundle != null) The Number of steps are: " + stepsSize);
+      Log.d(LOG_TAG,
+          " TEST *** onCreateView (bundle != null) The Step Array List is : " + stepsArrayList);
+
+      //On Phone Rotation Restore the values saved in the savedInstanceSate bundle
+    } else if (savedInstanceState != null) {
 
       currentPlayerPosition = savedInstanceState.getLong(CURRENT_PLAYER_POSITION_KEY);
       stepsArrayList = savedInstanceState.getParcelableArrayList(STEP_ARRAY_LIST_KEY);
@@ -120,33 +139,10 @@ public class VideoStepFragment extends Fragment implements ExoPlayer.EventListen
       recipeName = savedInstanceState.getString(RECIPE_NAME_KEY);
       stepsSize = savedInstanceState.getInt(CURRENT_STEP_SIZE_KEY);
 
-      Log.i(LOG_TAG, "ON VIEW CREATE RESTORE STEP is: " + stepId);
-
-    } else {
-
-      Bundle bundle = this.getArguments();
-
-      if (bundle != null) {
-        //Retrieving the RecipeModel sent from the MainActivity Intent Bundle
-        videoUrl = bundle.getString(VIDEO_KEY_BUNDLE);
-        longDescription = bundle.getString(DESCRIPTION_KEY_BUNDLE);
-        stepId = bundle.getInt(VIDEO_ID_BUNDLE);
-        stepsSize = bundle.getInt(STEPS_SIZE_BUNDLE);
-        stepsArrayList = bundle.getParcelableArrayList(STEPS_ARRAY_LIST_KEY);
-        recipeName = bundle.getString(RECIPE_NAME_KEY);
-        if (stepsArrayList != null) {
-          Steps step = stepsArrayList.get(stepId);
-          thumbnailUrl = step.getThumbnailURL();
-
-        }
-
-        Log.i(LOG_TAG, "The thumbnail Url is: " + thumbnailUrl);
-        Log.i(LOG_TAG, "The Video Url is: " + videoUrl);
-        Log.i(LOG_TAG, "The Step ID is: " + stepId);
-        Log.i(LOG_TAG, "The Number of steps are: " + stepsSize);
-        Log.i(LOG_TAG, "The Step Array List is : " + stepsArrayList);
-
-      }
+      Log.d(LOG_TAG, "TEST *** onCreateView (savedInstanceState Bundle) StepID is: " + stepId);
+      Log.d(LOG_TAG, "TEST *** onCreateView (savedInstanceState Bundle) videoUrl is: " + videoUrl);
+      Log.d(LOG_TAG, "TEST *** onCreateView (savedInstanceState Bundle) longDescription is: "
+          + longDescription);
     }
 
     //inflating the ingredient fragment layout within its container in the activity_detail
@@ -159,7 +155,6 @@ public class VideoStepFragment extends Fragment implements ExoPlayer.EventListen
     nextStep = rootView.findViewById(R.id.next_steps_btn);
     previousStep = rootView.findViewById(R.id.previous_steps_btn);
     stepImage = rootView.findViewById(R.id.recipe_step_image);
-
 
     //Setting the OnClickListeners on the Next and Previous Btns
     nextStep.setOnClickListener(new OnClickListener() {
@@ -175,28 +170,11 @@ public class VideoStepFragment extends Fragment implements ExoPlayer.EventListen
       }
     });
 
-    if (longDescription != null && !longDescription.isEmpty()) {
-      //Setting the TextView with the Long Description
-      tvLongDescription.setText(longDescription);
-    } else {
-      tvLongDescription.setText("");
-    }
-
-    if (videoUrl != null && !videoUrl.isEmpty()) {
-      //Parse the video url
-      videoUrlUri = Uri.parse(videoUrl);
-    } else {
-      videoUrlUri = Uri.parse("");
-
-    }
-
-    //Set the thumbnail image to the ImageView if the Url is not empty
-    if (thumbnailUrl != null && !thumbnailUrl.isEmpty()) {
-      Picasso.with(mContext).load(thumbnailUrl).into(stepImage);
-    }
-
     //SetUp of the Exo Player
     if (mExoPlayer == null) {
+      mPlayerView
+          .setDefaultArtwork(
+              BitmapFactory.decodeResource(getResources(), R.drawable.baking_app_logo));
       BandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
       TrackSelection.Factory videoTrackSelectionFactory =
           new AdaptiveTrackSelection.Factory(bandwidthMeter);
@@ -206,10 +184,51 @@ public class VideoStepFragment extends Fragment implements ExoPlayer.EventListen
       mExoPlayer = ExoPlayerFactory.newSimpleInstance(getContext(), trackSelector);
 
     }
+
+    tvLongDescription.setText(longDescription);
       //passing the video url to the exo player
+    if (videoUrl != null && !videoUrl.isEmpty()) {
+      //Parse the video url
+      videoUrlUri = Uri.parse(videoUrl);
+    } else {
+      videoUrlUri = Uri.parse("");
+    }
       initializePlayer(videoUrlUri);
 
     return rootView;
+  }
+
+
+  @Override
+  public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+    super.onActivityCreated(savedInstanceState);
+
+    //On Phone Rotation Restore the values saved in the savedInstanceSate bundle
+    if (savedInstanceState != null) {
+
+      currentPlayerPosition = savedInstanceState.getLong(CURRENT_PLAYER_POSITION_KEY);
+      stepsArrayList = savedInstanceState.getParcelableArrayList(STEP_ARRAY_LIST_KEY);
+      stepId = savedInstanceState.getInt(CURRENT_STEP_POSITION_KEY);
+
+      if (stepsArrayList != null) {
+        Steps savedInstanceStep = stepsArrayList.get(stepId);
+        videoUrl = savedInstanceStep.getVideoURL();
+        longDescription = savedInstanceStep.getDescription();
+        thumbnailUrl = savedInstanceStep.getThumbnailURL();
+      }
+
+      playWhenReady = savedInstanceState.getBoolean(PLAYER_STATE_KEY);
+      recipeName = savedInstanceState.getString(RECIPE_NAME_KEY);
+      stepsSize = savedInstanceState.getInt(CURRENT_STEP_SIZE_KEY);
+
+      Log.d(LOG_TAG, "TEST *** onActivityCreated (savedInstanceState != null) STEP is: " + stepId);
+      Log.d(LOG_TAG,
+          "TEST *** onActivityCreated (savedInstanceState != null) videoUrl is: " + videoUrl);
+      Log.d(LOG_TAG, "TEST *** onActivityCreated (savedInstanceState != null) longDescription is: "
+          + longDescription);
+
+    }
+
   }
 
   //Get the next Video Step Data
@@ -257,30 +276,7 @@ public class VideoStepFragment extends Fragment implements ExoPlayer.EventListen
     initializePlayer(previousVideoUrl);
   }
 
-  @Override
-  public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-    super.onActivityCreated(savedInstanceState);
 
-    //On Phone Rotation Restore the values saved in the savedInstanceSate bundle
-    if (savedInstanceState != null) {
-
-      currentPlayerPosition = savedInstanceState.getLong(CURRENT_PLAYER_POSITION_KEY);
-      stepsArrayList = savedInstanceState.getParcelableArrayList(STEP_ARRAY_LIST_KEY);
-      stepId = savedInstanceState.getInt(CURRENT_STEP_POSITION_KEY);
-      if (stepsArrayList != null) {
-        Steps savedInstanceStep = stepsArrayList.get(stepId);
-        videoUrl = savedInstanceStep.getVideoURL();
-        longDescription = savedInstanceStep.getDescription();
-        thumbnailUrl = savedInstanceStep.getThumbnailURL();
-      }
-
-      playWhenReady = savedInstanceState.getBoolean(PLAYER_STATE_KEY);
-      recipeName = savedInstanceState.getString(RECIPE_NAME_KEY);
-      stepsSize = savedInstanceState.getInt(CURRENT_STEP_SIZE_KEY);
-
-      Log.i(LOG_TAG, "ON VIEW CREATE RESTORE STEP is: " + stepId);
-    }
-  }
 
   /**
    * Initialize ExoPlayer.
@@ -290,26 +286,26 @@ public class VideoStepFragment extends Fragment implements ExoPlayer.EventListen
   private void initializePlayer(Uri mediaUri) {
 
 //    if (mExoPlayer == null) {
-
-      // 1. Create a default TrackSelector
-      Handler mainHandler = new Handler();
-
-      mPlayerView
-          .setDefaultArtwork(
-              BitmapFactory.decodeResource(getResources(), R.drawable.baking_app_logo));
-
+//
+//      // 1. Create a default TrackSelector
+//      Handler mainHandler = new Handler();
+//
+//      mPlayerView
+//          .setDefaultArtwork(
+//              BitmapFactory.decodeResource(getResources(), R.drawable.baking_app_logo));
+//
 //      BandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
-
+//
 //      TrackSelection.Factory videoTrackSelectionFactory =
 //          new AdaptiveTrackSelection.Factory(bandwidthMeter);
 //
 //      TrackSelector trackSelector =
 //          new DefaultTrackSelector(videoTrackSelectionFactory);
-
+//
 //      // 2. Create the player
 //      mExoPlayer = ExoPlayerFactory.newSimpleInstance(getContext(), trackSelector);
-
-      LoadControl loadControl = new DefaultLoadControl();
+//
+//      LoadControl loadControl = new DefaultLoadControl();
 
       //Setting the Player to a SimpleExoPlayerView
       mPlayerView.setPlayer(mExoPlayer);
@@ -333,13 +329,16 @@ public class VideoStepFragment extends Fragment implements ExoPlayer.EventListen
         mExoPlayer.seekTo(currentPlayerPosition);
         // Prepare the player with the source.
         mExoPlayer.prepare(videoSource);
-        mExoPlayer.setPlayWhenReady(true);
+        mExoPlayer.setPlayWhenReady(playWhenReady);
       }
 
     // Prepare the player with the source.
+    mExoPlayer.seekTo(currentPlayerPosition);
     mExoPlayer.prepare(videoSource);
     mExoPlayer.setPlayWhenReady(playWhenReady);
   }
+
+
 
 
   /**
@@ -422,6 +421,7 @@ public class VideoStepFragment extends Fragment implements ExoPlayer.EventListen
     mExoPlayer.stop();
     mExoPlayer.release();
     mExoPlayer = null;
+
   }
 
   @Override
