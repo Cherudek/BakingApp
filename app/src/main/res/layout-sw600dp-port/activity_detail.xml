@@ -17,7 +17,8 @@
     android:id="@+id/details_container_2"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_alignTop="@id/details_container">
+    android:layout_alignTop="@id/details_container"
+    android:visibility="gone">
   </FrameLayout>
 
 </RelativeLayout>

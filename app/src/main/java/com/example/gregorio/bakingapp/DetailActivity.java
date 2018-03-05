@@ -92,16 +92,15 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
     ingredientsLabel = findViewById(R.id.ingredient_label);
     ingredientsFrame = findViewById(R.id.details_container);
     stepsLabel = findViewById(R.id.steps_label);
-    isTabletLandscape = getResources().getBoolean(R.bool.isTabletLand);
-    isTabletPortrait = getResources().getBoolean(R.bool.isTabletPortrait);
+
 
 
     if (savedInstanceState != null) {
       mRecipeName = savedInstanceState.getString(RECIPE_NAME_KEY);
       mStepsArrayList = savedInstanceState.getParcelableArrayList(STEPS_ARRAY_LIST_KEY);
       mIngredientsArrayList = savedInstanceState.getParcelableArrayList(INGREDIENTS_ARRAY_LIST_KEY);
-      isTabletLandscape = savedInstanceState.getBoolean(IS_TABLET_LANDSCAPE_TAG);
-      isTabletPortrait = savedInstanceState.getBoolean(IS_TABLET_PORTRAIT_TAG);
+//      isTabletLandscape = savedInstanceState.getBoolean(IS_TABLET_LANDSCAPE_TAG);
+//      isTabletPortrait = savedInstanceState.getBoolean(IS_TABLET_PORTRAIT_TAG);
       recipeModel = savedInstanceState.getParcelable(RECIPE_MODEL_KEY);
       parcelable = savedInstanceState.getParcelable(PARCELABLE_KEY);
 
@@ -148,6 +147,10 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
 
     // provide compatibility to all the versions
     getSupportActionBar().setTitle(mRecipeName);
+
+    isTabletLandscape = getResources().getBoolean(R.bool.isTabletLand);
+    isTabletPortrait = getResources().getBoolean(R.bool.isTabletPortrait);
+
 
     //Check if we are in Tablet Landscape layout
     if (isTabletLandscape) {
@@ -198,6 +201,9 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
     // provide compatibility to all the versions
     getSupportActionBar().setTitle(mRecipeName);
 
+    isTabletLandscape = getResources().getBoolean(R.bool.isTabletLand);
+    isTabletPortrait = getResources().getBoolean(R.bool.isTabletPortrait);
+
     //Check if we are in Tablet Landscape layout
     if (isTabletLandscape) {
 
@@ -215,7 +221,7 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
     } else if (isTabletPortrait) {
 
       fragmentManager.beginTransaction()
-          .add(R.id.details_container, ingredientsFragment, INGREDIENTS_FRAGMENT_TAG)
+          .replace(R.id.details_container, ingredientsFragment, INGREDIENTS_FRAGMENT_TAG)
           .remove(videoStepFragment)
           .addToBackStack(null)
           .commit();
@@ -337,12 +343,6 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
         videoStepFragment.setArguments(videoUrlBundle);
       }
 
-      FrameLayout detailContainer = findViewById(R.id.details_container);
-      detailContainer.setVisibility(View.VISIBLE);
-
-      FrameLayout container2 = findViewById(R.id.details_container_2);
-      container2.setVisibility(View.VISIBLE);
-
       FragmentManager fm = getSupportFragmentManager();
       videoStepFragment.setArguments(videoUrlBundle);
 
@@ -361,7 +361,6 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
       ft.commit();
 
       fm.beginTransaction()
-          .hide(stepsFragment)
           .replace(R.id.details_container, videoStepFragment, VIDEO_FRAGMENT_TAG)
           .addToBackStack(null)
           .commit();
@@ -374,7 +373,6 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
       FragmentManager fm = getSupportFragmentManager();
       fm.beginTransaction()
           .replace(R.id.details_container, videoStepFragment, VIDEO_FRAGMENT_TAG)
-          // .hide(stepsFragment)
           .addToBackStack(null)
           .commit();
 
@@ -396,7 +394,7 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
     if (isTabletLandscape) {
       fragmentManager.beginTransaction()
           .replace(R.id.details_container, ingredientsFragment, INGREDIENTS_FRAGMENT_TAG)
-          // .replace(R.id.details_container_2, videoStepFragment, VIDEO_FRAGMENT_TAG)
+          .replace(R.id.details_container_2, videoStepFragment, VIDEO_FRAGMENT_TAG)
           .addToBackStack(null)
           .commit();
 
@@ -411,76 +409,12 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
     super.onResume();
     getSupportActionBar().setTitle(mRecipeName);
 
-    // fragmentSetUp2();
-    // Log.d(LOG_TAG, "OnResume: fragmentReplacement() *** TEST ****");
-//
-//    if (isTabletLandscape) {
-//
-//      stepsFragment = new StepsFragment();
-//      videoStepFragment = new VideoStepFragment();
-//      ingredientsFragment = new IngredientsFragment();
-//
-//      // Create fragment and give it an argument specifying the article it should show
-//      stepsFragment.setArguments(parcelable);
-//      videoStepFragment.setArguments(videoUrlBundle);
-//      ingredientsFragment.setArguments(parcelable);
-//
-//      FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-//
-//      // Replace whatever is in the fragment_container view with this fragment,
-//      // and add the transaction to the back stack so the user can navigate back
-//      transaction.replace(R.id.details_container, ingredientsFragment, INGREDIENTS_FRAGMENT_TAG)
-//          .replace(R.id.details_container_2, videoStepFragment, VIDEO_FRAGMENT_TAG)
-//          .addToBackStack(null)
-//          .commit();
-//
-//      Log.d(LOG_TAG, "OnResume  *****  TEST ***** is Tablet Landscape");
-//
-//
-//    } else if (isTabletPortrait) {
-//
-//      if (ingredientsFragment == null) {
-//        ingredientsFragment = new IngredientsFragment();
-//        ingredientsFragment.setArguments(parcelable);
-//      }
-//      if (stepsFragment == null) {
-//        stepsFragment = new StepsFragment();
-//        stepsFragment.setArguments(parcelable);
-//      }
-//      if (videoStepFragment == null) {
-//        videoStepFragment = new VideoStepFragment();
-//        videoStepFragment.setArguments(videoUrlBundle);
-//      }
-//
-//      FrameLayout container2 = findViewById(R.id.details_container_2);
-//      container2.setVisibility(View.VISIBLE);
-//      FrameLayout detailContainer = findViewById(R.id.details_container);
-//      detailContainer.setVisibility(View.VISIBLE);
-//
-//      FragmentManager fm = getSupportFragmentManager();
-//
-//      // videoStepFragment = (VideoStepFragment) fm.findFragmentByTag(VIDEO_FRAGMENT_TAG);
-//      // stepsFragment = (StepsFragment) fm.findFragmentByTag(STEP_FRAGMENT_TAG);
-//      //ingredientsFragment = (IngredientsFragment) fm.findFragmentByTag(INGREDIENTS_FRAGMENT_TAG);
-////
-////      final FragmentTransaction ft = fm.beginTransaction();
-////      ft.detach(videoStepFragment);
-////      ft.detach(stepsFragment);
-////      ft.detach(ingredientsFragment);
-////      ft.attach(videoStepFragment);
-////      ft.attach(ingredientsFragment);
-////      ft.commit();
-//
-//      FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-//      // Replace whatever is in the fragment_container view with this fragment,
-//      //and add the transaction to the back stack so the user can navigate back
-//      transaction.replace(R.id.details_container, ingredientsFragment, INGREDIENTS_FRAGMENT_TAG)
-//          .addToBackStack(null)
-//          .commit();
-//
-//      Log.d(LOG_TAG, "OnResume  *****  TEST ***** is Tablet Portrait");
-//
-//    }
+    isTabletLandscape = getResources().getBoolean(R.bool.isTabletLand);
+    isTabletPortrait = getResources().getBoolean(R.bool.isTabletPortrait);
+
+    Log.d(LOG_TAG, "TEST: OnResume isTabletLandscape is" + isTabletLandscape);
+    Log.d(LOG_TAG, "TEST: OnResume isTabletPortrait is" + isTabletPortrait);
+
   }
 
   @Override
@@ -490,9 +424,7 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
     outState.putParcelableArrayList(INGREDIENTS_ARRAY_LIST_KEY, mIngredientsArrayList);
     outState.putParcelable(STEP_PARCEL_KEY, steps);
     outState.putString(RECIPE_NAME_KEY, mRecipeName);
-    //outState.putBoolean(IS_TABLET_LANDSCAPE_TAG, isTabletLandscape);
     outState.putParcelable(RECIPE_MODEL_KEY, recipeModel);
-    //outState.putBoolean(IS_TABLET_PORTRAIT_TAG, isTabletPortrait);
     outState.putParcelable(PARCELABLE_KEY, parcelable);
 
     int stepsArraySize = mStepsArrayList.size();
