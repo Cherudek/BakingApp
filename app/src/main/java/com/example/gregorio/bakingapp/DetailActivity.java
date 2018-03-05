@@ -212,7 +212,7 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
 
       fragmentManager.beginTransaction()
           .replace(R.id.details_container, ingredientsFragment)
-          .add(R.id.details_container_2, videoStepFragment)
+          .replace(R.id.details_container_2, videoStepFragment)
           .addToBackStack(null)
           .commit();
 
@@ -221,8 +221,7 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
     } else if (isTabletPortrait) {
 
       fragmentManager.beginTransaction()
-          .replace(R.id.details_container, ingredientsFragment, INGREDIENTS_FRAGMENT_TAG)
-          .remove(videoStepFragment)
+          .replace(R.id.details_container, videoStepFragment)
           .addToBackStack(null)
           .commit();
 
