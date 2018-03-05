@@ -1,17 +1,12 @@
 package com.example.gregorio.bakingapp;
 
-import static com.example.gregorio.bakingapp.DetailActivity.VIDEO_FRAGMENT_TAG;
 import static com.example.gregorio.bakingapp.MainActivity.PARCEL_KEY;
 import android.content.Context;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -39,7 +34,7 @@ public class StepsFragment extends Fragment implements StepsAdapter.StepsAdapter
 
   // Define a new interface OnStepsClickListener that triggers a callback in the host activity
   OnStepsClickListener mCallbackHostActivity;
-  OnBtnIngredientsListClickListener mCallbackHostActivity2;
+  OnIngredientsBtnListClickListener mCallbackHostActivity2;
 
   private ArrayList<Steps> stepsArrayList;
   private ArrayList<Ingredients> ingredientsArrayList;
@@ -124,7 +119,7 @@ public class StepsFragment extends Fragment implements StepsAdapter.StepsAdapter
     // If not, it throws an exception
     try {
       mCallbackHostActivity = (OnStepsClickListener) context;
-      mCallbackHostActivity2 = (OnBtnIngredientsListClickListener) context;
+      mCallbackHostActivity2 = (OnIngredientsBtnListClickListener) context;
     } catch (ClassCastException e) {
       throw new ClassCastException(context.toString()
           + " must implement OnStepsClickListener");
@@ -168,7 +163,7 @@ public class StepsFragment extends Fragment implements StepsAdapter.StepsAdapter
 
   }
 
-  public interface OnBtnIngredientsListClickListener {
+  public interface OnIngredientsBtnListClickListener {
 
     void onBtnIngredientList();
   }

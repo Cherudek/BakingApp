@@ -4,26 +4,19 @@ import static com.example.gregorio.bakingapp.MainActivity.INTENT_KEY;
 import static com.example.gregorio.bakingapp.MainActivity.PARCEL_KEY;
 
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.FrameLayout.LayoutParams;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.example.gregorio.bakingapp.IngredientsFragment.OnStepsBtnClickListener;
-import com.example.gregorio.bakingapp.StepsFragment.OnBtnIngredientsListClickListener;
+import com.example.gregorio.bakingapp.StepsFragment.OnIngredientsBtnListClickListener;
 import com.example.gregorio.bakingapp.StepsFragment.OnStepsClickListener;
+import com.example.gregorio.bakingapp.VideoStepFragment.OnCurrentVideoListener;
 import com.example.gregorio.bakingapp.retrofit.Ingredients;
 import com.example.gregorio.bakingapp.retrofit.RecipeModel;
 import com.example.gregorio.bakingapp.retrofit.Steps;
@@ -34,7 +27,7 @@ import java.util.ArrayList;
  */
 
 public class DetailActivity extends AppCompatActivity implements OnStepsClickListener,
-    OnStepsBtnClickListener, OnBtnIngredientsListClickListener {
+    OnStepsBtnClickListener, OnIngredientsBtnListClickListener, OnCurrentVideoListener {
 
   public static final String LOG_TAG = DetailActivity.class.getSimpleName();
   public static final String VIDEO_KEY_BUNDLE = "Video URL bundle";
@@ -54,6 +47,12 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
   public static final String IS_TABLET_PORTRAIT_TAG = "Tablet Portrait Tag";
   public static final String PARCELABLE_KEY = "Parcelable Key";
   public static final String VIDEO_URL_BUNDLE = "Video URL Bundle Key";
+
+  public static final String CURRENT_VIDEO_URL_BUNDLE_KEY = "Current Video URL Bundle Key";
+  public static final String CURRENT_VIDEO_DESCRIPTION_BUNDLE_KEY = "Current Video Description Bundle Key";
+  public static final String CURRENT_VIDEO_READY_TO_PLAY_BUNDLE_KEY = "Current Video Ready to Play Bundle Key";
+  public static final String CURRENT_VIDEO_PLAYER_POSITION_BUNDLE_KEY = "Current Video Player Position Bundle Key";
+
 
 
   private static final String RECIPE_MODEL_KEY = "Recipe Model Key";
@@ -82,6 +81,7 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
   private Boolean isTabletLandscape;
   private Boolean isTabletPortrait;
   private RecipeModel recipeModel;
+  private Bundle currentVideoStep;
 
 
   @Override
@@ -185,6 +185,18 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
     }
   }
 
+  @Override
+  public void onCurrentVideoPlaying(int stepId, long currentPlayerPosition, boolean playWhenReady,
+      String stepDescription, String videoUrl) {
+
+    currentVideoStep = new Bundle();
+    currentVideoStep.putString(CURRENT_VIDEO_URL_BUNDLE_KEY, videoUrl);
+    currentVideoStep.putString(CURRENT_VIDEO_DESCRIPTION_BUNDLE_KEY, stepDescription);
+    currentVideoStep.putBoolean(CURRENT_VIDEO_READY_TO_PLAY_BUNDLE_KEY, playWhenReady);
+    currentVideoStep.putLong(CURRENT_VIDEO_PLAYER_POSITION_BUNDLE_KEY, currentPlayerPosition);
+
+  }
+
   // Fragment Set Up using saved data bundle
   public void fragmentSetUp2() {
 
@@ -196,16 +208,13 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
     ingredientsFragment.setArguments(parcelable);
 
     if (videoStepFragment == null) {
-      // stepsFragment = new StepsFragment();
       videoStepFragment = new VideoStepFragment();
       //Set the Bundle to the videoStepFragment
-      videoStepFragment.setArguments(videoUrlBundle);
+      videoStepFragment.setArguments(currentVideoStep);
     }
-    videoStepFragment.setArguments(videoUrlBundle);
-
+    videoStepFragment.setArguments(currentVideoStep);
 
     fragmentManager = getSupportFragmentManager();
-
     // provide compatibility to all the versions
     getSupportActionBar().setTitle(mRecipeName);
 
@@ -231,7 +240,7 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
 
     } else if (isTabletPortrait) {
 
-      videoStepFragment.setArguments(videoUrlBundle);
+      videoStepFragment.setArguments(currentVideoStep);
 
       fragmentManager.beginTransaction()
           .replace(R.id.details_container, videoStepFragment)
@@ -404,7 +413,7 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
     }
   }
 
-  // This method will trigger OnBtnIngredientsListClickListener Interface to Set up the Ingredient Fragment
+  // This method will trigger OnIngredientsBtnListClickListener Interface to Set up the Ingredient Fragment
   @Override
   public void onBtnIngredientList() {
 

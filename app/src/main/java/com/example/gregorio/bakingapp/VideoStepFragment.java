@@ -25,6 +25,8 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+import com.example.gregorio.bakingapp.StepsFragment.OnIngredientsBtnListClickListener;
+import com.example.gregorio.bakingapp.StepsFragment.OnStepsClickListener;
 import com.example.gregorio.bakingapp.retrofit.Steps;
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.ExoPlaybackException;
@@ -69,8 +71,14 @@ public class VideoStepFragment extends Fragment implements ExoPlayer.EventListen
   private static final String STEP_ARRAY_LIST_KEY = "Step Array List";
   private static final String PLAYER_STATE_KEY = "Exo Player State";
 
+  private static final String STEP_DESCRIPTION_KEY = "Step Description Key";
+  private static final String CURRENT_VIDEO_URL_KEY = "Current Video Url Key";
+
+
+
 
   private static MediaSessionCompat mMediaSession;
+  public OnCurrentVideoListener mCallbackHostActivity3;
   private Context mContext;
   private SimpleExoPlayer mExoPlayer;
   private SimpleExoPlayerView mPlayerView;
@@ -91,6 +99,7 @@ public class VideoStepFragment extends Fragment implements ExoPlayer.EventListen
   private boolean playWhenReady;
   private ImageView stepImage;
   private String thumbnailUrl;
+
 
   public VideoStepFragment() {
   }
@@ -227,8 +236,27 @@ public class VideoStepFragment extends Fragment implements ExoPlayer.EventListen
       Log.d(LOG_TAG, "TEST *** onActivityCreated (savedInstanceState != null) longDescription is: "
           + longDescription);
 
+      //this interface call back the Detail Activity passing the current data to load in the Media player
+      mCallbackHostActivity3
+          .onCurrentVideoPlaying(stepId, currentPlayerPosition, playWhenReady, longDescription,
+              videoUrl);
+
     }
 
+  }
+
+  @Override
+  public void onAttach(Context context) {
+    super.onAttach(context);
+
+    // This makes sure that the host activity has implemented the callback interface
+    // If not, it throws an exception
+    try {
+      mCallbackHostActivity3 = (OnCurrentVideoListener) context;
+    } catch (ClassCastException e) {
+      throw new ClassCastException(context.toString()
+          + " must implement OnStepsClickListener");
+    }
   }
 
   //Get the next Video Step Data
@@ -267,13 +295,13 @@ public class VideoStepFragment extends Fragment implements ExoPlayer.EventListen
   // Provide the step object to populate the UI
   private void setStep(Steps steps) {
 
-    String stepDescription = steps.getDescription();
-    String stepVideoUrl = steps.getVideoURL();
+    longDescription = steps.getDescription();
+    videoUrl = steps.getVideoURL();
     //Setting the TextView with the Long Description
-    tvLongDescription.setText(stepDescription);
+    tvLongDescription.setText(longDescription);
     //Parse the video url
-    Uri previousVideoUrl = Uri.parse(stepVideoUrl);
-    initializePlayer(previousVideoUrl);
+    Uri currentVideoUri = Uri.parse(videoUrl);
+    initializePlayer(currentVideoUri);
   }
 
 
@@ -284,28 +312,6 @@ public class VideoStepFragment extends Fragment implements ExoPlayer.EventListen
    * @param mediaUri The URI of the sample to play.
    */
   private void initializePlayer(Uri mediaUri) {
-
-//    if (mExoPlayer == null) {
-//
-//      // 1. Create a default TrackSelector
-//      Handler mainHandler = new Handler();
-//
-//      mPlayerView
-//          .setDefaultArtwork(
-//              BitmapFactory.decodeResource(getResources(), R.drawable.baking_app_logo));
-//
-//      BandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
-//
-//      TrackSelection.Factory videoTrackSelectionFactory =
-//          new AdaptiveTrackSelection.Factory(bandwidthMeter);
-//
-//      TrackSelector trackSelector =
-//          new DefaultTrackSelector(videoTrackSelectionFactory);
-//
-//      // 2. Create the player
-//      mExoPlayer = ExoPlayerFactory.newSimpleInstance(getContext(), trackSelector);
-//
-//      LoadControl loadControl = new DefaultLoadControl();
 
       //Setting the Player to a SimpleExoPlayerView
       mPlayerView.setPlayer(mExoPlayer);
@@ -450,11 +456,20 @@ public class VideoStepFragment extends Fragment implements ExoPlayer.EventListen
     outState.putInt(CURRENT_STEP_POSITION_KEY, stepId);
     outState.putInt(CURRENT_STEP_SIZE_KEY, stepsSize);
     outState.putBoolean(PLAYER_STATE_KEY, playWhenReady);
+    outState.putString(VIDEO_URL_KEY, videoUrl);
+    outState.putString(DESCRIPTION_KEY, longDescription);
 
     Log.d(LOG_TAG, "VideoFragment OnSaved Instance Url: " + videoUrl);
     Log.d(LOG_TAG,
         "VideoFragment OnSaved Instance Current Player Position: " + currentPlayerPosition);
     Log.d(LOG_TAG, "VideoFragment OnSaved Instance Steps Number: " + stepsSize);
+  }
+
+  // OnCurrentVideoListener interface, calls a method in the host activity named onCurrentVideoPlaying
+  public interface OnCurrentVideoListener {
+
+    void onCurrentVideoPlaying(int stepId, long currentPlayerPosition, boolean playWhenReady,
+        String stepDescription, String videoUrl);
   }
 
   /**
