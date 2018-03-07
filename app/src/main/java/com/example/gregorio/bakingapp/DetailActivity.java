@@ -48,10 +48,16 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
   public static final String PARCELABLE_KEY = "Parcelable Key";
   public static final String VIDEO_URL_BUNDLE = "Video URL Bundle Key";
 
+  public static final String CURRENT_VIDEO_BUNDLE_KEY = "Current Video Bundle Key";
+  public static final String START_VIDEO_BUNDLE_KEY = "Start Video Bundle Key";
+
+
   public static final String CURRENT_VIDEO_URL_BUNDLE_KEY = "Current Video URL Bundle Key";
   public static final String CURRENT_VIDEO_DESCRIPTION_BUNDLE_KEY = "Current Video Description Bundle Key";
   public static final String CURRENT_VIDEO_READY_TO_PLAY_BUNDLE_KEY = "Current Video Ready to Play Bundle Key";
   public static final String CURRENT_VIDEO_PLAYER_POSITION_BUNDLE_KEY = "Current Video Player Position Bundle Key";
+  public static final String CURRENT_VIDEO_ID_BUNDLE_KEY = "Current Video ID Bundle Key";
+
 
 
 
@@ -82,6 +88,9 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
   private Boolean isTabletPortrait;
   private RecipeModel recipeModel;
   private Bundle currentVideoStep;
+  private Bundle currentVideoBundle;
+  private Bundle videoUrlStartBundle;
+  private Bundle videoBundle;
 
 
   @Override
@@ -93,6 +102,8 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
     ingredientsFrame = findViewById(R.id.details_container);
     stepsLabel = findViewById(R.id.steps_label);
 
+    //Creating a bundle that will include the starting video bundle(videoUrlBundle) and the updated video bundle(currentVideoStep)
+    videoBundle = new Bundle();
 
     if (savedInstanceState != null) {
       mRecipeName = savedInstanceState.getString(RECIPE_NAME_KEY);
@@ -102,6 +113,9 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
       parcelable = savedInstanceState.getParcelable(PARCELABLE_KEY);
       videoUrlBundle = savedInstanceState.getBundle(VIDEO_URL_BUNDLE);
 
+      //Restore the fragment's instance *** throwing java.lang.IllegalStateException: Can't change container ID of fragment VideoStepFragment ***
+      // videoStepFragment = (VideoStepFragment) getSupportFragmentManager().getFragment(savedInstanceState, VIDEO_FRAGMENT_TAG);
+
       Log.i(LOG_TAG, "Recipe Name Key Saved:  " + mRecipeName);
       Log.i(LOG_TAG, "OnSavedInstance bundle Steps Array Size: " + mStepsArrayList);
       Log.i(LOG_TAG, "OnSavedInstance bundle Ingredients Array Size: " + mIngredientsArrayList);
@@ -110,7 +124,6 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
       fragmentSetUp2();
 
       Log.d(LOG_TAG, "OnCreate: fragmentSetUp2() *** TEST ***");
-
 
     } else {
 
@@ -135,8 +148,10 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
 
     //Instantiate the IngredientsFragment
     ingredientsFragment = new IngredientsFragment();
-    // stepsFragment = new StepsFragment();
-    videoStepFragment = new VideoStepFragment();
+
+    if (videoStepFragment == null) {
+      videoStepFragment = new VideoStepFragment();
+    }
 
     //Set the Bundle to the IngredientsFragment
     ingredientsFragment.setArguments(parcelable);
@@ -185,6 +200,8 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
     }
   }
 
+
+  //Data Coming from the VideoStepFragment with the current video playing
   @Override
   public void onCurrentVideoPlaying(int stepId, long currentPlayerPosition, boolean playWhenReady,
       String stepDescription, String videoUrl) {
@@ -194,11 +211,19 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
     currentVideoStep.putString(CURRENT_VIDEO_DESCRIPTION_BUNDLE_KEY, stepDescription);
     currentVideoStep.putBoolean(CURRENT_VIDEO_READY_TO_PLAY_BUNDLE_KEY, playWhenReady);
     currentVideoStep.putLong(CURRENT_VIDEO_PLAYER_POSITION_BUNDLE_KEY, currentPlayerPosition);
+    currentVideoStep.putInt(CURRENT_VIDEO_ID_BUNDLE_KEY, stepId);
+    currentVideoStep.putParcelableArrayList(STEPS_ARRAY_LIST_KEY, mStepsArrayList);
+    //Adding to the global video bundle the current playing video bundle to pass.
+    videoBundle.putBundle(CURRENT_VIDEO_BUNDLE_KEY, currentVideoStep);
+
+    Log.d(LOG_TAG, "TEST *** onCurrentVideoPlaying videoUrl is " + videoUrl);
+    Log.d(LOG_TAG, "TEST *** onCurrentVideoPlaying video ID is " + stepId);
 
   }
 
   // Fragment Set Up using saved data bundle
   public void fragmentSetUp2() {
+
 
     if (ingredientsFragment == null) {
       //Instantiate the IngredientsFragment
@@ -209,10 +234,9 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
 
     if (videoStepFragment == null) {
       videoStepFragment = new VideoStepFragment();
-      //Set the Bundle to the videoStepFragment
-      videoStepFragment.setArguments(currentVideoStep);
     }
-    videoStepFragment.setArguments(currentVideoStep);
+    //Set the Bundle to the videoStepFragment
+    videoStepFragment.setArguments(videoBundle);
 
     fragmentManager = getSupportFragmentManager();
     // provide compatibility to all the versions
@@ -240,7 +264,7 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
 
     } else if (isTabletPortrait) {
 
-      videoStepFragment.setArguments(currentVideoStep);
+      videoStepFragment.setArguments(videoBundle);
 
       fragmentManager.beginTransaction()
           .replace(R.id.details_container, videoStepFragment)
@@ -311,17 +335,21 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
     videoUrlBundle.putParcelableArrayList(STEPS_ARRAY_LIST_KEY, mStepsArrayList);
     videoUrlBundle.putInt(VIDEO_POSITION_BUNDLE, position);
 
-    Log.d(LOG_TAG, "My Video Url is : " + mVideoUrl);
-    Log.d(LOG_TAG, "My Long Description is : " + mLongDescription);
-    Log.d(LOG_TAG, "My Video ID is : " + mId);
-    Log.d(LOG_TAG, "My Video Position is : " + position);
+    //Adding the bundle that contains the data to start the video player to the global video bundle
+    videoBundle.putBundle(START_VIDEO_BUNDLE_KEY, videoUrlBundle);
+
+    Log.d(LOG_TAG, "onStepSelected() My Video Url is : " + mVideoUrl);
+    Log.d(LOG_TAG, "onStepSelected() My Long Description is : " + mLongDescription);
+    Log.d(LOG_TAG, "onStepSelected() My Video ID is : " + mId);
+    Log.d(LOG_TAG, "onStepSelected() My Video Position is : " + position);
 
 
     //Instantiating the Video & Long description  Fragment
     if (videoStepFragment == null) {
       videoStepFragment = new VideoStepFragment();
-      videoStepFragment.setArguments(videoUrlBundle);
     }
+    videoStepFragment.setArguments(videoBundle);
+
 
     //Instantiating the steps  Fragment
     if (stepsFragment == null) {
@@ -333,12 +361,12 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
 
     }
 
-    if (videoUrlBundle != null) {
-      videoStepFragment.setArguments(videoUrlBundle);
-    }
+//    if (videoUrlBundle != null) {
+//      videoStepFragment.setArguments(videoBundle);
+//    }
 
     //if fragments are not null pass on the bundle and start the fragment transaction
-    videoStepFragment.setArguments(videoUrlBundle);
+    // videoStepFragment.setArguments(videoBundle);
     stepsFragment.setArguments(parcelable);
 
     if (isTabletLandscape) {
@@ -352,6 +380,8 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
       ft.detach(videoStepFragment);
       ft.attach(videoStepFragment);
       ft.commit();
+
+      videoStepFragment.setArguments(videoBundle);
 
       Log.d(LOG_TAG, "TEST onStepSelected, isTabletLandscape, videoStepFragment detach/attach");
 
@@ -369,16 +399,10 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
 
       if (videoStepFragment == null) {
         videoStepFragment = new VideoStepFragment();
-        videoStepFragment.setArguments(videoUrlBundle);
       }
+      videoStepFragment.setArguments(videoBundle);
 
       FragmentManager fm = getSupportFragmentManager();
-      videoStepFragment.setArguments(videoUrlBundle);
-
-      if (videoStepFragment == null) {
-        videoStepFragment = (VideoStepFragment) fm.findFragmentByTag(VIDEO_FRAGMENT_TAG);
-      }
-
       stepsFragment = (StepsFragment) fm.findFragmentByTag(STEP_FRAGMENT_TAG);
       ingredientsFragment = (IngredientsFragment) fm.findFragmentByTag(INGREDIENTS_FRAGMENT_TAG);
 
@@ -397,7 +421,6 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
       Log.d(LOG_TAG, "onStepSelected() **** TEST **** is tablet Portrait");
       Log.d(LOG_TAG,
           "onStepSelected() **** TEST **** is tablet Portrait, videoStepFragment detach/attach, replace");
-
 
     } else {
 
@@ -459,6 +482,8 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
     outState.putParcelable(RECIPE_MODEL_KEY, recipeModel);
     outState.putParcelable(PARCELABLE_KEY, parcelable);
     outState.putBundle(VIDEO_URL_BUNDLE, videoUrlBundle);
+    //Save the fragment's instance
+    getSupportFragmentManager().putFragment(outState, VIDEO_FRAGMENT_TAG, videoStepFragment);
 
     int stepsArraySize = mStepsArrayList.size();
     int ingredientsArraySize = mIngredientsArrayList.size();
