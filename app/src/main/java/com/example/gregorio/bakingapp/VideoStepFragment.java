@@ -15,7 +15,10 @@ import static com.example.gregorio.bakingapp.DetailActivity.VIDEO_ID_BUNDLE;
 import static com.example.gregorio.bakingapp.DetailActivity.VIDEO_KEY_BUNDLE;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -54,6 +57,7 @@ import com.google.android.exoplayer2.upstream.DataSource;
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
+import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 
 /**
@@ -73,13 +77,8 @@ public class VideoStepFragment extends Fragment implements ExoPlayer.EventListen
   private static final String PLAYER_STATE_KEY = "Exo Player State";
   private static final String VIDEO_STEP_KEY = "Video Step Key";
 
-
-
   private static final String STEP_DESCRIPTION_KEY = "Step Description Key";
   private static final String CURRENT_VIDEO_URL_KEY = "Current Video Url Key";
-
-
-
 
   private static MediaSessionCompat mMediaSession;
   public OnCurrentVideoListener mCallbackHostActivity3;
@@ -106,6 +105,8 @@ public class VideoStepFragment extends Fragment implements ExoPlayer.EventListen
   private Steps steps;
   private Bundle startVideoBundle;
   private Bundle currentVideoBundle;
+  private Integer thumbnail;
+  private Drawable drawable;
 
   public VideoStepFragment() {
   }
@@ -156,6 +157,8 @@ public class VideoStepFragment extends Fragment implements ExoPlayer.EventListen
         if (stepsArrayList != null) {
           Steps step = stepsArrayList.get(stepId);
           thumbnailUrl = step.getThumbnailURL();
+          setThumbnail(thumbnailUrl);
+
         }
 
         Log.d(LOG_TAG,
@@ -198,7 +201,10 @@ public class VideoStepFragment extends Fragment implements ExoPlayer.EventListen
         Log.d(LOG_TAG,
             " TEST *** onActivityCreated (currentVideoBundle != null) The stepId is: " + stepId);
 
+        setThumbnail(thumbnailUrl);
+
       }
+
     }
 
 
@@ -228,10 +234,14 @@ public class VideoStepFragment extends Fragment implements ExoPlayer.EventListen
           + longDescription);
       Log.d(LOG_TAG, "TEST *** onActivityCreated (savedInstanceState != null) steps is: "
           + steps);
+
+      //if the image is available set the thumbnail else set a place holder image
+      setThumbnail(thumbnailUrl);
     }
 
     //SetUp of the Exo Player
     if (mExoPlayer == null) {
+
       mPlayerView
           .setDefaultArtwork(
               BitmapFactory.decodeResource(getResources(), R.drawable.baking_app_logo));
@@ -275,6 +285,19 @@ public class VideoStepFragment extends Fragment implements ExoPlayer.EventListen
 
     initializePlayer(videoUrlUri);
 
+  }
+
+
+  //Load the image is the Url is not empty
+  private void setThumbnail(String thumbnailUrl) {
+
+    if (thumbnailUrl != null && !thumbnailUrl.isEmpty()) {
+      Picasso.with(stepImage.getContext()).load(thumbnailUrl).into(stepImage);
+    } else {
+      thumbnail = R.drawable.coming_soon;
+      Picasso.with(stepImage.getContext()).load(thumbnail).placeholder(R.drawable.coming_soon)
+          .into(stepImage);
+    }
   }
 
   @Override

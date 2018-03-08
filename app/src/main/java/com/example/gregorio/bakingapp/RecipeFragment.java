@@ -71,7 +71,7 @@ public class RecipeFragment extends Fragment implements RecipeAdapter.RecipeAdap
     if (savedInstanceState != null) {
       repos = savedInstanceState.getParcelableArrayList(BUNDLE_KEY);
 
-      // TODO Add an if else statement in case the is no internet connection and the
+      // If else statement in case the is no internet connection and the
       // JSON does not fetch any data (Repos is null).
       if (repos != null) {
         int size = repos.size();
@@ -145,21 +145,6 @@ public class RecipeFragment extends Fragment implements RecipeAdapter.RecipeAdap
     return rootView;
   }
 
-//  // this method dynamically calculate the number of columns and
-//  // the layout would adapt to the screen size and orientation
-//
-//  private int numberOfColumns() {
-//    DisplayMetrics displayMetrics = new DisplayMetrics();
-//    mContext.getDefaultDisplay().getMetrics(displayMetrics);
-//    // You can change this divider to adjust the size of the poster
-//    int widthDivider = 300;
-//    int width = displayMetrics.widthPixels;
-//    int nColumns = width / widthDivider;
-//    if (nColumns < 2) {
-//      return 2;
-//    }
-//    return nColumns;
-//  }
 
   @Override
   public void onClick(int recipeIndex) {

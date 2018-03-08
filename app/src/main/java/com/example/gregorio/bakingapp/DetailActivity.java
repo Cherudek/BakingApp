@@ -343,13 +343,11 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
     Log.d(LOG_TAG, "onStepSelected() My Video ID is : " + mId);
     Log.d(LOG_TAG, "onStepSelected() My Video Position is : " + position);
 
-
     //Instantiating the Video & Long description  Fragment
     if (videoStepFragment == null) {
       videoStepFragment = new VideoStepFragment();
     }
     videoStepFragment.setArguments(videoBundle);
-
 
     //Instantiating the steps  Fragment
     if (stepsFragment == null) {
@@ -360,14 +358,6 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
       stepsFragment.setArguments(bundle);
 
     }
-
-//    if (videoUrlBundle != null) {
-//      videoStepFragment.setArguments(videoBundle);
-//    }
-
-    //if fragments are not null pass on the bundle and start the fragment transaction
-    // videoStepFragment.setArguments(videoBundle);
-    stepsFragment.setArguments(parcelable);
 
     if (isTabletLandscape) {
 
@@ -483,7 +473,7 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
     outState.putParcelable(PARCELABLE_KEY, parcelable);
     outState.putBundle(VIDEO_URL_BUNDLE, videoUrlBundle);
     //Save the fragment's instance
-    getSupportFragmentManager().putFragment(outState, VIDEO_FRAGMENT_TAG, videoStepFragment);
+    // getSupportFragmentManager().putFragment(outState, VIDEO_FRAGMENT_TAG, videoStepFragment);
 
     int stepsArraySize = mStepsArrayList.size();
     int ingredientsArraySize = mIngredientsArrayList.size();
