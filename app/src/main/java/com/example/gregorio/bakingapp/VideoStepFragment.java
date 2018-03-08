@@ -127,20 +127,6 @@ public class VideoStepFragment extends Fragment implements ExoPlayer.EventListen
     previousStep = rootView.findViewById(R.id.previous_steps_btn);
     stepImage = rootView.findViewById(R.id.recipe_step_image);
 
-    //Setting the OnClickListeners on the Next and Previous Btns
-    nextStep.setOnClickListener(new OnClickListener() {
-      @Override
-      public void onClick(View v) {
-        recipeNextStep();
-      }
-    });
-    previousStep.setOnClickListener(new OnClickListener() {
-      @Override
-      public void onClick(View v) {
-        recipePreviousStep();
-      }
-    });
-
     return rootView;
   }
 
@@ -201,6 +187,7 @@ public class VideoStepFragment extends Fragment implements ExoPlayer.EventListen
             .getLong(CURRENT_VIDEO_PLAYER_POSITION_BUNDLE_KEY);
         playWhenReady = currentVideoBundle.getBoolean(CURRENT_VIDEO_READY_TO_PLAY_BUNDLE_KEY);
         stepsArrayList = currentVideoBundle.getParcelableArrayList(STEPS_ARRAY_LIST_KEY);
+        stepsSize = stepsArrayList.size();
 
         Log.d(LOG_TAG,
             " TEST *** onActivityCreated (currentVideoBundle != null) The videoUrl ID is: "
@@ -263,6 +250,20 @@ public class VideoStepFragment extends Fragment implements ExoPlayer.EventListen
         .onCurrentVideoPlaying(stepId, currentPlayerPosition, playWhenReady, longDescription,
             videoUrl);
 
+    //Setting the OnClickListeners on the Next and Previous Btns
+    nextStep.setOnClickListener(new OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        recipeNextStep();
+      }
+    });
+    previousStep.setOnClickListener(new OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        recipePreviousStep();
+      }
+    });
+
     tvLongDescription.setText(longDescription);
     //passing the video url to the exo player
     if (videoUrl != null && !videoUrl.isEmpty()) {
@@ -299,12 +300,14 @@ public class VideoStepFragment extends Fragment implements ExoPlayer.EventListen
         int index = ++stepId;
         steps = stepsArrayList.get(index);
         setStep(steps);
+        Log.d(LOG_TAG, "recipeNextStep() stepId =  " + stepId);
       } else {
         stepId = 0;
         steps = stepsArrayList.get(stepId);
         setStep(steps);
       }
     }
+
   }
 
   //Get the previous Video Step Data
@@ -321,6 +324,7 @@ public class VideoStepFragment extends Fragment implements ExoPlayer.EventListen
         setStep(steps);
       }
     }
+
   }
 
   // Provide the step object to populate the UI
@@ -412,10 +416,9 @@ public class VideoStepFragment extends Fragment implements ExoPlayer.EventListen
     outState.putString(DESCRIPTION_KEY, longDescription);
     outState.putParcelable(VIDEO_STEP_KEY, steps);
 
-    Log.d(LOG_TAG, "VideoFragment OnSaved Instance Url: " + videoUrl);
-    Log.d(LOG_TAG,
-        "VideoFragment OnSaved Instance Current Player Position: " + currentPlayerPosition);
-    Log.d(LOG_TAG, "VideoFragment OnSaved Instance Steps Number: " + stepsSize);
+    Log.d(LOG_TAG, "onSaveInstanceState(Bundle outState) videoUrl is = " + videoUrl);
+    Log.d(LOG_TAG, "onSaveInstanceState(Bundle outState) stepsSize = " + stepsSize);
+    Log.d(LOG_TAG, "onSaveInstanceState(Bundle outState) stepId = " + stepId);
   }
 
   /**
