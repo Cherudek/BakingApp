@@ -2,45 +2,40 @@
 <RelativeLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
   android:layout_width="wrap_content"
-  android:layout_height="wrap_content">
+  android:layout_height="wrap_content"
+  android:orientation="vertical">
 
   <TextView
-    android:id="@+id/steps_label"
+    android:id="@+id/ingredient_label"
     android:textStyle="bold"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="8dp"
-    android:layout_marginBottom="8dp"
     android:layout_alignParentTop="true"
     android:layout_gravity="center"
+    android:padding="8dp"
     android:fontFamily="@font/montserrat"
-    android:text="@string/steps"
+    android:gravity="center"
+    android:text="@string/ingredients"
     android:textAlignment="center"
+    android:textColor="@color/secondary_text"
     android:textSize="22sp"/>
-  <ScrollView
+
+  <android.support.v7.widget.RecyclerView
+    android:id="@+id/rv_fragment_detail_list"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_below="@id/steps_label">
-
-    <android.support.v7.widget.RecyclerView
-      android:id="@+id/rv_fragment_step_list"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:layout_marginBottom="12dp"
-      android:layout_marginLeft="8dp"
-      android:paddingBottom="@dimen/exo_media_button_height">
-    </android.support.v7.widget.RecyclerView>
-  </ScrollView>
+    android:layout_marginBottom="38dp"
+    android:layout_below="@+id/ingredient_label">
+  </android.support.v7.widget.RecyclerView>
 
   <Button
-    android:id="@+id/btn_view_ingredients"
+    android:id="@+id/btn_view_steps"
     android:layout_width="match_parent"
     android:layout_height="50dp"
     android:layout_alignParentBottom="true"
     android:background="@color/colorPrimary"
-    android:text="@string/view_ingredients"
+    android:text="@string/view_steps"
     >
   </Button>
 
 </RelativeLayout>
-
