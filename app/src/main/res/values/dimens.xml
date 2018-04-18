@@ -6,5 +6,7 @@ Refer to App Widget Documentation for margin information
 http://developer.android.com/guide/topics/appwidgets/index.html#CreatingLayout
     -->
   <dimen name="widget_margin">8dp</dimen>
+  <dimen name="btn_height_mobile">38dp</dimen>
+  <dimen name="btn_height_tablet">50dp</dimen>
 
 </resources>

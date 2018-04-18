@@ -1,0 +1,380 @@
+Index: app/src/main/res/layout-sw600dp/activity_detail.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/layout-sw600dp/activity_detail.xml	(revision )
++++ app/src/main/res/layout-sw600dp/activity_detail.xml	(revision )
+@@ -0,0 +1,18 @@
++<?xml version="1.0" encoding="utf-8"?>
++<RelativeLayout
++  xmlns:android="http://schemas.android.com/apk/res/android"
++  xmlns:tools="http://schemas.android.com/tools"
++  android:layout_width="match_parent"
++  android:layout_height="match_parent"
++  tools:context="com.example.gregorio.bakingapp.DetailActivity">
++
++  <FrameLayout
++    android:id="@+id/details_container"
++    android:layout_width="match_parent"
++    android:layout_height="wrap_content"
++    android:layout_alignParentTop="true">
++  </FrameLayout>
++
++</RelativeLayout>
++
++
+Index: app/src/main/res/values/bools.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/values/bools.xml	(revision 8b6407046169a4013289dae8b476f9eea026d9f0)
++++ app/src/main/res/values/bools.xml	(revision )
+@@ -1,4 +1,6 @@
+ <?xml version="1.0" encoding="utf-8"?>
+ <resources>
+   <bool name="use_vertical_layout">false</bool>
++  <bool name="isTabletLand">false</bool>
++
+ </resources>
+\ No newline at end of file
+Index: app/src/main/res/values-sw600dp-port/attr.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/values-sw600dp-port/attr.xml	(revision )
++++ app/src/main/res/values-sw600dp-port/attr.xml	(revision )
+@@ -0,0 +1,5 @@
++<?xml version="1.0" encoding="utf-8"?>
++<resources>
++  <bool name="isTabletLand">false</bool>
++
++</resources>
+Index: app/src/main/res/layout-sw600dp-land/activity_detail.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/layout-sw600dp-land/activity_detail.xml	(revision )
++++ app/src/main/res/layout-sw600dp-land/activity_detail.xml	(revision )
+@@ -0,0 +1,33 @@
++<?xml version="1.0" encoding="utf-8"?>
++<LinearLayout
++  xmlns:android="http://schemas.android.com/apk/res/android"
++  xmlns:tools="http://schemas.android.com/tools"
++  android:layout_width="match_parent"
++  android:layout_height="match_parent"
++  android:orientation="horizontal"
++  tools:context="com.example.gregorio.bakingapp.DetailActivity">
++
++  <FrameLayout
++    android:id="@+id/details_container"
++    android:layout_width="0dp"
++    android:layout_height="wrap_content"
++    android:layout_weight="1">
++  </FrameLayout>
++
++  <FrameLayout
++    android:id="@+id/details_container_2"
++    android:layout_width="0dp"
++    android:layout_height="wrap_content"
++    android:layout_weight="1">
++  </FrameLayout>
++
++  <FrameLayout
++    android:id="@+id/details_container_3"
++    android:layout_width="0dp"
++    android:layout_height="wrap_content"
++    android:layout_weight="2">
++  </FrameLayout>
++
++</LinearLayout>
++
++
+Index: app/src/main/res/values/strings.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/values/strings.xml	(revision 8b6407046169a4013289dae8b476f9eea026d9f0)
++++ app/src/main/res/values/strings.xml	(revision )
+@@ -6,6 +6,6 @@
+   <string name="appwidget_text">EXAMPLE</string>
+   <string name="add_widget">Add widget</string>
+   <string name="add_ingredients">Add Ingredients</string>
+-  <string name="connection_error">...Please Check Your Internet Connection</string>
++  <string name="connection_error">Please Check Your Internet Connection</string>
+ 
+ </resources>
+Index: app/src/main/res/layout-sw600dp-land/activity_main.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/layout-sw600dp-land/activity_main.xml	(revision )
++++ app/src/main/res/layout-sw600dp-land/activity_main.xml	(revision )
+@@ -0,0 +1,40 @@
++<?xml version="1.0" encoding="utf-8"?>
++<LinearLayout
++  xmlns:android="http://schemas.android.com/apk/res/android"
++  xmlns:tools="http://schemas.android.com/tools"
++  android:layout_width="match_parent"
++  android:layout_height="match_parent"
++  android:orientation="horizontal"
++  tools:context="com.example.gregorio.bakingapp.MainActivity">
++
++  <LinearLayout
++    android:layout_width="0dp"
++    android:layout_height="match_parent"
++    android:layout_weight="1"
++    android:orientation="vertical">
++
++    <FrameLayout
++      android:id="@+id/recipe_container"
++      android:layout_width="match_parent"
++      android:layout_height="wrap_content">
++    </FrameLayout>
++
++    <ImageView
++      android:id="@+id/cake_main"
++      android:layout_width="match_parent"
++      android:layout_height="150dp"
++      android:layout_marginTop="50dp"
++      android:layout_gravity="center_vertical"
++      android:src="@drawable/piece_of_cake"/>
++
++  </LinearLayout>
++
++  <FrameLayout
++    android:id="@+id/ingredients_container"
++    android:layout_width="0dp"
++    android:layout_height="match_parent"
++    android:layout_weight="1">
++  </FrameLayout>
++
++
++</LinearLayout>
+Index: app/src/main/res/layout-sw600dp/activity_main.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/layout-sw600dp/activity_main.xml	(revision )
++++ app/src/main/res/layout-sw600dp/activity_main.xml	(revision )
+@@ -0,0 +1,24 @@
++<?xml version="1.0" encoding="utf-8"?>
++<LinearLayout
++  xmlns:android="http://schemas.android.com/apk/res/android"
++  xmlns:tools="http://schemas.android.com/tools"
++  android:layout_width="match_parent"
++  android:layout_height="match_parent"
++  android:orientation="vertical"
++  tools:context="com.example.gregorio.bakingapp.MainActivity">
++
++  <FrameLayout
++    android:id="@+id/recipe_container"
++    android:layout_width="match_parent"
++    android:layout_height="wrap_content">
++  </FrameLayout>
++
++  <ImageView
++    android:id="@+id/cake_main"
++    android:layout_width="match_parent"
++    android:layout_height="150dp"
++    android:layout_marginTop="50dp"
++    android:layout_gravity="center_vertical"
++    android:src="@drawable/piece_of_cake"/>
++
++</LinearLayout>
+Index: app/src/main/res/values-port/bools.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/values-port/bools.xml	(revision 8b6407046169a4013289dae8b476f9eea026d9f0)
++++ app/src/main/res/values-port/bools.xml	(revision )
+@@ -1,4 +1,6 @@
+ <?xml version="1.0" encoding="utf-8"?>
+ <resources>
+   <bool name="use_vertical_layout">true</bool>
++  <bool name="isTabletLand">false</bool>
++
+ </resources>
+\ No newline at end of file
+Index: app/src/main/java/com/example/gregorio/bakingapp/MainActivity.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/example/gregorio/bakingapp/MainActivity.java	(revision 8b6407046169a4013289dae8b476f9eea026d9f0)
++++ app/src/main/java/com/example/gregorio/bakingapp/MainActivity.java	(revision )
+@@ -20,7 +20,6 @@
+ public class MainActivity extends AppCompatActivity implements OnRecipeClickListener {
+ 
+   public static final String LOG_TAG = MainActivity.class.getSimpleName();
+-
+   public static final String INTENT_KEY = "Bundle";
+   public static final String PARCEL_KEY = "Parcel";
+   public static final String RECIPE_NAME_KEY = "Recipe Name Key";
+Index: app/src/main/res/values-port/attr.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/values-port/attr.xml	(revision )
++++ app/src/main/res/values-port/attr.xml	(revision )
+@@ -0,0 +1,6 @@
++<?xml version="1.0" encoding="utf-8"?>
++<resources>
++  <bool name="isTabletLand">false</bool>
++
++
++</resources>
+Index: app/src/main/java/com/example/gregorio/bakingapp/RecipeFragment.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/example/gregorio/bakingapp/RecipeFragment.java	(revision 8b6407046169a4013289dae8b476f9eea026d9f0)
++++ app/src/main/java/com/example/gregorio/bakingapp/RecipeFragment.java	(revision )
+@@ -5,8 +5,10 @@
+ import android.os.Parcelable;
+ import android.support.annotation.Nullable;
+ import android.support.v4.app.Fragment;
++import android.support.v7.widget.GridLayoutManager;
+ import android.support.v7.widget.LinearLayoutManager;
+ import android.support.v7.widget.RecyclerView;
++import android.util.DisplayMetrics;
+ import android.util.Log;
+ import android.view.LayoutInflater;
+ import android.view.View;
+@@ -28,16 +30,15 @@
+ 
+   private static final String LOG_TAG = RecipeFragment.class.getSimpleName();
+   private static final String BUNDLE_KEY = "OnSavedInstance Bundle";
+-
+-
++  public Boolean isTabletLandscape;
+   // Define a new interface OnStepsClickListener that triggers a callback in the host activity
+   OnRecipeClickListener mCallback;
+-
+   private String API_BASE_URL = "https://d17h27t6h515a5.cloudfront.net/topher/2017/May/59121517_baking/";
+   private RecipesCall recipesCall;
+   private RecyclerView recyclerView;
+   private RecipeAdapter recipeAdapter;
+   private LinearLayoutManager layoutManager;
++  private GridLayoutManager gridLayoutManager;
+   private int numberOFRecipes;
+   private Context mContext;
+   private ArrayList<RecipeModel> repos;
+@@ -59,6 +60,7 @@
+     }
+   }
+ 
++
+   @Nullable
+   @Override
+   public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
+@@ -80,6 +82,8 @@
+     }
+ 
+     mContext = getActivity().getApplicationContext();
++    isTabletLandscape = mContext.getResources().getBoolean(mContext, R.bool.)
++
+ 
+     //inflating the main fragment layout within its container
+     View rootView = inflater.inflate(R.layout.fragment_main_list, container, false);
+@@ -87,7 +91,10 @@
+     //finding the recyclerView and setting the Adapter
+     recyclerView = rootView.findViewById(R.id.rv_fragment_list);
+     layoutManager = new LinearLayoutManager(getContext());
+-    recyclerView.setLayoutManager(layoutManager);
++    gridLayoutManager = new GridLayoutManager(mContext, 2);
++
++    if ()
++      recyclerView.setLayoutManager(layoutManager);
+     recipeAdapter = new RecipeAdapter(this, numberOFRecipes);
+     recyclerView.setAdapter(recipeAdapter);
+ 
+@@ -132,6 +139,22 @@
+     return rootView;
+   }
+ 
++  // this method dynamically calculate the number of columns and
++  // the layout would adapt to the screen size and orientation
++
++  private int numberOfColumns() {
++    DisplayMetrics displayMetrics = new DisplayMetrics();
++    mContext.getDefaultDisplay().getMetrics(displayMetrics);
++    // You can change this divider to adjust the size of the poster
++    int widthDivider = 300;
++    int width = displayMetrics.widthPixels;
++    int nColumns = width / widthDivider;
++    if (nColumns < 2) {
++      return 2;
++    }
++    return nColumns;
++  }
++
+   @Override
+   public void onClick(int recipeIndex) {
+     mCallback.onRecipeSelected(recipeIndex, repos);
+Index: app/src/main/res/values/attr.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/values/attr.xml	(revision )
++++ app/src/main/res/values/attr.xml	(revision )
+@@ -0,0 +1,5 @@
++<?xml version="1.0" encoding="utf-8"?>
++<resources>
++  <bool name="isTabletLand">false</bool>
++
++</resources>
+Index: app/src/main/res/values-sw600dp-land/attr.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/values-sw600dp-land/attr.xml	(revision )
++++ app/src/main/res/values-sw600dp-land/attr.xml	(revision )
+@@ -0,0 +1,5 @@
++<?xml version="1.0" encoding="utf-8"?>
++<resources>
++  <bool name="isTabletLand">true</bool>
++
++</resources>
+Index: app/src/main/res/values-sw600dp-port/bools.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/values-sw600dp-port/bools.xml	(revision )
++++ app/src/main/res/values-sw600dp-port/bools.xml	(revision )
+@@ -0,0 +1,7 @@
++<?xml version="1.0" encoding="utf-8"?>
++<resources>
++  <bool name="isTabletLand">false</bool>
++  <bool name="use_vertical_layout">false</bool>
++
++
++</resources>
+\ No newline at end of file
+Index: app/src/main/res/values-sw600dp-land/bools.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/values-sw600dp-land/bools.xml	(revision )
++++ app/src/main/res/values-sw600dp-land/bools.xml	(revision )
+@@ -0,0 +1,6 @@
++<?xml version="1.0" encoding="utf-8"?>
++<resources>
++  <bool name="isTabletLand">true</bool>
++  <bool name="use_vertical_layout">false</bool>
++
++</resources>
+\ No newline at end of file

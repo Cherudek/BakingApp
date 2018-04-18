@@ -35,7 +35,7 @@
   <Button
     android:id="@+id/btn_view_ingredients"
     android:layout_width="match_parent"
-    android:layout_height="50dp"
+    android:layout_height="@dimen/btn_height_tablet"
     android:layout_alignParentBottom="true"
     android:background="@color/colorPrimary"
     android:text="@string/view_ingredients"

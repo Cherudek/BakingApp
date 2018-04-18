@@ -28,23 +28,23 @@ dependencies {
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
 
     // Retrofit & OkHttp + Gjson data parsing
-    compile 'com.squareup.retrofit2:retrofit:2.3.0'
-    compile 'com.squareup.retrofit2:converter-gson:2.3.0'
+    implementation 'com.squareup.retrofit2:retrofit:2.3.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
 
     //Recycler View
-    compile 'com.android.support:recyclerview-v7:26.1.0'
+    implementation 'com.android.support:recyclerview-v7:26.1.0'
 
     //Auto-Value-Parcelable Library
     annotationProcessor 'com.google.auto.value:auto-value:1.4'
     annotationProcessor 'com.ryanharter.auto.value:auto-value-parcel:0.2.5'
-    provided 'com.jakewharton.auto.value:auto-value-annotations:1.4'
+    compileOnly 'com.jakewharton.auto.value:auto-value-annotations:1.4'
 
     //ExoPlayer Dependency
-    compile 'com.google.android.exoplayer:exoplayer:r2.5.4'
+    implementation 'com.google.android.exoplayer:exoplayer:r2.5.4'
 
     // Testing-only dependencies
 
-    androidTestCompile('com.android.support.test.espresso:espresso-contrib:2.2') {
+    androidTestImplementation('com.android.support.test.espresso:espresso-contrib:2.2') {
         // Necessary to avoid version conflicts
         exclude group: 'com.android.support', module: 'appcompat'
         exclude group: 'com.android.support', module: 'support-v4'
@@ -52,19 +52,19 @@ dependencies {
         exclude module: 'recyclerview-v7'
     }
 
-    androidTestCompile 'com.android.support:support-annotations:26.1.0'
-    androidTestCompile 'com.android.support.test.espresso:espresso-core:3.0.1'
-    androidTestCompile 'com.android.support.test.espresso:espresso-intents:3.0.1'
-    androidTestCompile 'com.android.support.test:rules:1.0.1'
-    androidTestCompile 'com.android.support.test:runner:1.0.1'
-    androidTestCompile 'com.android.support:recyclerview-v7:26.1.0'
+    androidTestImplementation 'com.android.support:support-annotations:26.1.0'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-intents:3.0.1'
+    androidTestImplementation 'com.android.support.test:rules:1.0.1'
+    androidTestImplementation 'com.android.support.test:runner:1.0.1'
+    androidTestImplementation 'com.android.support:recyclerview-v7:26.1.0'
 
     // Note that espresso-idling-resource is used in the code under test.
-    compile 'com.android.support.test.espresso:espresso-idling-resource:3.0.1'
-    compile 'com.android.support:recyclerview-v7:26.1.0'
+    implementation 'com.android.support.test.espresso:espresso-idling-resource:3.0.1'
+    implementation 'com.android.support:recyclerview-v7:26.1.0'
 
     //Picasso Image Library
-    compile "com.squareup.picasso:picasso:2.4.0"
+    implementation "com.squareup.picasso:picasso:2.4.0"
 
 
 }

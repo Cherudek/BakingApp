@@ -113,24 +113,13 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
       parcelable = savedInstanceState.getParcelable(PARCELABLE_KEY);
       videoUrlBundle = savedInstanceState.getBundle(VIDEO_URL_BUNDLE);
 
-      //Restore the fragment's instance *** throwing java.lang.IllegalStateException: Can't change container ID of fragment VideoStepFragment ***
-      // videoStepFragment = (VideoStepFragment) getSupportFragmentManager().getFragment(savedInstanceState, VIDEO_FRAGMENT_TAG);
-
-      Log.i(LOG_TAG, "Recipe Name Key Saved:  " + mRecipeName);
-      Log.i(LOG_TAG, "OnSavedInstance bundle Steps Array Size: " + mStepsArrayList);
-      Log.i(LOG_TAG, "OnSavedInstance bundle Ingredients Array Size: " + mIngredientsArrayList);
-
       //This will be called in case we need to replace the fragment after a rotation using the saved states
       fragmentSetUp2();
-
-      Log.d(LOG_TAG, "OnCreate: fragmentSetUp2() *** TEST ***");
 
     } else {
 
       // This method will launch  set up the Ingredients fragment (Title, RecyclerView and 1 Btn).
       fragmentSetUp();
-      Log.d(LOG_TAG, "OnCreate: fragmentSetUp() *** TEST ***");
-
     }
   }
 
@@ -165,41 +154,25 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
     isTabletLandscape = getResources().getBoolean(R.bool.isTabletLand);
     isTabletPortrait = getResources().getBoolean(R.bool.isTabletPortrait);
 
-
-    //Check if we are in Tablet Landscape layout
+    //Check if we are in Tablet Portrait/Landscape or Mobile layout
     if (isTabletLandscape) {
       fragmentManager.beginTransaction()
           .add(R.id.details_container, ingredientsFragment, INGREDIENTS_FRAGMENT_TAG)
           .add(R.id.details_container_2, videoStepFragment, VIDEO_FRAGMENT_TAG)
           .addToBackStack(null)
           .commit();
-
-      Log.d(LOG_TAG, "fragmentSetUp() *** TEST *** isTabletLandscape");
-      Log.d(LOG_TAG, "fragmentSetUp() *** TEST *** videoStepFragment added" + videoStepFragment);
-
-
     } else if (isTabletPortrait) {
-
       fragmentManager.beginTransaction()
           .add(R.id.details_container, ingredientsFragment, INGREDIENTS_FRAGMENT_TAG)
           .addToBackStack(null)
           .commit();
-
-      Log.d(LOG_TAG, "fragmentSetUp() *** TEST *** is Tablet Portrait");
-
     } else {
-
       fragmentManager.beginTransaction()
           .add(R.id.details_container, ingredientsFragment, INGREDIENTS_FRAGMENT_TAG)
           .addToBackStack(null)
           .commit();
-
-      Log.d(LOG_TAG, "fragmentSetUp() *** TEST *** is Mobile");
-
-
     }
   }
-
 
   //Data Coming from the VideoStepFragment with the current video playing
   @Override
@@ -215,16 +188,10 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
     currentVideoStep.putParcelableArrayList(STEPS_ARRAY_LIST_KEY, mStepsArrayList);
     //Adding to the global video bundle the current playing video bundle to pass.
     videoBundle.putBundle(CURRENT_VIDEO_BUNDLE_KEY, currentVideoStep);
-
-    Log.d(LOG_TAG, "TEST *** onCurrentVideoPlaying videoUrl is " + videoUrl);
-    Log.d(LOG_TAG, "TEST *** onCurrentVideoPlaying video ID is " + stepId);
-
   }
 
   // Fragment Set Up using saved data bundle
   public void fragmentSetUp2() {
-
-
     if (ingredientsFragment == null) {
       //Instantiate the IngredientsFragment
       ingredientsFragment = new IngredientsFragment();
@@ -256,29 +223,15 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
           .replace(R.id.details_container_2, videoStepFragment)
           .addToBackStack(null)
           .commit();
-
-      Log.d(LOG_TAG, "fragmentSetUp2() *** TEST *** isTabletLandscape");
-      Log.d(LOG_TAG,
-          "fragmentSetUp2() *** TEST *** videoStepFragment replaced: " + videoStepFragment);
-
-
     } else if (isTabletPortrait) {
 
       videoStepFragment.setArguments(videoBundle);
-
       fragmentManager.beginTransaction()
           .replace(R.id.details_container, videoStepFragment)
           .addToBackStack(null)
           .commit();
-
-      Log.d(LOG_TAG, "fragmentSetUp2() *** TEST *** is Tablet Portrait");
-      Log.d(LOG_TAG,
-          "fragmentSetUp2() *** TEST *** is videoStepFragment replaced " + videoStepFragment);
-
     } else {
-
       Log.d(LOG_TAG, "fragmentSetUp2() *** TEST *** is Mobile");
-
     }
   }
 
@@ -306,8 +259,6 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
           .replace(R.id.details_container_2, videoStepFragment, VIDEO_FRAGMENT_TAG)
           .addToBackStack(null)
           .commit();
-      Log.d(LOG_TAG, "TEST viewRecipeSteps() *** isTabletLandscape, videoStepFragment replace "
-          + videoStepFragment);
     } else {
       fragmentManager.beginTransaction()
           .replace(R.id.details_container, stepsFragment, STEP_FRAGMENT_TAG)
@@ -315,7 +266,6 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
           .commit();
     }
   }
-
 
   // This method will trigger OnStepsClickListener Interface to Set up the VideoSteps Fragment on the
   @Override
@@ -338,17 +288,11 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
     //Adding the bundle that contains the data to start the video player to the global video bundle
     videoBundle.putBundle(START_VIDEO_BUNDLE_KEY, videoUrlBundle);
 
-    Log.d(LOG_TAG, "onStepSelected() My Video Url is : " + mVideoUrl);
-    Log.d(LOG_TAG, "onStepSelected() My Long Description is : " + mLongDescription);
-    Log.d(LOG_TAG, "onStepSelected() My Video ID is : " + mId);
-    Log.d(LOG_TAG, "onStepSelected() My Video Position is : " + position);
-
     //Instantiating the Video & Long description  Fragment
     if (videoStepFragment == null) {
       videoStepFragment = new VideoStepFragment();
     }
     videoStepFragment.setArguments(videoBundle);
-
     //Instantiating the steps  Fragment
     if (stepsFragment == null) {
       stepsFragment = new StepsFragment();
@@ -356,7 +300,6 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
       RecipeModel recipeModel = parcelable.getParcelable(PARCEL_KEY);
       bundle.putParcelable(STEPS_ARRAY_LIST_KEY, recipeModel);
       stepsFragment.setArguments(bundle);
-
     }
 
     if (isTabletLandscape) {
@@ -372,18 +315,11 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
       ft.commit();
 
       videoStepFragment.setArguments(videoBundle);
-
-      Log.d(LOG_TAG, "TEST onStepSelected, isTabletLandscape, videoStepFragment detach/attach");
-
       fm.beginTransaction()
           .replace(R.id.details_container, stepsFragment, STEP_FRAGMENT_TAG)
           .replace(R.id.details_container_2, videoStepFragment, VIDEO_FRAGMENT_TAG)
           .addToBackStack(null)
           .commit();
-
-      Log.d(LOG_TAG, "onStepSelected() **** TEST **** is tablet Landscape");
-      Log.d(LOG_TAG, "TEST onStepSelected(), isTabletLandscape, videoStepFragment replace");
-
 
     } else if (isTabletPortrait) {
 
@@ -407,11 +343,6 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
           .replace(R.id.details_container, videoStepFragment, VIDEO_FRAGMENT_TAG)
           .addToBackStack(null)
           .commit();
-
-      Log.d(LOG_TAG, "onStepSelected() **** TEST **** is tablet Portrait");
-      Log.d(LOG_TAG,
-          "onStepSelected() **** TEST **** is tablet Portrait, videoStepFragment detach/attach, replace");
-
     } else {
 
       //For Mobile (Portrait and landscape)
@@ -420,9 +351,6 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
           .replace(R.id.details_container, videoStepFragment, VIDEO_FRAGMENT_TAG)
           .addToBackStack(null)
           .commit();
-
-      Log.d(LOG_TAG, "onStepSelected() **** TEST **** is Mobile Portrait or Landscape");
-
     }
   }
 
@@ -435,31 +363,22 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
     }
 
     ingredientsFragment.setArguments(parcelable);
-
     if (isTabletLandscape) {
       fragmentManager.beginTransaction()
           .replace(R.id.details_container, ingredientsFragment, INGREDIENTS_FRAGMENT_TAG)
           .replace(R.id.details_container_2, videoStepFragment, VIDEO_FRAGMENT_TAG)
           .addToBackStack(null)
           .commit();
-
-      Log.d(LOG_TAG, "onBtnIngredientList() **** TEST **** is Tablet Landscape");
-
     }
   }
-
 
   @Override
   protected void onResume() {
     super.onResume();
     getSupportActionBar().setTitle(mRecipeName);
-
+    //Check if we are in Tablet Landscape or Portrait
     isTabletLandscape = getResources().getBoolean(R.bool.isTabletLand);
     isTabletPortrait = getResources().getBoolean(R.bool.isTabletPortrait);
-
-    Log.d(LOG_TAG, "TEST: OnResume isTabletLandscape is" + isTabletLandscape);
-    Log.d(LOG_TAG, "TEST: OnResume isTabletPortrait is" + isTabletPortrait);
-
   }
 
   @Override
@@ -472,17 +391,5 @@ public class DetailActivity extends AppCompatActivity implements OnStepsClickLis
     outState.putParcelable(RECIPE_MODEL_KEY, recipeModel);
     outState.putParcelable(PARCELABLE_KEY, parcelable);
     outState.putBundle(VIDEO_URL_BUNDLE, videoUrlBundle);
-    //Save the fragment's instance
-    // getSupportFragmentManager().putFragment(outState, VIDEO_FRAGMENT_TAG, videoStepFragment);
-
-    int stepsArraySize = mStepsArrayList.size();
-    int ingredientsArraySize = mIngredientsArrayList.size();
-
-    Log.i(LOG_TAG, "Recipe Name Key Saved:  " + mRecipeName);
-    Log.i(LOG_TAG, "OnSavedInstance bundle Steps Array Size: " + stepsArraySize);
-    Log.i(LOG_TAG, "OnSavedInstance bundle Ingredients Array Size: " + ingredientsArraySize);
-
   }
-
-
 }

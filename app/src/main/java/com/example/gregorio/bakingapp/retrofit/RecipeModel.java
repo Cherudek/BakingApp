@@ -37,25 +37,6 @@ public class RecipeModel implements Parcelable {
   public RecipeModel() {
   }
 
-  //Without Image Field
-//  protected RecipeModel(Parcel in) {
-//    id = in.readInt();
-//    if (in.readByte() == 0x01) {
-//      ingredients = new ArrayList<Ingredients>();
-//      in.readList(ingredients, Ingredients.class.getClassLoader());
-//    } else {
-//      ingredients = null;
-//    }
-//    name = in.readString();
-//    servings = in.readInt();
-//    if (in.readByte() == 0x01) {
-//      steps = new ArrayList<Steps>();
-//      in.readList(steps, Steps.class.getClassLoader());
-//    } else {
-//      steps = null;
-//    }
-//  }
-
   //With Image field
   protected RecipeModel(Parcel in) {
     id = in.readInt();
