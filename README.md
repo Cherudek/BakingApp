@@ -20,7 +20,6 @@ App Screen Shots
 
 ![Main Recepe Activity Tablet version](https://cherudek.github.io/BakingApp/recepes_fragment_tablet.png  "Main Recepe Activity Tablet version")
 
-![Video Step Fragment Tablet version](https://cherudek.github.io/BakingApp/tablet_details_hor.png  "Video Step Fragment Tablet version")
 
 
 
