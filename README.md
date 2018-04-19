@@ -1,4 +1,4 @@
-# Android Baking App Project 🥧🍰🎂
+# 🍰 Android Baking App Project 🍰 
 Initial
 
 App Screen Shots
