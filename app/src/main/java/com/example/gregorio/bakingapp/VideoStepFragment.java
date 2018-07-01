@@ -244,10 +244,10 @@ public class VideoStepFragment extends Fragment implements ExoPlayer.EventListen
   private void setThumbnail(String thumbnailUrl) {
 
     if (thumbnailUrl != null && !thumbnailUrl.isEmpty()) {
-      Picasso.with(stepImage.getContext()).load(thumbnailUrl).into(stepImage);
+      Picasso.get().load(thumbnailUrl).into(stepImage);
     } else {
       thumbnail = R.drawable.coming_soon;
-      Picasso.with(stepImage.getContext()).load(thumbnail).placeholder(R.drawable.coming_soon)
+      Picasso.get().load(thumbnail).placeholder(R.drawable.coming_soon)
           .into(stepImage);
     }
   }
@@ -426,8 +426,10 @@ public class VideoStepFragment extends Fragment implements ExoPlayer.EventListen
 
   }
 
+
+
   @Override
-  public void onTimelineChanged(Timeline timeline, Object manifest) {
+  public void onTimelineChanged(Timeline timeline, Object manifest, int reason) {
 
   }
 
@@ -453,15 +455,27 @@ public class VideoStepFragment extends Fragment implements ExoPlayer.EventListen
   }
 
   @Override
+  public void onShuffleModeEnabledChanged(boolean shuffleModeEnabled) {
+
+  }
+
+  @Override
   public void onPlayerError(ExoPlaybackException error) {
   }
 
   @Override
-  public void onPositionDiscontinuity() {
+  public void onPositionDiscontinuity(int reason) {
+
   }
+
 
   @Override
   public void onPlaybackParametersChanged(PlaybackParameters playbackParameters) {
+  }
+
+  @Override
+  public void onSeekProcessed() {
+
   }
 
   // OnCurrentVideoListener interface, calls a method in the host activity named onCurrentVideoPlaying

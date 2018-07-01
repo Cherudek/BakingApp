@@ -65,9 +65,9 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
 
     //Load the image is the Url is not empty
     if (!imageString.isEmpty()) {
-      Picasso.with(holder.image.getContext()).load(imageString).into(holder.image);
+      Picasso.get().load(imageString).into(holder.image);
     } else {
-      Picasso.with(holder.image.getContext()).load(placeHolder).placeholder(R.drawable.coming_soon)
+      Picasso.get().load(placeHolder).placeholder(R.drawable.coming_soon)
           .into(holder.image);
       Log.d(LOG_TAG, "The image Place holder is: " + placeHolder);
     }
